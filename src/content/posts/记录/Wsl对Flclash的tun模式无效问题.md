@@ -2,7 +2,7 @@
 title: Wsl对Flclash的tun模式无效问题
 published: 2026-02-08
 description: Flclash开启虚拟网卡，在wsl中不生效而无法访问Google的其他解决方案
-image: ../../images/firefly1.webp
+image: ./../images/firefly1.webp
 tags: [代理]
 category: 记录
 draft: false
