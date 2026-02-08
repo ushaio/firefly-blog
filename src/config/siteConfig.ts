@@ -146,7 +146,7 @@ export const siteConfig: SiteConfig = {
 	// 统计分析
 	analytics: {
 		// Google Analytics ID
-		googleAnalyticsId: "13576888970",
+		googleAnalyticsId: "G-D87QD00W4S",
 		// Microsoft Clarity ID
 		microsoftClarityId: "",
 	},
