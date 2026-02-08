@@ -20,6 +20,7 @@ export const en: Translation = {
 	[Key.recentPosts]: "Recent Posts",
 	[Key.postList]: "Post List",
 	[Key.tableOfContents]: "Table of Contents",
+	[Key.music]: "Music",
 
 	// Announcement
 	[Key.announcement]: "Announcement",
@@ -184,6 +185,11 @@ export const en: Translation = {
 	[Key.wallpaperBannerMode]: "Banner Wallpaper",
 	[Key.wallpaperOverlayMode]: "Overlay Wallpaper",
 	[Key.wallpaperNoneMode]: "None Wallpaper",
+
+	// Post List Layout
+	[Key.postListLayout]: "Post List Layout",
+	[Key.postListLayoutList]: "List",
+	[Key.postListLayoutGrid]: "Grid",
 
 	// Sponsor Page
 	[Key.sponsor]: "Sponsor",

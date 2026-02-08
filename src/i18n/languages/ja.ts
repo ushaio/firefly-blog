@@ -20,6 +20,7 @@ export const ja: Translation = {
 	[Key.recentPosts]: "最近の投稿",
 	[Key.postList]: "投稿リスト",
 	[Key.tableOfContents]: "目次",
+	[Key.music]: "音楽",
 
 	// お知らせ
 	[Key.announcement]: "お知らせ",
@@ -183,6 +184,11 @@ export const ja: Translation = {
 	[Key.wallpaperBannerMode]: "バナー壁紙",
 	[Key.wallpaperOverlayMode]: "透明",
 	[Key.wallpaperNoneMode]: "単色背景",
+
+	// 投稿リストレイアウト
+	[Key.postListLayout]: "投稿リストレイアウト",
+	[Key.postListLayoutList]: "リスト",
+	[Key.postListLayoutGrid]: "グリッド",
 
 	// スポンサーページ
 	[Key.sponsor]: "スポンサー",

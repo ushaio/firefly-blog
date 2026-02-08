@@ -20,6 +20,7 @@ export const ru: Translation = {
 	[Key.recentPosts]: "Последние посты",
 	[Key.postList]: "Список постов",
 	[Key.tableOfContents]: "Содержание",
+	[Key.music]: "Музыка",
 
 	// Объявление
 	[Key.announcement]: "Объявление",
@@ -185,6 +186,11 @@ export const ru: Translation = {
 	[Key.wallpaperBannerMode]: "Баннер обои",
 	[Key.wallpaperOverlayMode]: "Прозрачный",
 	[Key.wallpaperNoneMode]: "Однотонный фон",
+
+	// Макет списка сообщений
+	[Key.postListLayout]: "Макет списка сообщений",
+	[Key.postListLayoutList]: "Список",
+	[Key.postListLayoutGrid]: "Сетка",
 
 	// Страница спонсоров
 	[Key.sponsor]: "Спонсор",

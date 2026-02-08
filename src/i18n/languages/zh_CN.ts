@@ -20,6 +20,7 @@ export const zh_CN: Translation = {
 	[Key.recentPosts]: "最新文章",
 	[Key.postList]: "文章列表",
 	[Key.tableOfContents]: "目录",
+	[Key.music]: "音乐",
 
 	// 公告栏
 	[Key.announcement]: "公告",
@@ -46,7 +47,7 @@ export const zh_CN: Translation = {
 	[Key.postCount]: "篇文章",
 	[Key.postsCount]: "篇文章",
 
-	[Key.themeColor]: "主题色",
+	[Key.themeColor]: "主题色相",
 
 	[Key.lightMode]: "亮色",
 	[Key.darkMode]: "暗色",
@@ -176,6 +177,11 @@ export const zh_CN: Translation = {
 	[Key.wallpaperBannerMode]: "横幅壁纸",
 	[Key.wallpaperOverlayMode]: "全屏透明",
 	[Key.wallpaperNoneMode]: "纯色背景",
+
+	// 文章布局
+	[Key.postListLayout]: "文章布局",
+	[Key.postListLayoutList]: "列表",
+	[Key.postListLayoutGrid]: "网格",
 
 	// 赞助页面
 	[Key.sponsor]: "赞助",

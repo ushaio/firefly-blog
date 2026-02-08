@@ -16,6 +16,7 @@ enum I18nKey {
 	recentPosts = "recentPosts",
 	postList = "postList",
 	tableOfContents = "tableOfContents",
+	music = "music",
 
 	// 公告栏
 	announcement = "announcement",
@@ -172,6 +173,11 @@ enum I18nKey {
 	wallpaperBannerMode = "wallpaperBannerMode",
 	wallpaperOverlayMode = "wallpaperOverlayMode",
 	wallpaperNoneMode = "wallpaperNoneMode",
+
+	// 文章布局
+	postListLayout = "postListLayout",
+	postListLayoutList = "postListLayoutList",
+	postListLayoutGrid = "postListLayoutGrid",
 
 	// 赞助页面
 	sponsor = "sponsor",

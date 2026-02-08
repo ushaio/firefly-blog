@@ -3,8 +3,6 @@ import GoogleAnalytics from "@components/analytics/GoogleAnalytics.astro";
 import MicrosoftClarity from "@components/analytics/MicrosoftClarity.astro";
 import FancyboxManager from "@components/features/FancyboxManager.astro";
 import FontManager from "@components/features/FontManager.astro";
-import KatexManager from "@components/features/KatexManager.astro";
-import MusicPlayer from "@components/features/MusicPlayer.astro";
 import SakuraEffect from "@components/features/SakuraEffect.astro";
 import ConfigCarrier from "@components/layout/ConfigCarrier.astro";
 
@@ -26,6 +24,8 @@ import { getDefaultBackground, isHomePage } from "@/utils/layout-utils";
 import { url } from "@/utils/url-utils";
 
 import "@/styles/main.css";
+import "@/styles/variables.styl";
+import "@/styles/markdown-extend.styl";
 import "@rehype-callouts-theme";
 
 interface Props {
@@ -93,7 +93,7 @@ const bannerOffset = `${BANNER_HEIGHT_EXTEND / 2}vh`;
 ---
 
 <!doctype html>
-<html lang={siteLang} class="bg-[var(--page-bg)] text-[14px] md:text-[16px]">
+<html lang={siteLang} class="bg-(--page-bg) text-[14px] md:text-[16px]">
   <head>
     <meta charset="UTF-8" />
     {siteConfig.analytics?.googleAnalyticsId && (
@@ -430,20 +430,13 @@ const bannerOffset = `${BANNER_HEIGHT_EXTEND / 2}vh`;
     <ConfigCarrier />
     <slot />
 
-    <!-- Music Player -->
-    <MusicPlayer />
 
-    <!-- increase the page height during page transition to prevent the scrolling animation from jumping -->
-    <div id="page-height-extend" class="hidden h-[300vh]"></div>
 
     <!-- Sakura Effect -->
     <SakuraEffect />
 
     <!-- Fancybox Manager -->
     <FancyboxManager />
-    
-    <!-- KaTeX Manager -->
-    <KatexManager />
   </body>
 </html>
 
@@ -455,35 +448,43 @@ const bannerOffset = `${BANNER_HEIGHT_EXTEND / 2}vh`;
     "banner-height": `${BANNER_HEIGHT}vh`,
   }}
 >
-  @tailwind components;
+  @reference "../styles/main.css";
+
   @layer components {
-    .enable-banner.is-home #banner-wrapper {
-      @apply h-[var(--banner-height-home)] translate-y-[var(--banner-height-extend)];
+    .enable-banner.lg\:is-home #banner-wrapper {
+      height: var(--banner-height-home);
+      transform: translateY(var(--banner-height-extend));
     }
     .enable-banner #banner-wrapper {
-      @apply h-[var(--banner-height-home)];
+      height: var(--banner-height-home);
     }
 
-    .enable-banner.is-home #banner {
-      @apply h-[var(--banner-height-home)] translate-y-0;
+    .enable-banner.lg\:is-home #banner {
+      height: var(--banner-height-home);
+      transform: translateY(0);
     }
     .enable-banner #banner {
-      @apply h-[var(--banner-height-home)] translate-y-[var(--bannerOffset)];
+      height: var(--banner-height-home);
+      transform: translateY(var(--bannerOffset));
     }
-    .enable-banner.is-home #main-grid {
-      @apply translate-y-[var(--banner-height-extend)];
+    .enable-banner.lg\:is-home #main-grid {
+      transform: translateY(var(--banner-height-extend));
     }
     .enable-banner #top-row {
-      @apply h-[calc(var(--banner-height-home)_-_4.5rem)] transition-all duration-300;
+      height: calc(var(--banner-height-home) - 4.5rem);
+      @apply transition-all duration-300;
     }
-    .enable-banner.is-home #sidebar-sticky {
-      @apply top-[calc(1rem_-_var(--banner-height-extend))];
+  }
+
+  @layer utilities {
+    .enable-banner.lg\:is-home #sidebar-sticky {
+      top: calc(1rem - var(--banner-height-extend)) !important;
     }
-    .enable-banner.is-home #left-sidebar-sticky {
-      @apply top-[calc(1rem_-_var(--banner-height-extend))];
+    .enable-banner.lg\:is-home #left-sidebar-sticky {
+      top: calc(1rem - var(--banner-height-extend)) !important;
     }
-    .enable-banner.is-home #right-sidebar-sticky {
-      @apply top-[calc(1rem_-_var(--banner-height-extend))];
+    .enable-banner.lg\:is-home #right-sidebar-sticky {
+      top: calc(1rem - var(--banner-height-extend)) !important;
     }
     .navbar-hidden {
       @apply opacity-0 -translate-y-16;
