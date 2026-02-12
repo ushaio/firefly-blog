@@ -21,3 +21,15 @@ draft: false
 在属性里面，勾选【允许其他网络用户....】保存后，再重新关闭即可解决。
 
 ![image-20260208100908257](./../images/解决ClashParty等虚拟网卡失效问题/image-20260208100908257.png)
+
+上述解决方案发现重启后就失效了...
+
+
+
+参考链接：
+
+https://github.com/mihomo-party-org/clash-party/issues/453
+
+https://blog.csdn.net/weixin_63094916/article/details/143966897
+
+https://github.com/clash-verge-rev/clash-verge-rev/issues/4114
