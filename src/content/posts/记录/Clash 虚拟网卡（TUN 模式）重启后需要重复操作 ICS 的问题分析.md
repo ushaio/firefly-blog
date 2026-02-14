@@ -1,6 +1,6 @@
 ---
 title: Clash虚拟网卡（TUN 模式）重启后需要重复操作ICS 的问题分析
-published: 2026-02-08
+published: 2026-02-14
 description: Clash 虚拟网卡（TUN 模式）重启后需要重复操作ICS的问题分析
 image: "api"
 tags: [代理]
