@@ -1,3 +1,15 @@
+---
+title: Prisma迁移历史与数据库状态不一致问题排查与解决
+published: 2026-02-17
+description: 使用Navicat迁移数据库的时候migrate dev无法正常执行的记录及解决
+image: "api"
+tags: [mo-gallery]
+category: 记录
+draft: false
+---
+
+
+
 # Prisma迁移历史与数据库状态不一致问题排查与解决
 
 ## 核心问题
