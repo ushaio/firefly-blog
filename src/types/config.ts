@@ -22,10 +22,15 @@ export type SiteConfig = {
 		defaultMode?: LIGHT_DARK_MODE; // 默认模式：浅色、深色或跟随系统
 	};
 
+	// 页面整体宽度（单位：rem）
+	pageWidth?: number;
+
 	// 卡片样式配置
 	card: {
 		// 是否开启卡片边框和阴影立体效果
 		border: boolean;
+		// 是否让卡片风格跟随主题色相
+		followTheme?: boolean;
 	};
 
 	// 字体配置
@@ -42,9 +47,10 @@ export type SiteConfig = {
 		theme: "github" | "obsidian" | "vitepress";
 	};
 
-	// 添加bangumi配置
+	// bangumi配置
 	bangumi?: {
 		userId?: string; // Bangumi用户ID
+		categoryOrder?: ("anime" | "game" | "book" | "music" | "real")[]; // 条目类型排序顺序
 	};
 
 	generateOgImages: boolean;
@@ -63,6 +69,7 @@ export type SiteConfig = {
 		};
 		title?: string; // 导航栏标题，如果不设置则使用 title
 		widthFull?: boolean; // 导航栏是否占满屏幕宽度
+		menuAlign?: "left" | "center"; // 导航菜单对齐方式（仅桌面端菜单）
 		followTheme?: boolean; // 导航栏图标和标题是否跟随主题色
 	};
 
@@ -75,7 +82,11 @@ export type SiteConfig = {
 		sponsor: boolean; // 赞助页面开关
 		guestbook: boolean; // 留言板页面开关
 		bangumi: boolean;
+		gallery: boolean; // 相册页面开关
 	};
+
+	// 分类导航栏开关
+	categoryBar?: boolean;
 
 	// 文章列表布局配置
 	postListLayout: {
@@ -85,8 +96,8 @@ export type SiteConfig = {
 			// 网格布局配置，仅在 defaultMode 为 "grid" 或允许切换布局时生效
 			// 是否开启瀑布流布局
 			masonry: boolean;
-			// 网格模式列数：2 或 3，默认为 2。注意：3列模式仅在单侧边栏（或无侧边栏）且屏幕宽度足够时生效
-			columns?: 2 | 3;
+			// 网格模式卡片最小宽度(px)，浏览器根据容器宽度自动计算列数，默认 320
+			columnWidth?: number;
 		};
 	};
 
@@ -115,6 +126,13 @@ export type SiteConfig = {
 		 * 值越低体积越小但质量越差，推荐 70-85
 		 */
 		quality?: number;
+		/**
+		 * 为特定域名的图片添加 referrerpolicy="no-referrer" 属性
+		 * 开启后可解决指定域名图片加载时的 403 问题（如防盗链图片）
+		 * 示例：["i0.hdslb.com", "*.bilibili.com"] 支持通配符 *
+		 * 仅影响匹配域名的图片标签，不影响其他链接的 referrer 行为
+		 */
+		noReferrerDomains?: string[];
 	};
 };
 
@@ -132,6 +150,7 @@ export enum LinkPreset {
 	Sponsor = 4,
 	Guestbook = 5,
 	Bangumi = 6,
+	Gallery = 7,
 }
 
 export type NavBarLink = {
@@ -188,6 +207,7 @@ export type CommentConfig = {
 	waline?: {
 		serverURL: string;
 		lang?: string;
+		emoji: string[];
 		login?: "enable" | "force" | "disable";
 		visitorCount?: boolean; // 是否统计访问量，true 启用访问量，false 关闭
 	};
@@ -261,6 +281,12 @@ export type ExpressiveCodeConfig = {
 	lightTheme: string;
 	/** 代码块折叠插件配置 */
 	pluginCollapsible?: PluginCollapsibleConfig;
+	/** 语言徽章插件配置 */
+	pluginLanguageBadge?: PluginLanguageBadgeConfig;
+};
+
+export type PluginLanguageBadgeConfig = {
+	enable: boolean; // 是否启用语言徽章
 };
 
 export type PluginCollapsibleConfig = {
@@ -323,7 +349,7 @@ export type CoverImageConfig = {
 	randomCoverImage: {
 		enable: boolean; // 是否启用随机图功能
 		apis: string[]; // 随机图API列表
-		fallback?: string; // API失败时的回退图片路径（相对于src目录）
+		fallback?: string; // API失败时的回退图片路径（相对于src目录或以/开头的public目录路径）
 		showLoading?: boolean; // 是否显示加载动画
 	};
 };
@@ -369,8 +395,9 @@ export type MobileBottomComponentConfig = {
 
 export type SidebarLayoutConfig = {
 	enable: boolean; // 是否启用侧边栏
-	position: "left" | "both"; // 侧边栏位置：左侧或双侧
-	showRightSidebarOnPostPage?: boolean; // 当position为left时，是否在文章详情页显示右侧边栏
+	position: "left" | "right" | "both"; // 侧边栏位置：左侧、右侧或双侧
+	tabletSidebar?: "left" | "right"; // 平板端(769-1279px)显示哪侧侧边栏，仅position为both时生效，默认left
+	showBothSidebarsOnPostPage?: boolean; // 当position为left或right时，是否在文章详情页显示双侧边栏
 	leftComponents: WidgetComponentConfig[]; // 左侧边栏组件配置列表
 	rightComponents: WidgetComponentConfig[]; // 右侧边栏组件配置列表
 	mobileBottomComponents: MobileBottomComponentConfig[]; // 移动端底部组件配置列表（<768px显示）
@@ -548,9 +575,17 @@ export type BackgroundWallpaperConfig = {
 	};
 	// 全屏透明覆盖模式特有配置
 	overlay?: {
+		switchable?:
+			| boolean
+			| {
+					opacity?: boolean; // 是否允许用户在控制面板调整壁纸透明度
+					blur?: boolean; // 是否允许用户在控制面板调整背景模糊度
+					cardOpacity?: boolean; // 是否允许用户在控制面板调整卡片透明度
+			  }; // 透明模式参数是否可在控制面板调整，支持统一开关或分项开关
 		zIndex?: number; // 层级，确保壁纸在合适的层级显示
 		opacity?: number; // 壁纸透明度，0-1之间
 		blur?: number; // 背景模糊程度，单位px
+		cardOpacity?: number; // 卡片背景透明度，0-1之间
 	};
 };
 
@@ -593,7 +628,10 @@ export type FriendLink = {
 };
 
 export type FriendsPageConfig = {
-	columns: 2 | 3; // 显示列数：2列或3列
+	title?: string; // 页面标题，留空则使用 i18n 中的翻译
+	description?: string; // 页面描述，留空则使用 i18n 中的翻译
+	showCustomContent?: boolean; // 是否显示自定义内容（friends.mdx）
+	randomizeSort?: boolean; // 是否打乱排序，如果为 true，将忽略 weight，随机排序
 };
 
 // 音乐播放器配置
@@ -661,7 +699,6 @@ export type SponsorItem = {
 	name: string; // 赞助者名称，如果想显示匿名，可以直接设置为"匿名"或使用 i18n
 	amount?: string; // 赞助金额（可选）
 	date?: string; // 赞助日期（可选，ISO 格式）
-	message?: string; // 留言（可选）
 };
 
 // 赞助配置
@@ -680,3 +717,20 @@ export type ResponsiveImageLayout = "constrained" | "full-width" | "none";
 
 // 图像格式类型
 export type ImageFormat = "avif" | "webp" | "png" | "jpg" | "jpeg" | "gif";
+
+// 相册元信息（用户在配置文件中填写）
+export type GalleryAlbum = {
+	id: string; // URL slug + 目录名，如 "japan-2025"
+	name: string; // 相册名称
+	description?: string; // 相册描述
+	date?: string; // 日期
+	location?: string; // 拍摄地点
+	tags?: string[]; // 标签（用于首页筛选）
+	cover?: string; // 手动指定封面（可选，省略则自动取 cover.* 或第一张）
+};
+
+// 相册配置
+export type GalleryConfig = {
+	albums: GalleryAlbum[];
+	columnWidth?: number; // 瀑布流最小列宽(px)，默认 240，浏览器根据容器宽度自动计算列数
+};

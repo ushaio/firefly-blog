@@ -8,7 +8,7 @@
 > 
 > ![Node.js >= 22](https://img.shields.io/badge/node.js-%3E%3D22-brightgreen) 
 ![pnpm >= 9](https://img.shields.io/badge/pnpm-%3E%3D9-blue)
-![Astro](https://img.shields.io/badge/Astro-5.16.15-orange)
+![Astro](https://img.shields.io/badge/Astro-5.17.2-orange)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9.2-blue)
 >
 > [![Stars](https://img.shields.io/github/stars/CuteLeaf/Firefly?style=social)](https://github.com/CuteLeaf/Firefly/stargazers)
@@ -16,6 +16,8 @@
 [![Issues](https://img.shields.io/github/issues/CuteLeaf/Firefly)](https://github.com/CuteLeaf/Firefly/issues)
 > 
 > [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Z8Z41NQALY)
+>
+> **QQ交流群：[1087127207](https://qm.qq.com/q/ZGsFa8qX2G)**
 > 
 > ![GitHub License](https://img.shields.io/github/license/CuteLeaf/Firefly)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/CuteLeaf/Firefly)
@@ -73,37 +75,6 @@
 - [x] **壁紙モード切り替え** - バナー壁紙、フルスクリーン壁紙、単色背景
 - [x] **テーマカラーのカスタマイズ** - 360°色相調整
 
-### ページコンポーネント
-- [x] **ゲストブック** - ゲストブックページをサポート
-- [x] **お知らせバー** - サイドバーのお知らせ通知をサポート
-- [x] **マスコット** - SpineとLive2Dの2つのアニメーションエンジンをサポート
-- [x] **サイト統計** - 記事、カテゴリ、タグ数、総文字数などのデータを表示
-- [x] **サイトカレンダー** - 今月のカレンダーと今月公開された記事を表示
-- [x] **スポンサーページ** - スポンサーリンクのジャンプ、支払いQRコードの表示、スポンサーリスト、記事内スポンサーボタン
-- [x] **シェアポスター** - 美しい記事シェアポスターの生成をサポート
-- [x] **桜エフェクト** - 桜エフェクトをサポート、フルスクリーン桜アニメーション
-- [x] **友人リンク** - 美しい友人リンク展示ページ
-- [x] **広告コンポーネント** - カスタムサイドバー広告コンテンツをサポート
-- [x] **Bangumi** - Bangumi APIベースのアニメとゲーム記録表示
-- [x] **コメントシステム** - Twikoo、Waline、Giscus、Disqus、Artalkコメントシステムを統合
-- [x] **訪問者数統計** - Waline、Twikoo組み込みの訪問追跡を呼び出し可能
-- [x] **音楽プレーヤー** - Material Design 3 デザインの音楽プレーヤー
-
-### コンテンツ拡張
-- [x] **画像ライトボックス** - Fancybox画像プレビュー機能
-- [x] **フローティング目次** - 記事の目次を動的に表示、アンカージャンプをサポート、サイドバー目次非表示時に表示
-- [x] **メールアドレス保護** - 自動クローラーによるメールアドレスの収集を防ぎ、スパムメールを回避
-- [x] **サイドバー目次** - 記事の目次を動的に表示、アンカージャンプをサポート
-- [x] **強化されたコードブロック** - Expressive Codeベース、コード折りたたみ、行番号、言語識別をサポート
-- [x] **数式サポート** - KaTeXレンダリングエンジン、インラインとブロック数式をサポート
-- [x] **ランダムカバー画像** - APIを介してランダムカバー画像の取得をサポート
-- [x] **Markdown拡張** - より多くのMarkdown拡張構文サポート
-
-### SEO
-- [x] **SEO最適化** - 完全なメタタグと構造化データ
-- [x] **RSS購読** - RSSフィードを自動生成
-- [x] **サイトマップ** - XMLサイトマップを自動生成、ページフィルタリング設定をサポート
-- [x] **統計分析** - Google Analytics、Microsoft Clarityを統合
 
 便利な機能や最適化があれば、[Pull Request](https://github.com/CuteLeaf/Firefly/pulls)を提出してください
 
@@ -111,8 +82,8 @@
 
 ### 環境要件
 
-- Node.js ≤ 22
-- pnpm ≤ 9
+- Node.js ≥ 22
+- pnpm ≥ 9
 
 ### ローカル開発
 
@@ -147,7 +118,8 @@
    ブログは`http://localhost:4321`で利用可能になります
 
 ### プラットフォームホスティングデプロイ
-- **[公式ガイド](https://docs.astro.build/ja/guides/deploy/)を参照して、Vercel、Netlify、GitHub Pages、Cloudflare Pages、EdgeOne Pagesなどにブログをデプロイしてください。**
+- **[公式ガイド](https://docs.astro.build/ja/guides/deploy/)を参照して、Vercel、Netlify、Cloudflare Pages、EdgeOne Pagesなどにブログをデプロイしてください。**
+- **Vercel**、**Netlify** などの主要プラットフォームは自動デプロイに対応し、環境に応じて適切なアダプターが自動的に選択されます。
 
    フレームワークプリセット： `Astro`
 
@@ -158,6 +130,9 @@
    ビルドコマンド： `pnpm run build`
 
    インストールコマンド： `pnpm install`
+
+   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/CuteLeaf/Firefly&project-name=Firefly&repository-name=Firefly)
+   [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/CuteLeaf/Firefly)
 
 ## 📖 設定説明
 
@@ -202,6 +177,7 @@ src/
 │   ├── pioConfig.ts          # マスコット設定
 │   ├── adConfig.ts           # 広告設定
 │   ├── friendsConfig.ts      # 友人リンク設定
+│   ├── galleryConfig.ts      # ギャラリー設定
 │   ├── sponsorConfig.ts      # スポンサー設定
 │   └── coverImageConfig.ts   # 記事カバー画像設定
 ```
@@ -249,19 +225,32 @@ Astroがデフォルトで対応している[GitHub Flavored Markdown](https://g
 
 ## 🙏 謝辞
 
-- [fuwari](https://github.com/saicaca/fuwari)テンプレートを開発した[saicaca](https://github.com/saicaca)に深く感謝します。Fireflyはこのテンプレートをベースに開発されています
-- ブロガー[霞葉](https://kasuha.com)の[Bangumiコレクション表示](https://kasuha.com/posts/fuwari-enhance-ep2/)と[メール保護・画像タイトル](https://kasuha.com/posts/fuwari-enhance-ep1/)案を参考にしました
-- [Mizuki](https://github.com/matsuzaka-yuki/Mizuki)のバナータイトル/多階層メニューナビゲーションバー/桜エフェクト/KaTeX/Fancyboxソリューションを参考にしました
-- [Astro](https://astro.build)と[Tailwind CSS](https://tailwindcss.com)を使用して構築
-- Bilibili UP主[公公的日常](https://space.bilibili.com/3546750017080050)が提供するQ版`蛍`マスコットスライスデータモデルを使用
-- アイコンは[Iconify](https://iconify.design/)から
-- 蛍関連の画像素材の著作権はゲーム[「崩壊：スターレイル」](https://sr.mihoyo.com/)の開発元[miHoYo](https://www.mihoyo.com/)に帰属します。
+[fuwari](https://github.com/saicaca/fuwari)テンプレートを開発した[saicaca](https://github.com/saicaca)に深く感謝します。Fireflyはこのテンプレートをベースに二次開発されています。
+
+蛍関連の画像素材の著作権はゲーム[「崩壊：スターレイル」](https://sr.mihoyo.com/)の開発元[miHoYo](https://www.mihoyo.com/)に帰属します。
+
+### 技術スタック
+
+- [Astro](https://astro.build) 
+- [Tailwind CSS](https://tailwindcss.com) 
+- [Iconify](https://iconify.design)
+
+### インスピレーションプロジェクト
+
+- [fuwari](https://github.com/saicaca/fuwari)
+- [hexo-theme-shoka](https://github.com/amehime/hexo-theme-shoka)
+- [astro-koharu](https://github.com/cosZone/astro-koharu)
+- [Mizuki](https://github.com/matsuzaka-yuki/Mizuki)
+
+### その他の参考
+- ブロガー`霞葉`の [Bangumi コレクション](https://kasuha.com/posts/fuwari-enhance-ep2/) ページコンポーネント
+- Bilibiliクリエイター `公公的日常` のQ版 [蛍看板娘Spineモデル](https://www.bilibili.com/video/BV1fuVzzdE5y)
 
 ## 📝 ライセンス
 
 本プロジェクトは [MIT license](https://mit-license.org/) の下で公開されています。詳細は [LICENSE](../LICENSE) ファイルをご覧ください。
 
-最初は [saicaca/fuwari](https://github.com/saicaca/fuwari) からフォークされました。元の作者の貢献に感謝します。元のプロジェクトは [MIT License](https://mit-license.org/) の下で公開されています。
+最初は [saicaca/fuwari](https://github.com/saicaca/fuwari) からフォークされました。元の作者の貢献に感謝します。
 
 **著作権表示：**
 - Copyright (c) 2024 [saicaca](https://github.com/saicaca) - [fuwari](https://github.com/saicaca/fuwari)

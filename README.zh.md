@@ -8,7 +8,7 @@
 > 
 > ![Node.js >= 22](https://img.shields.io/badge/node.js-%3E%3D22-brightgreen) 
 ![pnpm >= 9](https://img.shields.io/badge/pnpm-%3E%3D9-blue)
-![Astro](https://img.shields.io/badge/Astro-5.16.15-orange)
+![Astro](https://img.shields.io/badge/Astro-5.17.2-orange)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9.2-blue)
 >
 > [![Stars](https://img.shields.io/github/stars/CuteLeaf/Firefly?style=social)](https://github.com/CuteLeaf/Firefly/stargazers)
@@ -16,6 +16,8 @@
 [![Issues](https://img.shields.io/github/issues/CuteLeaf/Firefly)](https://github.com/CuteLeaf/Firefly/issues)
 > 
 > [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Z8Z41NQALY)
+>
+> **QQ交流群：[1087127207](https://qm.qq.com/q/ZGsFa8qX2G)**
 > 
 > ![GitHub License](https://img.shields.io/github/license/CuteLeaf/Firefly)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/CuteLeaf/Firefly)
@@ -74,48 +76,14 @@
 - [x] **壁纸模式切换** - 横幅壁纸、全屏透明壁纸、纯色背景
 - [x] **主题色自定义** - 360° 色相调节
 
-### 页面组件
-   
-- [x] **留言板** - 支持留言页面
-- [x] **公告栏** - 支持侧边栏公告提示
-- [x] **看板娘** - 支持 Spine 和 Live2D 两种动画引擎
-- [x] **站点统计** - 显示文章、分类、标签数目、文章总字数等数据
-- [x] **站点日历** - 显示当月日历，以及当月的发布文章
-- [x] **赞助页面** - 赞助链接跳转、收款码展示、赞助者列表、文章内赞助按钮
-- [x] **分享海报** - 支持生成精美的文章分享海报
-- [x] **樱花特效** - 支持樱花特效，全屏樱花效果
-- [x] **友情链接** - 精美的友情链接展示页面
-- [x] **广告组件** - 支持自定义侧边栏广告内容
-- [x] **番组计划** - 基于 Bangumi API 的追番和游戏等记录展示
-- [x] **评论系统** - 集成 Twikoo、Waline、Giscus、Disqus、Artalk 评论系统
-- [x] **访问量统计** - 支持调用 Waline、Twikoo 自带的访问量追踪
-- [x] **音乐播放器** - Material Design 3 设计风格的音乐播放器
-
-### 内容增强
-- [x] **图片灯箱** - Fancybox 图片预览功能
-- [x] **浮动目录** - 动态显示文章目录，支持锚点跳转，在侧边栏目录隐藏后显示
-- [x] **邮箱保护** - 让自动化爬虫程序无法直接爬到邮箱地址，被垃圾邮件骚扰
-- [x] **侧边栏目录** - 动态显示文章目录，支持锚点跳转
-- [x] **增强代码块** - 基于 Expressive Code，支持代码折叠、行号、语言标识
-- [x] **数学公式支持** - KaTeX 渲染引擎，支持行内和块级公式
-- [x] **文章随机封面图** - 支持通过 API 获取随机封面图
-- [x] **Markdown扩展** - 更多的 Markdown 扩展语法
-
-### SEO
-- [x] **SEO 优化** - 完整的 meta 标签和结构化数据
-- [x] **RSS 订阅** - 自动生成 RSS Feed
-- [x] **站点地图** - 自动生成 XML Sitemap，支持页面过滤配置
-- [x] **统计分析** - 集成 Google Analytics、Microsoft Clarity
-
-
 如果你有好用的功能和优化，请提交 [Pull Request](https://github.com/CuteLeaf/Firefly/pulls)
 
 ## 🚀 快速开始
 
 ### 环境要求
 
-- Node.js ≤ 22
-- pnpm ≤ 9
+- Node.js ≥ 22
+- pnpm ≥ 9
 
 ### 本地开发部署
 
@@ -150,7 +118,8 @@
    博客将在 `http://localhost:4321` 可用
 
 ### 平台托管部署
-- **参考[官方指南](https://docs.astro.build/zh-cn/guides/deploy/)将博客部署至 Vercel, Netlify, GitHub Pages, Cloudflare Pages, EdgeOne Pages 等。**
+- **参考[官方指南](https://docs.astro.build/zh-cn/guides/deploy/)将博客部署至 Vercel, Netlify, Cloudflare Pages, EdgeOne Pages 等。**
+- **Vercel**、**Netlify** 等主流平台自动部署，会根据环境自动选择适配器。
 
    框架预设： `Astro`
 
@@ -161,6 +130,9 @@
    构建命令： `pnpm run build`
 
    安装命令： `pnpm install`
+
+   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/CuteLeaf/Firefly&project-name=Firefly&repository-name=Firefly)
+   [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/CuteLeaf/Firefly)
 
 ## 📖 配置说明
 
@@ -205,6 +177,7 @@ src/
 │   ├── pioConfig.ts          # 看板娘配置
 │   ├── adConfig.ts           # 广告配置
 │   ├── friendsConfig.ts      # 友链配置
+│   ├── galleryConfig.ts      # 相册配置
 │   ├── sponsorConfig.ts      # 赞助配置
 │   └── coverImageConfig.ts  # 文章封面图配置
 ```
@@ -252,19 +225,32 @@ comment: true    # 是否允许评论
 
 ## 🙏 致谢
 
-- 非常感谢 [saicaca](https://github.com/saicaca) 开发的 [fuwari](https://github.com/saicaca/fuwari) 模板，Firefly 就是基于这个模板二次开发
-- 参考了博主 [霞葉](https://kasuha.com) 分享的 [Bangumi 收藏展示](https://kasuha.com/posts/fuwari-enhance-ep2/) 和 [邮箱保护/图片标题](https://kasuha.com/posts/fuwari-enhance-ep1/) 方案
-- 参考了 [Mizuki](https://github.com/matsuzaka-yuki/Mizuki) 的横幅标题/多级菜单导航栏/樱花特效/KaTeX/Fancybox方案
-- 使用了 [Astro](https://astro.build) 和 [Tailwind CSS](https://tailwindcss.com) 构建
-- 使用了b站up [公公的日常](https://space.bilibili.com/3546750017080050) 提供的Q版 `流萤` 看板娘切片数据模型
-- 图标来自 [Iconify](https://iconify.design/)
-- 流萤部分相关图片素材版权归游戏 [《崩坏：星穹铁道》](https://sr.mihoyo.com/) 开发商 [米哈游](https://www.mihoyo.com/) 所有
+非常感谢 [saicaca](https://github.com/saicaca) 开发的 [fuwari](https://github.com/saicaca/fuwari) 模板，Firefly 就是基于这个模板二次开发
+
+流萤部分相关图片素材版权归游戏 [《崩坏：星穹铁道》](https://sr.mihoyo.com/) 开发商 [米哈游](https://www.mihoyo.com/) 所有
+
+### 技术栈
+
+- [Astro](https://astro.build) 
+- [Tailwind CSS](https://tailwindcss.com) 
+- [Iconify](https://iconify.design)
+
+### 灵感项目
+
+- [fuwari](https://github.com/saicaca/fuwari)
+- [hexo-theme-shoka](https://github.com/amehime/hexo-theme-shoka)
+- [astro-koharu](https://github.com/cosZone/astro-koharu)
+- [Mizuki](https://github.com/matsuzaka-yuki/Mizuki)
+
+### 其他参考
+- 博主`霞葉`的 [Bangumi 收藏](https://kasuha.com/posts/fuwari-enhance-ep2/) 页面组件
+- 哔哩哔哩up主 `公公的日常` 的Q版 [流萤看板娘Spine切片数据](https://www.bilibili.com/video/BV1fuVzzdE5y) 
 
 ## 📝 许可协议
 
 本项目遵循 [MIT license](https://mit-license.org/) 开源协议，详细查看 [LICENSE](./LICENSE) 文件
 
-最初 Fork 自 [saicaca/fuwari](https://github.com/saicaca/fuwari)，感谢原作者的贡献，原项目采用 [MIT license](https://mit-license.org/)
+最初 Fork 自 [saicaca/fuwari](https://github.com/saicaca/fuwari)，感谢原作者的贡献
 
 **版权声明：**
 - Copyright (c) 2024 [saicaca](https://github.com/saicaca) - [fuwari](https://github.com/saicaca/fuwari)

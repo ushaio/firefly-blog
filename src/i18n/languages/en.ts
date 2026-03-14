@@ -77,6 +77,8 @@ export const en: Translation = {
 
 	[Key.author]: "Author",
 	[Key.publishedAt]: "Published at",
+	[Key.updatedAt]: "Updated at",
+	[Key.readTime]: "Read time",
 	[Key.license]: "License",
 	[Key.bangumi]: "Bangumi",
 
@@ -198,6 +200,15 @@ export const en: Translation = {
 	// Pinned
 	[Key.pinned]: "Pinned",
 
+	// Related Posts
+	[Key.relatedPosts]: "Related Posts",
+	[Key.randomPosts]: "Random Posts",
+	[Key.smartRecommend]: "Smart",
+	[Key.randomRecommend]: "Random",
+
+	// Encrypted
+	[Key.postEncrypted]: "This post is encrypted",
+
 	// Wallpaper Mode
 	[Key.wallpaperMode]: "Wallpaper Mode",
 	[Key.wallpaperBannerMode]: "Banner Wallpaper",
@@ -206,8 +217,12 @@ export const en: Translation = {
 
 	// Banner Settings
 	[Key.bannerSettings]: "Banner Settings",
-	[Key.bannerTitle]: "Banner Title",
+	[Key.bannerTitle]: "Home Banner Title",
 	[Key.wavesAnimation]: "Waves Animation",
+	[Key.overlaySettings]: "Transparency Settings",
+	[Key.overlayOpacity]: "Wallpaper Opacity",
+	[Key.overlayBlur]: "Background Blur",
+	[Key.overlayCardOpacity]: "Card Opacity",
 
 	// Post List Layout
 	[Key.postListLayout]: "Post List Layout",
@@ -281,4 +296,23 @@ export const en: Translation = {
 	[Key.codeCollapsibleShowLess]: "Show less",
 	[Key.codeCollapsibleExpanded]: "Code block expanded",
 	[Key.codeCollapsibleCollapsed]: "Code block collapsed",
+
+	// Gallery Page
+	[Key.gallery]: "Gallery",
+	[Key.galleryDescription]: "Capturing beautiful moments in life",
+	[Key.galleryPhotos]: "photos",
+	[Key.galleryAlbums]: "albums",
+	[Key.galleryNoAlbums]: "No albums yet",
+	[Key.galleryBackToAlbums]: "Back to albums",
+
+	// Password Protection
+	[Key.passwordProtected]: "Password Protected",
+	[Key.passwordProtectedDesc]:
+		"This article is password protected. Please enter the password to view the content.",
+	[Key.passwordHint]: "Hint",
+	[Key.passwordPlaceholder]: "Enter password",
+	[Key.passwordSubmit]: "Unlock",
+	[Key.passwordError]: "Incorrect password, please try again.",
+	[Key.passwordProtectedRss]:
+		"This article is encrypted. Please visit the website to view it.",
 };
