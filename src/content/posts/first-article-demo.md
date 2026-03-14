@@ -2,7 +2,7 @@
 title: 第一篇文章demo
 published: 2026-02-07
 description: 深入了解 Firefly 的布局系统，包括侧边栏布局（左侧/双侧）和文章列表布局（列表/网格），以及全新的三列网格模式。
-image: ./images/firefly1.webp
+image: ./images/firefly1.avif
 tags: [demo, astro, firefly, 使用指南]
 category: 博客指南
 draft: false
@@ -33,7 +33,7 @@ Firefly 提供了灵活的布局系统，允许您根据内容需求和个人喜
 
 #### 布局结构
 
-![左侧边栏布局](./images/left-list.webp)
+![左侧边栏布局](./images/left-list.avif)
 
 #### 适用场景
 
@@ -80,7 +80,7 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 
 #### 布局结构
 
-![双侧边栏布局](./images/both-list.webp)
+![双侧边栏布局](./images/both-list.avif)
 
 #### 适用场景
 
@@ -116,7 +116,7 @@ export const sidebarLayoutConfig: SidebarLayoutConfig = {
 
 #### 列表布局结构
 
-![列表模式布局](./images/left-list.webp)
+![列表模式布局](./images/left-list.avif)
 
 #### 优点
 
@@ -152,13 +152,13 @@ export const siteConfig: SiteConfig = {
 
 这是网格模式的默认配置，适合大多数场景。
 
-![双列网格布局](./images/left-grid2.webp)
+![双列网格布局](./images/right-grid2.avif)
 
 #### 2.2.2 三列网格 (Columns: 3) ✨ New
 
 在宽屏设备上，您可以开启三列网格模式，进一步提高信息密度。
 
-![三列网格布局](./images/left-grid3.webp)
+![三列网格布局](./images/left-grid3.avif)
 
 **⚠️ 注意**：三列网格模式仅在**左侧边栏模式**（或无侧边栏）下生效。如果您启用了双侧边栏，系统将自动回退到双列网格，以保证文章卡片有足够的展示宽度。
 
@@ -184,7 +184,7 @@ export const siteConfig: SiteConfig = {
 
 Firefly 的网格模式内置了智能瀑布流布局支持，解决了网格布局中因图文混合文章导致的卡片高度不一致导致的空白问题。
 
-![瀑布流布局](./images/masonry.webp)
+![瀑布流布局](./images/masonry.avif)
 
 - **智能排版**：采用 Z 字形分布（左右交替），严格保持文章的时间顺序。
 - **消除空白**：通过绝对定位精确计算每个卡片的位置，让卡片紧贴上一行的卡片，消除垂直方向的空白间隙。
@@ -207,7 +207,7 @@ Firefly 允许您自由组合侧边栏和文章列表布局。以下是各种组
 
 在旧版本中，此组合被禁用。但在最新版 Firefly 中，我们解除了限制，允许双侧边栏与网格模式共存。
 
-![双侧边栏+网格布局](./images/both-grid.webp)
+![双侧边栏+网格布局](./images/both-grid.avif)
 
 **特点与限制**：
 - **强制双列**：即使您配置了 `columns: 3`，在此模式下也会强制显示为 2 列。
