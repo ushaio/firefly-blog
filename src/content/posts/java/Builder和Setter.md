@@ -10,6 +10,12 @@ draft: false
 
 
 
+
+
+> 本文由AI生成，仅用于参考。
+
+
+
 **Builder 与 setter 写法的本质区别（6 点）：**
 
 | 维度                 | setter 写法                                                  | Builder 写法                                                 |
