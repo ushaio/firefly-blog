@@ -2,7 +2,7 @@
 title: mo-gallery图片上传链路
 published: 2026-03-16 11:13:42
 description: "mo-gallery图片上传链路"
-image: "./cover.avif"
+image: "api"
 tags: ["mo-gallery", "开发笔记"]
 category: Dev
 draft: false
