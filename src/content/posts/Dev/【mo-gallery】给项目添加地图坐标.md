@@ -1,5 +1,5 @@
 ---
-title: [mo-gallery]给项目添加地图坐标
+title: 【mo-gallery】给项目添加地图坐标
 published: 2026-03-16 11:13:42
 description: "mo-gallery图片上传链路"
 image: "api"
@@ -18,22 +18,23 @@ draft: falses
 **实现链路**
 
 - 构建阶段，`packages/builder/src/image/exif.ts` 会用 `exiftool-vendored` 读取照片 EXIF，明确提取 `GPSLatitude`、`GPSLongitude`、`GPSLatitudeRef`、`GPSLongitudeRef`、`GPSAltitude` 等字段。
-- 这些字段进入 `PhotoManifestItem.exif`，类型定义在 [afilmory-src\packages\typing\src\photo.ts](/D:/work/_tmp/afilmory-src/packages/typing/src/photo.ts)。
-- 前端启动时，manifest 会被注入到页面里。相关逻辑在 [afilmory-src\apps\web\plugins\vite\manifest-inject.ts](/D:/work/_tmp/afilmory-src/apps/web/plugins/vite/manifest-inject.ts) 和 [afilmory-src\packages\data\src\index.ts](/D:/work/_tmp/afilmory-src/packages/data/src/index.ts)。
-- 地图页 `MapSection` 从 `photoLoader.getPhotos()` 读取所有照片，再把有 GPS 的照片转成 marker。核心在 [afilmory-src\apps\web\src\modules\map\MapSection.tsx](/D:/work/_tmp/afilmory-src/apps/web/src/modules/map/MapSection.tsx) 和 [afilmory-src\apps\web\src\lib\map-utils.ts](/D:/work/_tmp/afilmory-src/apps/web/src/lib/map-utils.ts)。
+- 这些字段进入 `PhotoManifestItem.exif`，类型定义在 [afilmory-src\packages\typing\src\photo.ts](afilmory-src/packages/typing/src/photo.ts)。
+- 前端启动时，manifest 会被注入到页面里。相关逻辑在 [afilmory-src\apps\web\plugins\vite\manifest-inject.ts](afilmory-src/apps/web/plugins/vite/manifest-inject.ts) 和 [afilmory-src\packages\data\src\index.ts](afilmory-src/packages/data/src/index.ts)。
+- 地图页 `MapSection` 从 `photoLoader.getPhotos()` 读取所有照片，再把有 GPS 的照片转成 marker。核心在 [afilmory-src\apps\web\src\modules\map\MapSection.tsx](afilmory-src/apps/web/src/modules/map/MapSection.tsx) 和 [afilmory-src\apps\web\src\lib\map-utils.ts](afilmory-src/apps/web/src/lib/map-utils.ts)。
 
 **坐标是怎么处理的**
+
 - `convertExifGPSToDecimal()` 会把 EXIF 坐标转成十进制度。
 - 它会根据 `GPSLatitudeRef` / `GPSLongitudeRef` 处理南纬、西经负号。
 - 还会校验范围是否合法：纬度 `-90~90`，经度 `-180~180`。
 - 转完后生成 `PhotoMarker`，里面保存 `latitude`、`longitude`、`altitude` 和对应照片对象。
 
 **地图是怎么画出来的**
-- 地图底层是 `react-map-gl/maplibre` + `maplibre-gl`，主组件在 [afilmory-src\apps\web\src\components\ui\map\MapLibre.tsx](/D:/work/_tmp/afilmory-src/apps/web/src/components/ui/map/MapLibre.tsx)。
+- 地图底层是 `react-map-gl/maplibre` + `maplibre-gl`，主组件在 [afilmory-src\apps\web\src\components\ui\map\MapLibre.tsx](afilmory-src/apps/web/src/components/ui/map/MapLibre.tsx)。
 - 配置里 `map: ["maplibre"]`、`mapStyle: "builtin"`、`mapProjection: "mercator"`，说明默认就是 MapLibre。
 - 地图会自动计算所有点的边界并 `fitBounds`，首次进入自动缩放到所有照片范围。
-- 缩放较小时会做聚合，逻辑在 [afilmory-src\apps\web\src\components\ui\map\shared\clustering.ts](/D:/work/_tmp/afilmory-src/apps/web/src/components/ui/map/shared/clustering.ts)。
-- 单个点位用自定义 marker 展示，点开会显示该照片预览、拍摄时间、相机型号、经纬度。实现见 [afilmory-src\apps\web\src\components\ui\map\shared\PhotoMarkerPin.tsx](/D:/work/_tmp/afilmory-src/apps/web/src/components/ui/map/shared/PhotoMarkerPin.tsx)。
+- 缩放较小时会做聚合，逻辑在 [afilmory-src\apps\web\src\components\ui\map\shared\clustering.ts](afilmory-src/apps/web/src/components/ui/map/shared/clustering.ts)。
+- 单个点位用自定义 marker 展示，点开会显示该照片预览、拍摄时间、相机型号、经纬度。实现见 [afilmory-src\apps\web\src\components\ui\map\shared\PhotoMarkerPin.tsx](afilmory-src/apps/web/src/components/ui/map/shared/PhotoMarkerPin.tsx)。
 
 **有没有地理编码**
 - 有，而且是“可选增强”，不是地图展示的硬依赖。

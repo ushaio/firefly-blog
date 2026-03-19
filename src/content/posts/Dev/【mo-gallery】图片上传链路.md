@@ -1,5 +1,5 @@
 ---
-title: mo-gallery图片上传链路
+title: 【mo-gallery】图片上传链路
 published: 2026-03-16 11:13:42
 description: "mo-gallery图片上传链路"
 image: "api"
