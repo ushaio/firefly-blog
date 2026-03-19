@@ -1,6 +1,6 @@
 ---
 title: MoGallery-给项目添加地图坐标
-published: 2026-03-16 11:13:42
+published: 2026-03-16
 description: "mo-gallery图片上传链路"
 image: "api"
 tags: ["mo-gallery", "开发笔记"]
