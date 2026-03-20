@@ -5,7 +5,7 @@ description: "mo-gallery图片上传链路"
 image: "api"
 tags: ["mo-gallery", "开发笔记"]
 category: Dev
-draft: falses
+draft: false
 ---
 
 > 内容来源于AI，仅用于参考
