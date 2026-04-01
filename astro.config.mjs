@@ -37,14 +37,21 @@ import { remarkImageGrid } from "./src/plugins/remark-image-grid.js";
 // https://astro.build/config
 export default defineConfig({
 	site: siteConfig.site_url,
-
+	
 	base: "/",
 	trailingSlash: "always",
 
 	// 图像优化配置
 	image: {
 		// 全局响应式布局
-		experimentalLayout: "constrained",
+		layout: "constrained",
+	},
+
+	experimental: {
+		// Rust 编译器以提升构建性能（实验性），部分平台可能会导致构建失败，可以根据需要启用或禁用
+		rustCompiler: false,
+		// 队列渲染以优化性能（实验性）
+		queuedRendering: { enabled: true },
 	},
 
 	integrations: [
@@ -156,6 +163,9 @@ export default defineConfig({
 				const url = new URL(page);
 				const pathname = url.pathname;
 
+				if (pathname === "/friends/" && !siteConfig.pages.friends) {
+					return false;
+				}
 				if (pathname === "/sponsor/" && !siteConfig.pages.sponsor) {
 					return false;
 				}
@@ -228,6 +238,11 @@ export default defineConfig({
 	},
 	vite: {
 		plugins: [tailwindcss()],
+		server: {
+			watch: {
+				ignored: ["**/package/**", "**/Firefly-docs/**"],
+			},
+		},
 		resolve: {
 			alias: {
 				"@rehype-callouts-theme": `rehype-callouts/theme/${siteConfig.rehypeCallouts.theme}`,
@@ -238,7 +253,7 @@ export default defineConfig({
 			esbuildOptions: {
 				minify: true,
 				// 移除 console.log 和 debugger
-				drop: ["console", "debugger"], 
+				drop: ["console", "debugger"],
 			},
 			rollupOptions: {
 				onwarn(warning, warn) {
@@ -255,6 +270,7 @@ export default defineConfig({
 			// CSS 优化
 			cssCodeSplit: true,
 			cssMinify: "esbuild",
+			assetsInlineLimit: 4096,
 		},
 	},
 });

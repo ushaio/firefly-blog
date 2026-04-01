@@ -307,7 +307,11 @@ export function applyWallpaperModeToDocument(mode: WALLPAPER_MODE) {
 		const body = document.body;
 
 		// 移除所有壁纸相关的CSS类
-		body.classList.remove("enable-banner", "wallpaper-transparent");
+		body.classList.remove(
+			"enable-banner",
+			"wallpaper-transparent",
+			"no-banner-layout",
+		);
 
 		// 根据模式添加相应的CSS类
 		switch (mode) {
@@ -317,12 +321,15 @@ export function applyWallpaperModeToDocument(mode: WALLPAPER_MODE) {
 				break;
 			case WALLPAPER_OVERLAY:
 				body.classList.add("wallpaper-transparent");
+				body.classList.add("no-banner-layout");
 				showOverlayMode();
 				break;
 			case WALLPAPER_NONE:
+				body.classList.add("no-banner-layout");
 				hideAllWallpapers();
 				break;
 			default:
+				body.classList.add("no-banner-layout");
 				hideAllWallpapers();
 				break;
 		}
@@ -342,7 +349,11 @@ function ensureWallpaperState(mode: WALLPAPER_MODE) {
 	const body = document.body;
 
 	// 移除所有壁纸相关的CSS类
-	body.classList.remove("enable-banner", "wallpaper-transparent");
+	body.classList.remove(
+		"enable-banner",
+		"wallpaper-transparent",
+		"no-banner-layout",
+	);
 
 	// 根据模式添加相应的CSS类
 	switch (mode) {
@@ -352,9 +363,11 @@ function ensureWallpaperState(mode: WALLPAPER_MODE) {
 			break;
 		case WALLPAPER_OVERLAY:
 			body.classList.add("wallpaper-transparent");
+			body.classList.add("no-banner-layout");
 			showOverlayMode();
 			break;
 		case WALLPAPER_NONE:
+			body.classList.add("no-banner-layout");
 			hideAllWallpapers();
 			break;
 	}
@@ -628,6 +641,13 @@ export function setWallpaperMode(mode: WALLPAPER_MODE): void {
 	}
 	localStorage.setItem("wallpaperMode", mode);
 	applyWallpaperModeToDocument(mode);
+	if (typeof window !== "undefined") {
+		window.dispatchEvent(
+			new CustomEvent("wallpaperModeChange", {
+				detail: { mode },
+			}),
+		);
+	}
 }
 
 export function initWallpaperMode(): void {
@@ -860,6 +880,10 @@ export function getDefaultBannerTitleEnabled(): boolean {
 	return backgroundWallpaper.banner?.homeText?.enable ?? true;
 }
 
+export function getDefaultBannerCarouselEnabled(): boolean {
+	return backgroundWallpaper.banner?.carousel?.enable ?? false;
+}
+
 export function getStoredBannerTitleEnabled(): boolean {
 	if (
 		typeof localStorage === "undefined" ||
@@ -874,6 +898,25 @@ export function getStoredBannerTitleEnabled(): boolean {
 	return stored === "true";
 }
 
+export function getStoredBannerCarouselEnabled(): boolean {
+	const isSwitchable =
+		backgroundWallpaper.banner?.carousel?.switchable ?? false;
+	if (!isSwitchable) {
+		return getDefaultBannerCarouselEnabled();
+	}
+	if (
+		typeof localStorage === "undefined" ||
+		typeof localStorage.getItem !== "function"
+	) {
+		return getDefaultBannerCarouselEnabled();
+	}
+	const stored = localStorage.getItem("bannerCarouselEnabled");
+	if (stored === null) {
+		return getDefaultBannerCarouselEnabled();
+	}
+	return stored === "true";
+}
+
 export function setBannerTitleEnabled(enabled: boolean): void {
 	if (
 		typeof localStorage === "undefined" ||
@@ -883,6 +926,27 @@ export function setBannerTitleEnabled(enabled: boolean): void {
 	}
 	localStorage.setItem("bannerTitleEnabled", String(enabled));
 	applyBannerTitleEnabledToDocument(enabled);
+}
+
+export function setBannerCarouselEnabled(enabled: boolean): void {
+	const safeEnabled = !!enabled;
+	const isSwitchable =
+		backgroundWallpaper.banner?.carousel?.switchable ?? false;
+	if (
+		isSwitchable &&
+		typeof localStorage !== "undefined" &&
+		typeof localStorage.setItem === "function"
+	) {
+		localStorage.setItem("bannerCarouselEnabled", String(safeEnabled));
+	}
+	applyBannerCarouselEnabledToDocument(safeEnabled);
+	if (typeof window !== "undefined") {
+		window.dispatchEvent(
+			new CustomEvent("bannerCarouselChange", {
+				detail: { enabled: safeEnabled },
+			}),
+		);
+	}
 }
 
 export function applyBannerTitleEnabledToDocument(enabled: boolean): void {
@@ -905,4 +969,14 @@ export function applyBannerTitleEnabledToDocument(enabled: boolean): void {
 			bannerTextOverlay.classList.add("user-hidden");
 		}
 	}
+}
+
+export function applyBannerCarouselEnabledToDocument(enabled: boolean): void {
+	if (typeof document === "undefined") {
+		return;
+	}
+	document.documentElement.setAttribute(
+		"data-banner-carousel-enabled",
+		String(enabled),
+	);
 }

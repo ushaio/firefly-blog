@@ -126,7 +126,16 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			// 是否开启毛玻璃模糊效果，开启可能会影响页面性能，如果不开启则是半透明，请根据自己的喜好开启
 			enableBlur: true,
 			// 毛玻璃模糊度
-			blur: 3,
+			blur: 10,
+		},
+		// 横幅图片轮播配置，仅在当配置多张图片时生效
+		carousel: {
+			// 是否启用横幅图片轮播；关闭时保持每次刷新随机显示一张
+			enable: true,
+			// 轮播切换间隔（毫秒）
+			interval: 5000,
+			// 是否允许用户通过控制面板切换横幅轮播
+			switchable: true,
 		},
 		// 水波纹动画效果配置，开启会影响页面性能，请根据自己的喜好开启
 		waves: {
