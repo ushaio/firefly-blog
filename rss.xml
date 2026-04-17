@@ -1,4 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Firefly</title><description>生活|摄影|工作</description><link>https://shaio.top/</link><templateTheme>Firefly</templateTheme><templateThemeVersion>6.8.10</templateThemeVersion><templateThemeUrl>https://github.com/CuteLeaf/Firefly</templateThemeUrl><lastBuildDate>2026年4月16日 18:13:57</lastBuildDate><item><title>HeremsAgent</title><link>https://shaio.top/posts/ai/heremsagent/</link><guid isPermaLink="true">https://shaio.top/posts/ai/heremsagent/</guid><pubDate>Thu, 16 Apr 2026 00:00:00 GMT</pubDate><content:encoded/></item><item><title>虚拟网卡TUN失效的罪魁祸首</title><link>https://shaio.top/posts/%E8%AE%B0%E5%BD%95/%E8%99%9A%E6%8B%9F%E7%BD%91%E5%8D%A1tun%E5%A4%B1%E6%95%88%E7%9A%84%E7%BD%AA%E9%AD%81%E7%A5%B8%E9%A6%96/</link><guid isPermaLink="true">https://shaio.top/posts/%E8%AE%B0%E5%BD%95/%E8%99%9A%E6%8B%9F%E7%BD%91%E5%8D%A1tun%E5%A4%B1%E6%95%88%E7%9A%84%E7%BD%AA%E9%AD%81%E7%A5%B8%E9%A6%96/</guid><description>虚拟网卡TUN失效的罪魁祸首</description><pubDate>Mon, 13 Apr 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;自从重装系统到win10 ltsc发现太丝滑了，干啥都很快，FlClash 的虚拟网卡也正常如初了，心中激动万分，暗暗道再也不乱搞了，一定好好对你，我的爱机！&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Firefly</title><description>生活|摄影|工作</description><link>https://shaio.top/</link><templateTheme>Firefly</templateTheme><templateThemeVersion>6.8.10</templateThemeVersion><templateThemeUrl>https://github.com/CuteLeaf/Firefly</templateThemeUrl><lastBuildDate>2026年4月17日 17:21:11</lastBuildDate><item><title>记录跳槽第一次面试</title><link>https://shaio.top/posts/%E8%AE%B0%E5%BD%95/%E8%AE%B0%E5%BD%95%E8%B7%B3%E6%A7%BD%E7%AC%AC%E4%B8%80%E6%AC%A1%E9%9D%A2%E8%AF%95/</link><guid isPermaLink="true">https://shaio.top/posts/%E8%AE%B0%E5%BD%95/%E8%AE%B0%E5%BD%95%E8%B7%B3%E6%A7%BD%E7%AC%AC%E4%B8%80%E6%AC%A1%E9%9D%A2%E8%AF%95/</guid><description>记录跳槽第一次面试</description><pubDate>Fri, 17 Apr 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;最近实在被公司一些制度给e到了，于是时不时网上投简历，大多是石沉大海了，简历过于简陋我也是心知肚明了=-=、&lt;/p&gt;
+&lt;p&gt;不过好在遇到了一家赏了个面试机会，心中顿时激动万分，豪情万丈，加班都起劲了。&lt;/p&gt;
+&lt;p&gt;不过迫于时间紧，也压根不想背八股，索性啥也没啥准备，就看到时候怎么和面试官打哈哈了。&lt;/p&gt;
+&lt;p&gt;最终面试的问题感觉还是能接受的，没有那种恶心人的八股问题，整体还是贴合实际的，但是，我不会=-=&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;多个线程同时执行，如何保证返回的某一种顺序
+多线程用得太少了，扎心&lt;/li&gt;
+&lt;li&gt;SQL如何根据交易流水号查询某个时间段的报表数据，如总交易金额
+这个问题我感觉还是挺奇怪的，首先要确认流水号的时间戳再确定时间范围不是？但面试官的意思没有get到，哎&lt;/li&gt;
+&lt;li&gt;对于大量数据，是如何处理导入导出的，性能优化
+银行这项目，屎山代码能咋优化啊T_T，100000条也得给我慢慢等，2s搞定想啥呢呜呜呜&lt;/li&gt;
+&lt;li&gt;交易问题，如何确认支持已完成
+这就是按照项目来了，通过交易创建自动任务来调用确认支持接口查询是否已处理完成，不过这好像没答，而且也跟实际不太搭，因为日常交易需要保证实时性，不可能创建自动任务来确认。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;不过毕竟也是迈出去开了个头了，万事开头难。&lt;/p&gt;
+&lt;p&gt;骑驴找马感觉也挺不太好的，似乎被反问目前工作状态来着。&lt;/p&gt;</content:encoded></item><item><title>HeremsAgent</title><link>https://shaio.top/posts/ai/heremsagent/</link><guid isPermaLink="true">https://shaio.top/posts/ai/heremsagent/</guid><pubDate>Thu, 16 Apr 2026 00:00:00 GMT</pubDate><content:encoded/></item><item><title>虚拟网卡TUN失效的罪魁祸首</title><link>https://shaio.top/posts/%E8%AE%B0%E5%BD%95/%E8%99%9A%E6%8B%9F%E7%BD%91%E5%8D%A1tun%E5%A4%B1%E6%95%88%E7%9A%84%E7%BD%AA%E9%AD%81%E7%A5%B8%E9%A6%96/</link><guid isPermaLink="true">https://shaio.top/posts/%E8%AE%B0%E5%BD%95/%E8%99%9A%E6%8B%9F%E7%BD%91%E5%8D%A1tun%E5%A4%B1%E6%95%88%E7%9A%84%E7%BD%AA%E9%AD%81%E7%A5%B8%E9%A6%96/</guid><description>虚拟网卡TUN失效的罪魁祸首</description><pubDate>Mon, 13 Apr 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;自从重装系统到win10 ltsc发现太丝滑了，干啥都很快，FlClash 的虚拟网卡也正常如初了，心中激动万分，暗暗道再也不乱搞了，一定好好对你，我的爱机！&lt;/p&gt;
 &lt;p&gt;但安装OPPO互联后，震惊发现，虚拟网卡瞬间失效了，心中突然一凉，不会又给我整坏了吧，但好在也是发现具体啥原因了。于是尝试卸载OPPO互联，但是还是timeout，最后重启电脑后与恢复正常了，心里终于松了口气。&lt;/p&gt;
 &lt;p&gt;剩下的就是寻找啥原因了，直接Google了下”OPPO 互联导致虚拟网卡失效“，没想到已经有前人踩过坑了，太感动了，不然不知道走多少弯路，甚至还要找其他替代。&lt;/p&gt;
 &lt;p&gt;&lt;a href=&quot;https://github.com/clash-verge-rev/clash-verge-rev/discussions/6031&quot; target=&quot;_blank&quot;&gt;https://github.com/clash-verge-rev/clash-verge-rev/discussions/6031&lt;/a&gt;&lt;/p&gt;
