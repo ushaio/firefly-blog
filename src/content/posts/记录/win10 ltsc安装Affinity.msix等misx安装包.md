@@ -43,6 +43,18 @@ g -ActivityID 8acc6094-c82a-000e-1ca1-cc8a2ac8dc01
 不小心找到解决了![:rofl:](https://cdn.ldstatic.com/images/emoji/twemoji/rofl.png?v=15 ":rofl:")
 
 https://t2.re/archives/1140/
+```
+1. 设置-应用和功能-可选功能-添加功能  
+安装MSIX打包工具驱动程序
+
+2. 下载安装VCLibs  
+下载，访问[https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx](https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx)
+
+安装  
+`Add-AppxPackage Microsoft.VCLibs.x64.14.00.Desktop.appx`
+
+3. 使用Add-AppxPackage安装msix软件包
+```
 
 执行
 ```
