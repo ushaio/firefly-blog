@@ -5,31 +5,43 @@ import { Icon } from "astro-icon/components";
 import { getCategoryList, getSortedPostsList } from "@/utils/content-utils";
 import { url } from "@/utils/url-utils";
 
+interface Props {
+	currentPostCategory?: string;
+}
+
+const { currentPostCategory } = Astro.props as Props;
+
 const categories = await getCategoryList();
 const totalPosts = (await getSortedPostsList()).length;
 const homeUrl = url("/");
 const archiveUrl = url("/archive/");
 ---
 
-<div class="card-base category-bar p-3 onload-animation" id="category-bar" data-home-path={homeUrl} data-archive-path={archiveUrl}>
+<div
+  class="card-base category-bar p-3 onload-animation"
+  id="category-bar"
+  data-home-path={homeUrl}
+  data-archive-path={archiveUrl}
+  data-current-post-category={currentPostCategory || ""}
+>
   <div class="category-bar-inner flex gap-2">
     <a
       href={homeUrl}
-      class="category-pill text-sm px-2 py-1 rounded-lg shrink-0
+      class="category-pill text-sm px-3 py-1.5 rounded-xl shrink-0
              transition-colors duration-150 ease-out flex items-center justify-center"
       data-category-name=""
       aria-label={i18n(I18nKey.home)}
     >
-      <Icon name="material-symbols:home" class="text-lg" />
+      <Icon is:inline name="material-symbols:home" class="text-lg" />
     </a>
     <a
       href={archiveUrl}
-      class="category-pill text-sm px-3 py-1 rounded-lg whitespace-nowrap shrink-0
+      class="category-pill text-sm px-4 py-1.5 rounded-xl whitespace-nowrap shrink-0
              transition-colors duration-150 ease-out flex items-center justify-center"
       data-category-name="__archive__"
     >
       {i18n(I18nKey.archive)}
-      <span class="text-xs opacity-60 ml-1">{totalPosts}</span>
+      <span class="pill-count">{totalPosts}</span>
     </a>
     <div class="category-divider shrink-0"></div>
     <div class="scroll-area relative">
@@ -39,18 +51,29 @@ const archiveUrl = url("/archive/");
           categories.map((cat) => (
             <a
               href={cat.url}
-              class="category-pill text-sm px-3 py-1 rounded-lg whitespace-nowrap
+              class="category-pill text-sm px-4 py-1.5 rounded-xl whitespace-nowrap
                      transition-colors duration-150 ease-out flex items-center justify-center"
               data-category-name={cat.name}
             >
               {cat.name}
-              <span class="text-xs opacity-60 ml-1">{cat.count}</span>
+              <span class="pill-count">{cat.count}</span>
             </a>
           ))
         }
       </div>
       <div class="scroll-fade scroll-fade-right" aria-hidden="true"></div>
     </div>
+    <div class="category-divider shrink-0 more-divider" aria-hidden="true"></div>
+    <a
+      href={url("/categories/")}
+      class="category-pill text-sm px-3 py-1.5 rounded-xl shrink-0
+             transition-colors duration-150 ease-out flex items-center justify-center gap-1"
+      data-category-name="__categories__"
+      aria-label={i18n(I18nKey.more)}
+    >
+      <span>{i18n(I18nKey.more)}</span>
+      <Icon is:inline name="fa7-solid:chevron-right" class="text-sm" />
+    </a>
   </div>
 </div>
 
@@ -62,6 +85,14 @@ const archiveUrl = url("/archive/");
     width: 1px;
     align-self: stretch;
     background: var(--line-divider);
+    opacity: 0.5;
+  }
+  .more-divider {
+    opacity: 0;
+    transition: opacity 300ms ease-in-out;
+  }
+  .more-divider[data-visible] {
+    opacity: 0.5;
   }
   .scroll-area {
     flex: 1;
@@ -101,44 +132,75 @@ const archiveUrl = url("/archive/");
     display: none;
   }
   .category-pill {
-    border: 1.5px solid var(--line-divider);
+    border: none;
     color: var(--btn-content);
-    background: transparent;
+    background: color-mix(in srgb, var(--btn-content) 6%, transparent);
+    font-weight: 500;
+    gap: 0.375rem;
+  }
+  .category-pill .pill-count {
+    font-size: 0.7rem;
+    font-weight: 600;
+    opacity: 0.5;
+    padding: 0.05rem 0.35rem;
+    border-radius: 9999px;
+    background: color-mix(in srgb, var(--btn-content) 8%, transparent);
+  }
+  .category-pill[data-category-name=""] {
+    color: var(--primary);
+    background: color-mix(in srgb, var(--primary) 8%, transparent);
   }
   .category-pill:hover {
-    border-color: var(--primary);
     color: var(--primary);
-    background: transparent;
+    background: color-mix(in srgb, var(--primary) 10%, transparent);
   }
   .category-pill[data-active] {
     background: var(--primary);
-    border-color: var(--primary);
     color: white;
+  }
+  .category-pill[data-active] .pill-count {
+    background: rgba(255, 255, 255, 0.2);
+    opacity: 0.9;
+  }
+  .category-pill[data-soft-active] {
+    background: color-mix(in srgb, var(--primary) 18%, transparent);
+    color: color-mix(in srgb, var(--primary) 90%, var(--btn-content));
+    font-weight: 600;
+  }
+  .category-pill[data-soft-active]:hover {
+    background: color-mix(in srgb, var(--primary) 25%, transparent);
+    color: color-mix(in srgb, var(--primary) 100%, var(--btn-content));
+  }
+  .category-pill[data-soft-active][data-active],
+  .category-pill[data-soft-active][data-active]:hover {
+    background: color-mix(in srgb, var(--primary) 25%, transparent);
+    color: color-mix(in srgb, var(--primary) 100%, var(--btn-content));
   }
   .category-pill[data-active]:hover {
     background: var(--primary);
-    border-color: var(--primary);
     opacity: 0.9;
+  }
+  .category-pill[data-category-name=""][data-active],
+  .category-pill[data-category-name=""][data-active]:hover {
+    color: white;
   }
 </style>
 
 <script>
+  let delayedCategoryBarScrollTimer: number | undefined;
+
   function getCategoryBarState(bar: HTMLElement, currentUrl: URL) {
     const pathname = currentUrl.pathname.replace(/\/$/, "");
     const homePath = (bar.getAttribute("data-home-path") || "/").replace(/\/$/, "");
     const archivePath = (bar.getAttribute("data-archive-path") || "/archive").replace(/\/$/, "");
     const isHome = pathname === homePath || pathname === "" || pathname === "/";
     const isArchive = pathname === archivePath;
-    const escapedHomePath = homePath.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    // 分页页面（如 /2/, /3/）也属于首页的延续
-    const isHomePagination =
-      /^\/\d+$/.test(pathname) ||
-      (homePath !== "" && new RegExp(`^${escapedHomePath}\\/\\d+$`).test(pathname));
+    const isCategories = pathname === "/categories";
 
     return {
       isHome,
       isArchive,
-      isHomePagination,
+      isCategories,
       activeCategory: currentUrl.searchParams.get("category") || "",
       hasTag: currentUrl.searchParams.has("tag"),
       hasUncategorized: currentUrl.searchParams.has("uncategorized"),
@@ -146,21 +208,24 @@ const archiveUrl = url("/archive/");
   }
 
   function setActiveCategory(bar: HTMLElement, currentUrl: URL) {
-    const { isHome, isArchive, isHomePagination, activeCategory, hasTag, hasUncategorized } =
+    const { isHome, isArchive, isCategories, activeCategory, hasTag, hasUncategorized } =
       getCategoryBarState(bar, currentUrl);
-
-    // 在首页、首页分页和归档页显示
-    if (!isHome && !isHomePagination && !isArchive) {
-      bar.style.display = "none";
-      return;
-    }
-    bar.style.display = "";
+    const postCategory = (bar.getAttribute("data-current-post-category") || "").trim();
 
     const pills = bar.querySelectorAll<HTMLAnchorElement>(".category-pill");
-    pills.forEach((pill) => pill.removeAttribute("data-active"));
+    pills.forEach((pill) => {
+      pill.removeAttribute("data-active");
+      pill.removeAttribute("data-soft-active");
+    });
 
-    if (isHome || isHomePagination) {
+    if (isHome) {
       bar.querySelector<HTMLAnchorElement>('.category-pill[data-category-name=""]')
+        ?.setAttribute("data-active", "");
+      return;
+    }
+
+    if (isCategories) {
+      bar.querySelector<HTMLAnchorElement>('.category-pill[data-category-name="__categories__"]')
         ?.setAttribute("data-active", "");
       return;
     }
@@ -177,11 +242,22 @@ const archiveUrl = url("/archive/");
     if (isArchive && !hasTag && !hasUncategorized) {
       bar.querySelector<HTMLAnchorElement>('.category-pill[data-category-name="__archive__"]')
         ?.setAttribute("data-active", "");
+      return;
+    }
+
+    if (postCategory) {
+      pills.forEach((pill) => {
+        if (pill.getAttribute("data-category-name") === postCategory) {
+          pill.setAttribute("data-soft-active", "");
+        }
+      });
     }
   }
 
   function scrollActiveCategoryIntoView(bar: HTMLElement, behavior: ScrollBehavior = "smooth") {
-    const activePill = bar.querySelector<HTMLAnchorElement>('.category-pill[data-active]');
+    const activePill =
+      bar.querySelector<HTMLAnchorElement>('.category-pill[data-active]') ||
+      bar.querySelector<HTMLAnchorElement>('.category-pill[data-soft-active]');
     const scroll = bar.querySelector<HTMLElement>(".category-scroll");
     if (!activePill || !scroll) return;
 
@@ -189,12 +265,51 @@ const archiveUrl = url("/archive/");
     scroll.scrollTo({ left: Math.max(0, scrollLeft), behavior });
   }
 
-  function updateCategoryBar(currentUrl = new URL(window.location.href)) {
+  function shouldDeferCategoryScroll(bar: HTMLElement, currentUrl: URL) {
+    const { isHome } = getCategoryBarState(bar, currentUrl);
+    const isMobile = window.innerWidth < 1024;
+    const isBannerMode = document.body.classList.contains("enable-banner");
+    return isMobile && isBannerMode && !isHome;
+  }
+
+  function updateCategoryBar(
+    currentUrl = new URL(window.location.href),
+    options: { scrollBehavior?: ScrollBehavior; deferScroll?: boolean } = {},
+  ) {
     const bar = document.getElementById("category-bar");
     if (!bar) return;
 
+    const swupContainer = document.getElementById("swup-container");
+    if (swupContainer) {
+      const currentPostCategory = swupContainer.getAttribute("data-current-post-category") || "";
+      bar.setAttribute("data-current-post-category", currentPostCategory);
+    }
+
     setActiveCategory(bar, currentUrl);
-    scrollActiveCategoryIntoView(bar);
+
+    const deferScroll = options.deferScroll ?? shouldDeferCategoryScroll(bar, currentUrl);
+    const scrollBehavior = options.scrollBehavior ?? (deferScroll ? "auto" : "smooth");
+
+    if (delayedCategoryBarScrollTimer) {
+      window.clearTimeout(delayedCategoryBarScrollTimer);
+      delayedCategoryBarScrollTimer = undefined;
+    }
+
+    if (deferScroll) {
+      // 等主内容上移完成后再定位分类，避免出现“先横向滚动后上移”的卡顿观感。
+      delayedCategoryBarScrollTimer = window.setTimeout(() => {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            scrollActiveCategoryIntoView(bar, scrollBehavior);
+            updateScrollHint();
+          });
+        });
+      }, 220);
+      return;
+    }
+
+    scrollActiveCategoryIntoView(bar, scrollBehavior);
+    updateScrollHint();
   }
 
   function initCategoryBarInteractions() {
@@ -236,6 +351,12 @@ const archiveUrl = url("/archive/");
     const scroll = bar.querySelector<HTMLElement>(".category-scroll");
     if (!scroll) return;
 
+    if (scroll.dataset.featuresBound === "true") {
+      updateScrollHint();
+      return;
+    }
+    scroll.dataset.featuresBound = "true";
+
     // 鼠标滚轮横向滚动
     scroll.addEventListener("wheel", (e) => {
       if (scroll.scrollWidth <= scroll.clientWidth) return;
@@ -272,6 +393,16 @@ const archiveUrl = url("/archive/");
     } else {
       fadeRight.removeAttribute("data-visible");
     }
+
+    // 分类溢出时显示"更多"按钮前的分割线
+    const moreDivider = bar.querySelector<HTMLElement>(".more-divider");
+    if (moreDivider) {
+      if (hasOverflow) {
+        moreDivider.setAttribute("data-visible", "");
+      } else {
+        moreDivider.removeAttribute("data-visible");
+      }
+    }
   }
 
   updateCategoryBar();
@@ -283,5 +414,25 @@ const archiveUrl = url("/archive/");
   });
   document.addEventListener("swup:contentReplaced", () => {
     updateCategoryBar();
+    // 某些 swup 生命周期下 URL/DOM 状态同步稍晚，下一帧再校正一次避免状态残留
+    requestAnimationFrame(() => {
+      updateCategoryBar();
+    });
   });
+
+  // 在 Swup 导航时提前更新状态，避免切换期间激活态闪烁
+  function setupSwupEarlyUpdate() {
+    if (!window.swup?.hooks) return;
+    window.swup.hooks.on("visit:start", (visit: any) => {
+      const bar = document.getElementById("category-bar");
+      if (!bar) return;
+      const targetUrl = new URL(visit.to.url, window.location.href);
+      setActiveCategory(bar, targetUrl);
+    });
+  }
+  if (window.swup?.hooks) {
+    setupSwupEarlyUpdate();
+  } else {
+    document.addEventListener("swup:enable", setupSwupEarlyUpdate);
+  }
 </script>

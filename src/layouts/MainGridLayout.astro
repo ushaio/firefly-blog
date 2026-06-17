@@ -9,11 +9,12 @@ import type { MarkdownHeading } from "astro";
 import { Icon } from "astro-icon/components";
 import ImageWrapper from "@/components/common/ImageWrapper.astro";
 import FloatingControls from "@/components/controls/FloatingControls.astro";
+import ScrollDownIndicator from "@/components/controls/ScrollDownIndicator.astro";
 import TypewriterText from "@/components/features/TypewriterText.astro";
 import CategoryBar from "@/components/layout/CategoryBar.astro";
 import {
 	backgroundWallpaper,
-	live2dModelConfig,
+	live2dWidgetConfig,
 	sidebarLayoutConfig,
 	siteConfig,
 } from "@/config";
@@ -35,7 +36,6 @@ import {
 	getResponsiveSidebarConfig,
 	type ResponsiveSidebarConfig,
 } from "@/utils/responsive-utils";
-import { url } from "@/utils/url-utils";
 import Layout from "./Layout.astro";
 
 import "@/styles/markdown.css";
@@ -48,6 +48,7 @@ interface Props {
 	lang?: string;
 	setOGTypeArticle?: boolean;
 	postSlug?: string;
+	postCategory?: string;
 	headings?: MarkdownHeading[];
 	bannerPostMeta?: {
 		title: string;
@@ -67,19 +68,21 @@ const {
 	lang,
 	setOGTypeArticle,
 	postSlug,
+	postCategory,
 	headings = [],
 	bannerPostMeta,
 } = Astro.props;
 
 // 检查背景壁纸模式和是否允许切换
 const isBannerMode = backgroundWallpaper.mode === "banner";
+const isFullscreenMode = backgroundWallpaper.mode === "fullscreen";
 const isOverlayMode = backgroundWallpaper.mode === "overlay";
 const isBackgroundEnabled = backgroundWallpaper.mode !== "none";
 const isWallpaperSwitchable = backgroundWallpaper.switchable ?? true;
 
 // 检查是否启用水波纹动画效果
-const wavesConfig = backgroundWallpaper.banner?.waves?.enable;
-const wavesSwitchable = backgroundWallpaper.banner?.waves?.switchable ?? false;
+const wavesConfig = backgroundWallpaper.common?.waves?.enable;
+const wavesSwitchable = backgroundWallpaper.common?.waves?.switchable ?? false;
 // 处理分设备控制的水波纹动画
 const wavesEnabledOnDesktop =
 	typeof wavesConfig === "object" ? wavesConfig.desktop : wavesConfig;
@@ -89,68 +92,34 @@ const wavesEnabledOnMobile =
 const shouldRenderWaves =
 	wavesEnabledOnDesktop || wavesEnabledOnMobile || wavesSwitchable;
 
-// 处理分设备控制的横幅信贷显示
-const creditEnableConfig = backgroundWallpaper.banner?.credit?.enable;
-const creditEnabledOnDesktop =
-	typeof creditEnableConfig === "object"
-		? creditEnableConfig.desktop
-		: creditEnableConfig;
-const creditEnabledOnMobile =
-	typeof creditEnableConfig === "object"
-		? creditEnableConfig.mobile
-		: creditEnableConfig;
-
-const hasBannerCredit =
-	isBannerMode && isBackgroundEnabled && creditEnableConfig;
-
-// 处理分设备控制的横幅信贷文本和链接
-const creditTextConfig = backgroundWallpaper.banner?.credit?.text;
-const creditTextDesktop =
-	typeof creditTextConfig === "object"
-		? creditTextConfig.desktop
-		: creditTextConfig;
-const creditTextMobile =
-	typeof creditTextConfig === "object"
-		? creditTextConfig.mobile
-		: creditTextConfig;
-
-const creditUrlConfig = backgroundWallpaper.banner?.credit?.url;
-const creditUrlDesktop =
-	typeof creditUrlConfig === "object"
-		? creditUrlConfig.desktop
-		: creditUrlConfig;
-const creditUrlMobile =
-	typeof creditUrlConfig === "object"
-		? creditUrlConfig.mobile
-		: creditUrlConfig;
+// 渐变过渡配置
+const gradientConfig = backgroundWallpaper.common?.gradient?.enable;
+const gradientSwitchable =
+	backgroundWallpaper.common?.gradient?.switchable ?? false;
+const gradientEnabledOnDesktop =
+	typeof gradientConfig === "object"
+		? gradientConfig.desktop
+		: (gradientConfig ?? true);
+const gradientEnabledOnMobile =
+	typeof gradientConfig === "object"
+		? gradientConfig.mobile
+		: (gradientConfig ?? true);
+const gradientHeight = backgroundWallpaper.common?.gradient?.height ?? "30vh";
+// 是否需要渲染渐变元素（任一设备启用 或 允许用户切换）
+const shouldRenderGradient =
+	gradientEnabledOnDesktop || gradientEnabledOnMobile || gradientSwitchable;
 
 // 检查是否为首页
 const isHomePageCheck = isHomePage(Astro.url.pathname);
 
-// 分类导航仅在首页、首页分页和归档页进行服务端渲染，避免非列表页首屏闪烁
-const currentPathname = Astro.url.pathname.replace(/\/$/, "");
-const homePath = url("/").replace(/\/$/, "");
-const archivePath = url("/archive/").replace(/\/$/, "");
-const escapedHomePath = homePath.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-const isHomeRoute =
-	currentPathname === homePath ||
-	currentPathname === "" ||
-	currentPathname === "/";
-const isArchiveRoute = currentPathname === archivePath;
-const isHomePaginationRoute =
-	/^\/\d+$/.test(currentPathname) ||
-	(homePath !== "" &&
-		new RegExp(`^${escapedHomePath}\\/\\d+$`).test(currentPathname));
-const shouldRenderCategoryBar =
-	!!siteConfig.categoryBar &&
-	(isHomeRoute || isHomePaginationRoute || isArchiveRoute);
+const shouldRenderCategoryBar = !!siteConfig.categoryBar;
 
 // 检查是否在文章详情页
 const isPostPage = !!postSlug;
 
 // 随机选择副标题（当打字机关闭且为数组时）
 const getRandomSubtitle = () => {
-	const subtitle = backgroundWallpaper.banner?.homeText?.subtitle;
+	const subtitle = backgroundWallpaper.common?.homeText?.subtitle;
 	if (Array.isArray(subtitle)) {
 		const randomIndex = Math.floor(Math.random() * subtitle.length);
 		return subtitle[randomIndex];
@@ -160,20 +129,22 @@ const getRandomSubtitle = () => {
 const randomSubtitle = getRandomSubtitle();
 
 // 主页横幅文本只在首页且全局开关为 true 时显示，不区分设备
-const homeTextEnable = backgroundWallpaper.banner?.homeText?.enable;
-const showHomeText = isBannerMode && !!homeTextEnable && isHomePageCheck;
+const homeTextEnable = backgroundWallpaper.common?.homeText?.enable;
+const showHomeText =
+	(isBannerMode || isFullscreenMode) && !!homeTextEnable && isHomePageCheck;
 
 const showBannerPostMeta =
-	isBannerMode &&
+	(isBannerMode || isFullscreenMode) &&
 	isBackgroundEnabled &&
 	!isHomePageCheck &&
 	isPostPage &&
 	!!bannerPostMeta;
 
-const showBannerDim = isBannerMode && isBackgroundEnabled;
+const showBannerDim = (isBannerMode || isFullscreenMode) && isBackgroundEnabled;
+const dimOpacity = backgroundWallpaper.common?.dimOpacity ?? 0.15;
 
 const showBannerPageTitle =
-	isBannerMode &&
+	(isBannerMode || isFullscreenMode) &&
 	isBackgroundEnabled &&
 	!isHomePageCheck &&
 	!isPostPage &&
@@ -279,11 +250,6 @@ const footerClassName = footerClass.join(" ");
 // 检查是否应该启用半透明效果
 const shouldEnableTransparency = isOverlayMode && isBackgroundEnabled;
 
-// 为组件添加半透明效果的CSS类
-const transparentClass = shouldEnableTransparency
-	? "wallpaper-transparent"
-	: "";
-
 const navbarWidthFull = siteConfig.navbar.widthFull ?? false;
 const stickyNavbar = siteConfig.navbar.stickyNavbar ?? false;
 
@@ -332,16 +298,19 @@ const bannerCarouselInterval = Math.max(
 </div>
 
 <!-- Wallpaper - 如果允许切换则始终渲染，否则只渲染当前模式 -->
-{(isWallpaperSwitchable || isBannerMode || isOverlayMode) && (
+{(isWallpaperSwitchable || isBannerMode || isFullscreenMode || isOverlayMode) && (
 <div id="wallpaper-wrapper" class:list={[
 	`absolute z-10 w-full transition duration-700 overflow-hidden ${mobileNonHomeBannerClass}`,
-	(isOverlayMode && !isWallpaperSwitchable) || (isWallpaperSwitchable && !isBannerMode) ? 'wallpaper-overlay' : ''
+	(isOverlayMode && !isWallpaperSwitchable) ? 'wallpaper-overlay' : '',
+	(isFullscreenMode && !isWallpaperSwitchable) ? 'wallpaper-fullscreen' : '',
 ]} style={
 	isWallpaperSwitchable
 		? `top: -${BANNER_HEIGHT_EXTEND}vh; display: none; --overlay-opacity: ${backgroundWallpaper.overlay?.opacity ?? 0.8}; --overlay-z-index: ${backgroundWallpaper.overlay?.zIndex ?? -1}; --overlay-blur: ${backgroundWallpaper.overlay?.blur ?? 0}px;`
 		: isOverlayMode
 			? `--overlay-opacity: ${backgroundWallpaper.overlay?.opacity ?? 0.8}; --overlay-z-index: ${backgroundWallpaper.overlay?.zIndex ?? -1}; --overlay-blur: ${backgroundWallpaper.overlay?.blur ?? 0}px;`
-			: `top: -${BANNER_HEIGHT_EXTEND}vh`
+			: isFullscreenMode
+				? ``
+				: `top: -${BANNER_HEIGHT_EXTEND}vh`
 }>
     <!-- 背景图片显示 -->
     <div class="relative h-full w-full" id="banner-images-container"
@@ -484,6 +453,8 @@ const bannerCarouselInterval = Math.max(
             var container = document.getElementById('banner-images-container');
             if (!container) return;
 
+            var WALLPAPER_BANNER = 'banner';
+
             var mobileCount = parseInt(container.dataset.mobileCount || '0', 10);
             var desktopCount = parseInt(container.dataset.desktopCount || '0', 10);
             if (mobileCount <= 1 && desktopCount <= 1) return;
@@ -498,6 +469,10 @@ const bannerCarouselInterval = Math.max(
                 var stored = localStorage.getItem('bannerCarouselEnabled');
                 if (stored === null) return defaultEnabled;
                 return stored === 'true';
+            }
+
+            function isBannerWallpaperMode() {
+                return document.documentElement.getAttribute('data-wallpaper-mode') === WALLPAPER_BANNER;
             }
 
             // 收集所有帧内容
@@ -581,7 +556,50 @@ const bannerCarouselInterval = Math.max(
                 newSlot.innerHTML = frames[nextIndex];
                 oldSlot.parentNode.insertBefore(newSlot, oldSlot.nextSibling);
 
-                // 双 rAF：确保 opacity:0 已绘制，然后同时触发淡入 + Ken Burns
+                // 获取 LQIP 占位和图片元素
+                var placeholder = newSlot.querySelector('.lqip-placeholder');
+                var img = newSlot.querySelector('img');
+
+                // 利用 LQIP 做过渡桥接：立即开始交叉淡入淡出，不再等图片加载
+                // LQIP 渐变作为新层的"底色"遮住旧图，消除两张图同时可见的重影
+                var oldSlotRemoved = false;
+                function removeOldSlot() {
+                    if (!oldSlotRemoved && oldSlot.parentNode) {
+                        oldSlot.parentNode.removeChild(oldSlot);
+                        oldSlotRemoved = true;
+                    }
+                }
+
+                function showFullResImage() {
+                    if (img) {
+                        // 确保图片有过渡效果，从 LQIP 上方平滑淡入
+                        if (!img.style.transition) {
+                            img.style.transition = 'opacity 0.8s ease-out';
+                        }
+                        img.style.opacity = '1';
+                    }
+                    // 延迟隐藏 LQIP，让图片有时间完全显示
+                    if (placeholder) {
+                        setTimeout(function() {
+                            placeholder.classList.add('loaded');
+                        }, 200);
+                    }
+                }
+
+                if (img && img.complete && img.naturalWidth > 0) {
+                    // 图片已缓存：直接显示全分辨率，跳过 LQIP 阶段
+                    showFullResImage();
+                } else if (img) {
+                    // 图片未加载完：先显示 LQIP，加载完成后在 LQIP 上方淡入全分辨率图
+                    img.addEventListener('load', function() {
+                        showFullResImage();
+                    }, { once: true });
+                    img.addEventListener('error', function() {
+                        if (placeholder) placeholder.classList.add('loaded');
+                    }, { once: true });
+                }
+
+                // 立即开始交叉淡入淡出（LQIP 已就绪，可作为过渡层）
                 requestAnimationFrame(function() {
                     requestAnimationFrame(function() {
                         newSlot.style.opacity = '1';
@@ -591,7 +609,7 @@ const bannerCarouselInterval = Math.max(
 
                 // 淡入完成后：移除旧层，清理 transition（避免影响后续动画）
                 setTimeout(function() {
-                    if (oldSlot.parentNode) oldSlot.parentNode.removeChild(oldSlot);
+                    removeOldSlot();
                     newSlot.style.transition = '';
                 }, FADE_MS + 50);
             }
@@ -600,6 +618,7 @@ const bannerCarouselInterval = Math.max(
 
             function startCarousel() {
                 stopCarousel();
+                if (!isBannerWallpaperMode()) return;
                 if (!isCarouselEnabled()) return;
 
                 // 首张图立即启动 Ken Burns 缩放
@@ -607,6 +626,7 @@ const bannerCarouselInterval = Math.max(
                 applyInitialKB('banner-image-slot-desktop');
 
                 timerId = setInterval(function() {
+                    if (!isBannerWallpaperMode()) { stopCarousel(); return; }
                     if (!isCarouselEnabled()) { stopCarousel(); return; }
                     crossfade('banner-image-slot-mobile', mobileCount, 'mobile');
                     crossfade('banner-image-slot-desktop', desktopCount, 'desktop');
@@ -634,7 +654,7 @@ const bannerCarouselInterval = Math.max(
     </script>
     
     <div id="banner-dim-container" class="absolute inset-0 z-0 pointer-events-none">
-        {showBannerDim && <div class="banner-dim-overlay absolute inset-0"></div>}
+        {showBannerDim && <div class="banner-dim-overlay absolute inset-0" style={`background: rgba(0, 0, 0, ${dimOpacity})`}></div>}
     </div>
 
     <div id="banner-overlay-container" class="absolute inset-0 z-20 pointer-events-none transition-swup-fade">    <!-- Home page text overlay - 始终渲染以便切换模式时控制显示 -->
@@ -642,19 +662,19 @@ const bannerCarouselInterval = Math.max(
         <div class={`banner-home-text-overlay absolute inset-0 z-20 flex items-center justify-center ${!showHomeText ? 'hidden' : ''}`}>
             <div class="w-4/5 lg:w-3/4 text-center mb-0">
                 <div class="flex flex-col">
-                    {backgroundWallpaper.banner?.homeText?.title && (
-                        <div class="banner-title font-bold text-white mb-2 lg:mb-4 leading-tight" style={{ fontSize: backgroundWallpaper.banner.homeText.titleSize || "3rem" }}>
-                            {backgroundWallpaper.banner.homeText.title}
+                    {backgroundWallpaper.common?.homeText?.title && (
+                        <div class="banner-title font-bold text-white mb-2 lg:mb-4 leading-tight" style={{ '--banner-title-size': backgroundWallpaper.common.homeText.titleSize || "3rem" }}>
+                            {backgroundWallpaper.common.homeText.title}
                         </div>
                     )}
-                    {backgroundWallpaper.banner?.homeText?.subtitle && (
-                        <div id="banner-subtitle" class="banner-subtitle text-white/90 leading-snug" style={{ fontSize: backgroundWallpaper.banner.homeText.subtitleSize || "1.5rem" }} data-subtitles={JSON.stringify(backgroundWallpaper.banner.homeText.subtitle)}>
-                            {backgroundWallpaper.banner.homeText.typewriter?.enable ? (
+                    {backgroundWallpaper.common?.homeText?.subtitle && (
+                        <div id="banner-subtitle" class="banner-subtitle text-white/90 leading-snug" style={{ fontSize: backgroundWallpaper.common.homeText.subtitleSize || "1.5rem" }} data-subtitles={JSON.stringify(backgroundWallpaper.common.homeText.subtitle)}>
+                            {backgroundWallpaper.common.homeText.typewriter?.enable ? (
                                 <TypewriterText
-                                    text={backgroundWallpaper.banner.homeText.subtitle}
-                                    speed={backgroundWallpaper.banner.homeText.typewriter.speed}
-                                    deleteSpeed={backgroundWallpaper.banner.homeText.typewriter.deleteSpeed}
-                                    pauseTime={backgroundWallpaper.banner.homeText.typewriter.pauseTime}
+                                    text={backgroundWallpaper.common.homeText.subtitle}
+                                    speed={backgroundWallpaper.common.homeText.typewriter.speed}
+                                    deleteSpeed={backgroundWallpaper.common.homeText.typewriter.deleteSpeed}
+                                    pauseTime={backgroundWallpaper.common.homeText.typewriter.pauseTime}
                                 />
                             ) : (
                                 randomSubtitle
@@ -700,7 +720,7 @@ const bannerCarouselInterval = Math.max(
         <div class="banner-page-title-overlay absolute inset-0 z-20 hidden lg:flex items-center justify-center pointer-events-none">
             <div class="w-4/5 lg:w-3/4 text-center mb-0">
                 <div class="banner-page-title font-bold text-white leading-tight inline-flex items-center justify-center gap-3">
-                    {/* <Icon name="material-symbols:bookmark-rounded" class="banner-page-title-icon" /> */}
+                    {/* <Icon is:inline name="material-symbols:bookmark-rounded" class="banner-page-title-icon" /> */}
                     <span class="banner-page-title-text">{title}</span>
                 </div>
             </div>
@@ -717,19 +737,19 @@ const bannerCarouselInterval = Math.max(
                     </div>
                     <div class="banner-post-meta-list flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-white/90 text-sm md:text-base">
                         <span class="inline-flex items-center gap-1.5">
-                            <Icon name="material-symbols:calendar-month-outline-rounded" class="text-[1.05em]" />
+                            <Icon is:inline name="material-symbols:calendar-month-outline-rounded" class="text-[1.05em]" />
                             <span>{i18n(I18nKey.publishedAt)} {formatDateToYYYYMMDD(bannerPostMeta.published)}</span>
                         </span>
                         {bannerPostMeta.updated &&
                             bannerPostMeta.updated.getTime() !== bannerPostMeta.published.getTime() && (
                                 <span class="inline-flex items-center gap-1.5">
-                                    <Icon name="material-symbols:update-rounded" class="text-[1.05em]" />
+                                    <Icon is:inline name="material-symbols:update-rounded" class="text-[1.05em]" />
                                     <span>{i18n(I18nKey.updatedAt)} {formatDateToYYYYMMDD(bannerPostMeta.updated)}</span>
                                 </span>
                             )}
                         {typeof bannerPostMeta.words === "number" && (
                             <span class="inline-flex items-center gap-1.5">
-                                <Icon name="material-symbols:ink-pen-outline-rounded" class="text-[1.05em]" />
+                                <Icon is:inline name="material-symbols:ink-pen-outline-rounded" class="text-[1.05em]" />
                                 <span>
                                     {bannerPostMeta.words} {i18n(bannerPostMeta.words === 1 ? I18nKey.wordCount : I18nKey.wordsCount)}
                                 </span>
@@ -737,7 +757,7 @@ const bannerCarouselInterval = Math.max(
                         )}
                         {typeof bannerPostMeta.minutes === "number" && (
                             <span class="inline-flex items-center gap-1.5">
-                                <Icon name="material-symbols:schedule-outline-rounded" class="text-[1.05em]" />
+                                <Icon is:inline name="material-symbols:schedule-outline-rounded" class="text-[1.05em]" />
                                 <span>
                                     {bannerPostMeta.minutes} {i18n(bannerPostMeta.minutes === 1 ? I18nKey.minuteCount : I18nKey.minutesCount)} · {i18n(I18nKey.readTime)}
                                 </span>
@@ -748,6 +768,9 @@ const bannerCarouselInterval = Math.max(
             </div>
         </div>
     )}
+
+    <!-- Fullscreen 模式下显示向下滚动指示器 -->
+    {(isFullscreenMode || isWallpaperSwitchable) && <ScrollDownIndicator />}
     </div>
 
     <!-- Water waves effect - 如果允许切换或任一设备启用则渲染 -->
@@ -800,11 +823,20 @@ const bannerCarouselInterval = Math.max(
         </svg>
     </div>
     ) : null}
+
+    <!-- Gradient transition - 当水波纹关闭时显示，提供壁纸底部到背景色的平滑过渡 -->
+    {shouldRenderGradient ? (
+    <div class={`wallpaper-gradient absolute bottom-0 left-0 w-full pointer-events-none
+        ${!gradientEnabledOnMobile ? 'hidden' : ''} ${!gradientEnabledOnDesktop ? 'md:hidden' : ''} ${gradientEnabledOnDesktop ? 'md:block' : ''}`}
+        id="wallpaper-gradient"
+        style={`height: ${gradientHeight}; background: linear-gradient(to bottom, transparent, var(--page-bg));`}>
+    </div>
+    ) : null}
 </div>
 )}
 
 {/* 当壁纸未渲染时，添加空的 Swup 占位容器，避免 Swup 找不到容器而回退为整页加载 */}
-{!(isWallpaperSwitchable || isBannerMode || isOverlayMode) && (
+{!(isWallpaperSwitchable || isBannerMode || isFullscreenMode || isOverlayMode) && (
 <>
     <div id="banner-overlay-container" class="hidden"></div>
     <div id="banner-dim-container" class="hidden"></div>
@@ -812,7 +844,7 @@ const bannerCarouselInterval = Math.max(
 )}
 
 <!-- Main content -->
-<div class={`absolute w-full z-30 pointer-events-none ${mobileNonHomeBannerClass ? 'mobile-main-no-banner' : ''} ${!(isBannerMode && isBackgroundEnabled) ? 'no-banner-layout' : ''} ${transparentClass}`} style={`top: ${finalMainPanelTop}`}>
+<div class={`absolute w-full z-30 pointer-events-none ${mobileNonHomeBannerClass ? 'mobile-main-no-banner' : ''} ${!(isBannerMode && isBackgroundEnabled) ? 'no-banner-layout' : ''}`} style={isFullscreenMode ? 'top: 0;' : `top: ${finalMainPanelTop}`}>
     <!-- The pointer-events-none here prevent blocking the click event of the TOC -->
     <div class="relative w-full xl:w-[92vw] max-w-(--page-width) mx-auto pointer-events-auto">
         <div id="main-grid"
@@ -821,46 +853,6 @@ const bannerCarouselInterval = Math.max(
           data-tablet-sidebar={sidebarLayoutConfig.tabletSidebar ?? "left"}
           data-show-both-sidebars-on-post={sidebarLayoutConfig.showBothSidebarsOnPostPage ? "true" : "false"}
         >
-            <!-- Background image credit - Desktop -->
-            {hasBannerCredit && creditEnabledOnDesktop && <a 
-                href={creditUrlDesktop || "#"} 
-                id="banner-credit-desktop" 
-                target={creditUrlDesktop ? "_blank" : "_self"}
-                rel={creditUrlDesktop ? "noopener" : ""}
-                aria-label="Visit image source"
-                class:list={[
-                    "group onload-animation transition-all absolute justify-center items-center rounded-full " +
-                    "px-3 right-4 -top-13 bg-black/60 hover:bg-black/70 h-9 hidden md:flex", 
-                    {"hover:pr-9 active:bg-black/80": creditUrlDesktop}
-                ]}
-            >
-                <Icon class="text-white/75 text-[1.25rem] mr-1" name="material-symbols:copyright-outline-rounded" ></Icon>
-                <div class="text-white/75 text-xs">{creditTextDesktop}</div>
-                {creditUrlDesktop && <Icon class:list={["transition absolute text-[oklch(0.75_0.14_var(--hue))] right-4 text-[0.75rem] opacity-0 group-hover:opacity-100"]}
-                      name="fa7-solid:arrow-up-right-from-square">
-                </Icon>}
-            </a>}
-
-            <!-- Background image credit - Mobile -->
-            {hasBannerCredit && creditEnabledOnMobile && <a 
-                href={creditUrlMobile || "#"} 
-                id="banner-credit-mobile" 
-                target={creditUrlMobile ? "_blank" : "_self"}
-                rel={creditUrlMobile ? "noopener" : ""}
-                aria-label="Visit image source"
-                class:list={[
-                    "group onload-animation transition-all absolute justify-center items-center rounded-full " +
-                    "px-3 right-4 -top-13 bg-black/60 hover:bg-black/70 h-9 flex md:hidden", 
-                    {"hover:pr-9 active:bg-black/80": creditUrlMobile}
-                ]}
-            >
-                <Icon class="text-white/75 text-[1.25rem] mr-1" name="material-symbols:copyright-outline-rounded" ></Icon>
-                <div class="text-white/75 text-xs">{creditTextMobile}</div>
-                {creditUrlMobile && <Icon class:list={["transition absolute text-[oklch(0.75_0.14_var(--hue))] right-4 text-[0.75rem] opacity-0 group-hover:opacity-100"]}
-                      name="fa7-solid:arrow-up-right-from-square">
-                </Icon>}
-            </a>}
-
 
             {/* 渲染左侧边栏 - 根据position和tabletSidebar配置显示 */}
             {/*
@@ -874,7 +866,7 @@ const bannerCarouselInterval = Math.max(
                         {effectiveHasLeftComponents && (
                             <SideBar
                                 side={effectiveIsBothSidebars ? "left" : undefined}
-                                class={`${sidebarClass} ${transparentClass}`}
+                                class={sidebarClass}
                                 headings={headings}
                             />
                         )}
@@ -884,18 +876,21 @@ const bannerCarouselInterval = Math.max(
             ) : (
                 <div id="left-sidebar-dynamic" class="contents transition-swup-fade">
                     {effectiveIsBothSidebars && effectiveHasLeftComponents && (
-                        <SideBar side="left" class={`${sidebarClass} ${transparentClass}`} headings={headings}></SideBar>
+						<SideBar side="left" class={sidebarClass} headings={headings}></SideBar>
                     )}
                 </div>
             )}
                     
             {/* 主内容区包装器 - 包含静态栏位和swup容器，作为单个grid item */}
             <div class={staticBarClass}>
-                {/* 分类导航栏 - 仅在首页、首页分页和归档页渲染 */}
-                {shouldRenderCategoryBar && <CategoryBar />}
-
+                {/* 分类导航栏 - 全站渲染并显示 */}
+                {shouldRenderCategoryBar && <div id="category-bar-wrapper"><CategoryBar currentPostCategory={postCategory} /></div>}
                 {/* 主内容区 - 始终渲染，确保 Swup 容器存在 */}
-                <main id="swup-container" class="transition-main">
+                <main
+                    id="swup-container"
+                    class="transition-main"
+                    data-current-post-category={postCategory || ""}
+                >
                 {/* 携带网格布局类名，用于JS更新父容器 */}
                 <div id="grid-class-carrier" data-grid-class={gridCols} class="hidden"></div>
                 {/* 为每个页面提供一个隐藏的h1标题，用于SEO和可访问性 */}
@@ -917,7 +912,7 @@ const bannerCarouselInterval = Math.max(
                 <>
                     <div id="right-sidebar-static" class="contents">
                         {(effectiveIsBothSidebars || sidebarLayoutConfig.position === "right") && effectiveHasRightComponents && (
-                            <SideBar side="right" class={`${rightSidebarClass} ${transparentClass}`} headings={headings}></SideBar>
+							<SideBar side="right" class={rightSidebarClass} headings={headings}></SideBar>
                         )}
                     </div>
                     <div id="right-sidebar-dynamic" class="hidden transition-swup-fade"></div>
@@ -925,7 +920,7 @@ const bannerCarouselInterval = Math.max(
             ) : (
                 <div id="right-sidebar-dynamic" class="contents transition-swup-fade">
                     {effectiveIsBothSidebars && effectiveHasRightComponents && (
-                        <SideBar side="right" class={`${rightSidebarClass} ${transparentClass}`} headings={headings}></SideBar>
+						<SideBar side="right" class={rightSidebarClass} headings={headings}></SideBar>
                     )}
                 </div>
             )}
@@ -933,7 +928,7 @@ const bannerCarouselInterval = Math.max(
             {/* 移动端底部组件 - 768px及以下显示 */}
             {sidebarLayoutConfig.mobileBottomComponents && sidebarLayoutConfig.mobileBottomComponents.length > 0 && (
                 <div id="mobile-bottom-sidebar" class="col-span-1 block md:hidden mt-4">
-                    <SideBar side="bottom" class={`${transparentClass}`} headings={headings}></SideBar>
+					<SideBar side="bottom" headings={headings}></SideBar>
                 </div>
             )}
 
@@ -943,7 +938,7 @@ const bannerCarouselInterval = Math.max(
         </div>
 
         <SpineModel></SpineModel>
-        {live2dModelConfig.enable && <Live2DWidget config={live2dModelConfig} />}
+        {live2dWidgetConfig.enable && <Live2DWidget config={live2dWidgetConfig} />}
     </div>
 </div>
 

@@ -8,7 +8,7 @@
 > 
 > ![Node.js >= 22](https://img.shields.io/badge/node.js-%3E%3D22-brightgreen) 
 ![pnpm >= 9](https://img.shields.io/badge/pnpm-%3E%3D9-blue)
-![Astro](https://img.shields.io/badge/Astro-6.0.8-orange)
+![Astro](https://img.shields.io/badge/Astro-6.4.4-orange)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9.2-blue)
 >
 > [![Stars](https://img.shields.io/github/stars/CuteLeaf/Firefly?style=social)](https://github.com/CuteLeaf/Firefly/stargazers)
@@ -80,7 +80,7 @@
 - [x] **Footer Configuration** - HTML content injection, fully customizable
 - [x] **Light/Dark Mode** - Supports light/dark/system three modes
 - [x] **Navbar Customization** - Logo, title, links fully customizable
-- [x] **Wallpaper Mode Switching** - Banner wallpaper, fullscreen wallpaper, solid background
+- [x] **Wallpaper Mode Switching** - Banner wallpaper, fullscreen wallpaper, fullscreen transparent wallpaper, solid background
 - [x] **Theme Color Customization** - 360° hue adjustment
 
 
@@ -167,27 +167,27 @@ const SITE_LANG = "zh_CN";
 ```
 src/
 ├── config/
-│   ├── index.ts              # Configuration index file
-│   ├── siteConfig.ts         # Site basic configuration
-│   ├── backgroundWallpaper.ts # Background wallpaper configuration
-│   ├── profileConfig.ts      # User profile configuration
-│   ├── commentConfig.ts      # Comment system configuration
-│   ├── announcementConfig.ts # Announcement configuration
-│   ├── licenseConfig.ts      # License configuration
-│   ├── footerConfig.ts       # Footer configuration
-│   ├── FooterConfig.html     # Footer HTML content
-│   ├── expressiveCodeConfig.ts # Code highlighting configuration
-│   ├── sakuraConfig.ts       # Sakura effect configuration
-│   ├── fontConfig.ts         # Font configuration
-│   ├── sidebarConfig.ts      # Sidebar layout configuration
-│   ├── navBarConfig.ts       # Navbar configuration
-│   ├── musicConfig.ts        # Music player configuration
-│   ├── pioConfig.ts          # Mascot configuration
-│   ├── adConfig.ts           # Ad configuration
-│   ├── friendsConfig.ts      # Friend links configuration
-│   ├── galleryConfig.ts      # Gallery configuration
-│   ├── sponsorConfig.ts      # Sponsor configuration
-│   └── coverImageConfig.ts   # Article cover image configuration
+│   ├── index.ts                  # Configuration index file
+│   ├── siteConfig.ts             # Site basic configuration
+│   ├── analyticsConfig.ts        # Analytics configuration
+│   ├── announcementConfig.ts     # Announcement configuration
+│   ├── backgroundWallpaper.ts    # Background wallpaper configuration
+│   ├── commentConfig.ts          # Comment system configuration
+│   ├── coverImageConfig.ts       # Cover image configuration
+│   ├── effectsConfig.ts          # Animation effects config (sakura, etc.)
+│   ├── expressiveCodeConfig.ts   # Code highlighting configuration
+│   ├── fontConfig.ts             # Font configuration
+│   ├── footerConfig.ts           # Footer configuration
+│   ├── friendsConfig.ts          # Friend links configuration
+│   ├── galleryConfig.ts          # Gallery configuration
+│   ├── licenseConfig.ts          # License configuration
+│   ├── musicConfig.ts            # Music player configuration
+│   ├── navBarConfig.ts           # Navbar configuration
+│   ├── pioConfig.ts              # Mascot configuration
+│   ├── plantumlConfig.ts         # PlantUML diagram configuration
+│   ├── profileConfig.ts          # User profile configuration
+│   ├── sidebarConfig.ts          # Sidebar layout configuration
+│   └── sponsorConfig.ts          # Sponsor configuration
 ```
 
 
@@ -212,7 +212,7 @@ comment: true    # Enable comments
 
 In addition to the default [GitHub Flavored Markdown](https://github.github.com/gfm/) support in Astro, there are some additional Markdown features:
 
-- Admonitions - Supports configuration for GitHub, Obsidian, and VitePress themes ([Preview and Usage](https://firefly.cuteleaf.cn/posts/markdown-extended/))
+- Admonitions - Supports configuration for GitHub, Obsidian, VitePress, and Docusaurus themes ([Preview and Usage](https://firefly.cuteleaf.cn/posts/markdown-extended/))
 - GitHub Repository Cards ([Preview and Usage](https://firefly.cuteleaf.cn/posts/markdown-extended/))
 - Enhanced Code Blocks based on Expressive Code ([Preview](http://firefly.cuteleaf.cn/posts/code-examples/) / [Documentation](https://expressive-code.com/))
 
