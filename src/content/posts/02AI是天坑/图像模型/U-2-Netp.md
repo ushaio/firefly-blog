@@ -1,3 +1,12 @@
+---
+title: U-2-Netp
+published: 2026-09-16
+description: U-2-Netp
+image: "api"
+tags: [AI, 图像模型]
+category: AI
+draft: false
+---
 https://huggingface.co/BritishWerewolf/U-2-Netp
 
 ### **这是一个用于"把图中主体抠出来"的图像分割模型：输入一张图片，输出一张前景掩码（alpha/mask），可据此去掉或替换背景。**

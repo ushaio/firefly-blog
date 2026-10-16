@@ -1,3 +1,12 @@
+---
+title: SQLite 驱动、查询与备份实现选型
+published: 2026-09-02
+description: SQLite 驱动、查询与备份实现选型
+image: "api"
+tags: [MO Gallery]
+category: MO Gallery
+draft: false
+---
 # ADR-0038：SQLite 驱动、查询与备份实现选型
 
 - 状态：已接受（FTS 已实现，性能基准仍待完成）

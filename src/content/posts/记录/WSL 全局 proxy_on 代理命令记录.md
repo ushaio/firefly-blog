@@ -1,4 +1,4 @@
-﻿---
+---
 title: WSL 全局 proxy_on 代理命令记录
 published: 2026-03-24
 description: 记录 WSL 中全局 proxy_on、proxy_off、proxy_status 命令的添加背景、作用、添加方法和配置位置

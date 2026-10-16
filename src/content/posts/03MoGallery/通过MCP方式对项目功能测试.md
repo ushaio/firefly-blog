@@ -1,3 +1,12 @@
+---
+title: 通过MCP方式对项目功能测试
+published: 2026-09-02
+description: 通过MCP方式对项目功能测试
+image: "api"
+tags: [MO Gallery]
+category: MO Gallery
+draft: false
+---
 事情起因于 在mo gallery中的文章编辑器是基于tiptap开源项目开发，但是markdown上很多逻辑想对齐typora的按键交互，以tiptap自身特性很多场景是一致的，如：
 
 ```

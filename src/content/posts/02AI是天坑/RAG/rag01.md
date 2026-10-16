@@ -1,3 +1,12 @@
+---
+title: rag01
+published: 2026-09-02
+description: rag01
+image: "api"
+tags: [AI, RAG]
+category: AI
+draft: false
+---
 # RAG01
 
 Retrieval-Augmented-Generation（检索增强生成）
