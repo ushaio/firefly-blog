@@ -1,0 +1,964 @@
+![image|690x214](https://cdn3.ldstatic.com/original/4X/5/a/f/5afbfbdffd28c8f719eb4d8a78350ab4306c41c4.png)
+<div data-theme-toc="true"> </div>
+
+## 碎碎念
+
+我这次会折腾 Pi，原因其实也很简单
+
+前面几篇文章里，我已经把 codex 在 Windows 下能踩的一批坑基本踩过一遍了。但再往后用，我越来越明显地感觉到 codex 正在往“功能越来越多、体积越来越大、交互越来越臃肿”的方向走，启动和日常使用都开始卡顿。另一边，Claude Code 又爆出后门那档子事，我自己就更不想把主力工作流继续压在它上面
+
+其实我留意 Pi 很久了，一直没时间切过来，最近有空终于可以开始试着切到 Pi。结果实际用下来，Pi 虽然毛坯感比 codex 明显，很多东西也得自己配，但核心体验反而挺对我胃口：轻、快、可控，很多能力是你自己一块块装上去的，出了问题也更容易知道该查哪
+
+**如果你没看过我前面那三篇 Windows 下折腾 codex 的文章，建议先看：**
+
+- [个人 Windows 下 codex 遇到的各种环境问题解决办法与经验 - 开发调优 / 开发调优, Lv1 - LINUX DO](https://linux.do/t/topic/1611448)
+- [个人 Windows 下 codex 遇到的各种环境问题解决办法与经验（二） - 开发调优 / 开发调优, Lv1 - LINUX DO](https://linux.do/t/topic/1967417)
+- [个人 Windows 下 codex 遇到的各种环境问题解决办法与经验（三） - 开发调优 / 开发调优, Lv1 - LINUX DO](https://linux.do/t/topic/2133497)
+
+这篇我就不再从 PowerShell 7、Windows Terminal、winget、Git for Windows、`rg`、`jq` 这些基础环境开始科普了，默认你已经把这些东西装好了，并且 VS Code / 终端默认都已经统一成 PowerShell 7
+
+这篇教程就是把这次折腾记录一下，希望能帮助更多佬友
+
+官网入口先放这里，后面查字段和模型都回到官网，不要迷信任何非官方文章（哪怕我这篇，因为日新月异）：
+
+- [Pi 文档首页](https://pi.dev/docs/latest)
+- [Pi 模型目录](https://pi.dev/models)
+- [Pi 包目录](https://pi.dev/packages)
+
+---
+
+## 先说最终效果
+
+如果你按照这篇文章一步步跟着配置，最终复刻出来的，是一套 Windows 下默认用 PowerShell 7、兼容 OpenAI / Anthropic 风格中转站、带全局 `AGENTS.md`、并且把权限、回退、搜索、网页访问、Markdown 预览这些基础能力先补齐的 Pi。同时你可以按需加上 subagents、MCP、todo、memory、plan mode 这些进阶能力；MCP 也会按 `eager` / `lazy` 分层。关键配置我都拆成了可以公开分享的脱敏模板
+
+至少对我自己来说，这套工作流把这些东西补齐之后，日常用起来已经很顺了，而且整套配置的可控感会比之前更强。
+
+---
+
+## 一、先安装 Pi 本体
+
+官方安装命令：
+
+```powershell
+npm install -g --ignore-scripts @earendil-works/pi-coding-agent
+```
+
+装完之后，先不要急着装任何 package，也先别急着在 `/login` 上来回点
+
+如果你本来就是走官方订阅路线，比如 ChatGPT Plus / Pro、Claude Pro / Max、GitHub Copilot，那一段官方自己已经写得很全了，直接看 [Providers 文档](https://pi.dev/docs/latest/providers) 就行
+
+这篇后面就不展开官方订阅了，本篇主要来放在 中转站 / relay / 自定义 provider 这条线上
+
+所以我建议你装完 Pi 之后，先把模型和中转配置好，再正式进第一次可用状态
+
+---
+
+## 二、先把模型和中转站配好
+
+这一节我建议你不要偷懒去抄我的配置，因为我不知道你看到这篇文章的时候新模型已经出现到哪了
+
+我自己的做法很简单，就是直接开官方模型目录：
+
+- [模型目录](https://pi.dev/models)
+- [模型配置文档](https://pi.dev/docs/latest/models)
+- [全局设置文档](https://pi.dev/docs/latest/settings)
+
+**如果你看到这里已经开始头大了，最省事的办法就是把这三个链接连同你自己的需求一起丢给 AI，让它按官方文档直接帮你生成一版 `settings.json` 和 `models.json`，你再回来按需微调**
+
+顺序也很直接：先在 `pi.dev/models` 找你实际打算用的 provider 和 model，再点进详情页确认**精确 model id、上下文窗口、价格、输入模态**，最后再决定你是走“内置 provider 改 `baseUrl`”还是“自定义 provider + 自己声明 models”
+
+我自己现在主要是中转站路线，所以大多数时候用的是第一种。说白了，如果你的中转站本质上是 **OpenAI 兼容**，那就继续用 provider 名 `openai`；如果本质上是 **Anthropic 兼容**，那就继续用 `anthropic`。这种情况下通常只需要改 `baseUrl`，真要自己改的是用 `modelOverrides` 补上下文窗口、token 上限之类的信息
+
+这一套的好处是最省事，`/model` 里内置模型体系还能继续直接用
+
+这一步你真正需要先关心的，其实只是 `settings.json` 里这几个键：
+
+```json
+{
+  "defaultProvider": "openai",
+  "defaultModel": "gpt-5.6-terra",
+  "enabledModels": [
+    "gpt-5.5",
+    "gpt-5.6-luna",
+    "gpt-5.6-terra",
+    "gpt-5.6-sol",
+    "claude-sonnet-4-6",
+    "claude-opus-4-8"
+  ]
+}
+```
+
+然后再看 `~/.pi/agent/models.json` 里 provider 这层：
+
+```json
+{
+  "providers": {
+    "openai": {
+      "baseUrl": "<YOUR_OPENAI_COMPAT_BASE_URL>",
+      "modelOverrides": {
+        "gpt-5.6-luna": {
+          "contextWindow": 1050000
+        },
+        "gpt-5.6-terra": {
+          "contextWindow": 1050000
+        },
+        "gpt-5.6-sol": {
+          "contextWindow": 1050000
+        }
+      }
+    },
+    "anthropic": {
+      "baseUrl": "<YOUR_ANTHROPIC_COMPAT_BASE_URL>"
+    }
+  }
+}
+```
+
+**完整 `settings.json` 和 `models.json` 我统一放在第十一节**
+
+注意，`contextWindow` 不要机械照抄我这篇里的数字，最好直接按你在 `pi.dev/models` 里选中的那个 provider 详情页来填。第二，`defaultProvider: "openai"` 不等于你在走官方 OpenAI 订阅，它只是说明你当前这一组模型按 OpenAI 风格 API 在说话。第三，上面这段里的 `baseUrl` 是占位符
+
+如果你不是用 `openai` / `anthropic` 这种内置 provider 名，而是准备自己起一个自定义 provider，那就直接回官方 `Custom Models` 文档看。因为我自己当前真实配置不是那条路，这篇就不再额外展开一套和我现用配置无关的示例了
+
+---
+
+## 三、Windows 下把默认 shell 切到 PowerShell 7
+
+Pi 官方 Windows 文档现在还是明显偏向 Bash
+
+但是我自己这次实际折腾下来，最后是把 Pi 切到 PowerShell 7 了。做法就是在你刚才那个 `~/.pi/agent/settings.json` 里继续补 `shellPath`。
+
+如果你不确定 PowerShell 7 的路径，先查：
+
+```powershell
+Get-Command pwsh
+```
+
+然后把 `settings.json` 里的相关部分补成这样：
+
+```json
+{
+  "shellPath": "C:\\Program Files\\PowerShell\\7\\pwsh.exe"
+}
+```
+
+完整 `settings.json` 同样统一放在第十一节
+
+还有一点也别太理想化，即便你切到了 PowerShell 7，也不要天真地以为所有模型从此就会完全按 PowerShell 脑回路输出命令，Git Bash 我建议还是装着，必要时当兜底
+
+---
+
+到这里再找个空目录试启动一次：
+
+```powershell
+mkdir pi-playground
+cd pi-playground
+pi
+```
+
+第一次启动我建议只做这几件事：
+
+1. `/model`，确认你刚才启用的模型都能看到
+2. 给它一个只读任务，确认目录读取和基本对话正常
+3. 如果你走的是官方订阅路线，这时候再补 `/login`
+
+这一轮能跑通，再继续下面的配置。否则先回官网看 `providers`、`models`、`settings` 这三页
+
+---
+
+## 四、全局 AGENTS.md 怎么改
+
+我前面那三篇写 codex 的时候一直在强调一件事：
+
+> 不要指望一句“你是最强 AI 编程助手”就把系统提示词搓出来。
+
+Pi 同样适用，而且因为 Pi 本体更轻，这块反而更值得你自己控制
+
+现在的 Pi 全局提示词放在：
+
+`~/.pi/agent/AGENTS.md`
+
+这里我的 `AGENTS.md` 依旧用的是我之前文章里的，它是通用的，至于配套的 skills 和 MCP 下面章节说明
+
+---
+
+## 五、我现在实际在用的 package
+
+**[`@gotgenes/pi-permission-system`](https://www.npmjs.com/package/@gotgenes/pi-permission-system)**
+
+安装：
+
+```powershell
+pi install npm:@gotgenes/pi-permission-system
+```
+
+Pi 默认是不带权限控制的，这个 package 就是用来补齐权限控制。后面你会看到，我给它单独配了 `config.json`，把“哪些能读、哪些要问、哪些直接不许碰”控制好
+
+**[`pi-rewind`](https://www.npmjs.com/package/pi-rewind)**
+
+安装：
+
+```powershell
+pi install npm:pi-rewind
+```
+
+它就是给 Pi 添加一个的回退能力。agent 改坏文件、或者你想倒回某一个 checkpoint 重新来，`pi-rewind` 比单纯盯着 `git diff` 更顺手。
+
+**[`pi-wtf`](https://www.npmjs.com/package/pi-wtf)**
+
+安装：
+
+```powershell
+pi install npm:pi-wtf
+```
+
+这个更像“我刚才这一步搞错了，帮我往回撤一下”的语义补丁。自己偶尔会手快输错，只需要`/fuck` 一下就可以撤回
+
+**[`@ff-labs/pi-fff`](https://www.npmjs.com/package/@ff-labs/pi-fff)**
+
+安装：
+
+```powershell
+pi install npm:@ff-labs/pi-fff
+```
+
+Pi 原生的 `find` / `grep` 的升级版。后面权限系统里我专门把 `grep` 和 `find` 设成 `deny`，也是为了把搜索统一交给它
+
+**[`pi-web-access`](https://www.npmjs.com/package/pi-web-access)**
+
+安装：
+
+```powershell
+pi install npm:pi-web-access
+```
+
+补齐 Pi 联网能力。
+
+**[`pi-markdown-preview`](https://www.npmjs.com/package/pi-markdown-preview)**
+
+安装：
+
+```powershell
+pi install npm:pi-markdown-preview
+```
+
+补齐 Pi 输出长 Markdown、表格、LaTeX 内容时的可视化预览效果。
+
+**[`@juicesharp/rpiv-todo`](https://www.npmjs.com/package/@juicesharp/rpiv-todo)**
+
+安装：
+
+```powershell
+pi install npm:@juicesharp/rpiv-todo
+```
+
+给 Pi 补齐 TODO list 能力。长会话、压缩、`/reload` 之后，任务状态还能留着
+
+**[`@juicesharp/rpiv-ask-user-question`](https://www.npmjs.com/package/@juicesharp/rpiv-ask-user-question)**
+
+安装：
+
+```powershell
+pi install npm:@juicesharp/rpiv-ask-user-question
+```
+
+给 Pi 补齐 结构化问答框
+
+**[`@juicesharp/rpiv-advisor`](https://www.npmjs.com/package/@juicesharp/rpiv-advisor)**
+
+安装：
+
+```powershell
+pi install npm:@juicesharp/rpiv-advisor
+```
+
+增强 Pi 的审查能力，模型在采取行动前，会向更强大的模型征求意见
+
+**[`@juicesharp/rpiv-i18n`](https://www.npmjs.com/package/@juicesharp/rpiv-i18n)**
+
+安装：
+
+```powershell
+pi install npm:@juicesharp/rpiv-i18n
+```
+
+这个包本身不是工作流核心，但如果你装了 `rpiv-*` 这一串，它只是作为底层本地化支持的package。
+
+**[`@narumitw/pi-plan-mode`](https://www.npmjs.com/package/@narumitw/pi-plan-mode)**
+
+安装：
+
+```powershell
+pi install npm:@narumitw/pi-plan-mode
+```
+
+补齐 Pi 的 `/plan` 模式
+
+**[`pi-until-done`](https://www.npmjs.com/package/pi-until-done)**
+
+安装：
+
+```powershell
+pi install npm:pi-until-done
+```
+
+补齐 Pi 的 `/goal` 模式
+
+**[`pi-observational-memory`](https://www.npmjs.com/package/pi-observational-memory)**
+
+安装：
+
+```powershell
+pi install npm:pi-observational-memory
+```
+
+上下文压缩控制相关的 package
+
+**[`context-mode`](https://www.npmjs.com/package/context-mode)**
+
+这个包也是上下文压缩控制相关的package。安装：
+
+```powershell
+pi install npm:context-mode
+```
+
+前者更偏“怎么记住”，它更偏“怎么少把垃圾上下文直接塞进窗口里”
+
+**[`nano-context`](https://github.com/daynin/nano-context)**
+
+安装：
+
+```powershell
+pi install git:github.com/daynin/nano-context
+```
+
+美化类 package，就是把默认上下文占用显示换成一个更紧凑的 meter
+
+**[`pi-subagents`](https://github.com/nicobailon/pi-subagents)**
+
+安装：
+
+```powershell
+pi install npm:pi-subagents
+```
+
+补齐 Pi 的 subagents 能力，需要注意装了不等于会自动积极触发。你后面会看到，我专门给它单独配了 `subagents` 段和扩展配置，不然它很容易停留在“理论上可用”
+
+**[`pi-mcp-adapter`](https://github.com/nicobailon/pi-mcp-adapter)**
+
+安装：
+
+```powershell
+pi install npm:pi-mcp-adapter
+```
+
+补齐 Pi 的 MCP 能力
+
+**[`pi-lens`](https://github.com/apmantza/pi-lens)**
+
+安装：
+
+```powershell
+pi install npm:pi-lens
+```
+
+补齐 Pi 的 LSP 能力，我的使用经验就是让它贴着我本机现有的 LSP、formatter、lint 习惯走
+
+**[`pi-simplify`](https://www.npmjs.com/package/pi-simplify)**
+
+安装：
+
+```powershell
+pi install npm:pi-simplify
+```
+
+审查相关 package ，我日常把它当成一种轻量的收尾检查
+
+**[`pi-zentui`](https://www.npmjs.com/package/pi-zentui)**
+
+这个包则纯粹是体验层。安装：
+
+```powershell
+pi install npm:pi-zentui
+```
+
+默认 TUI 我觉得一般，`pi-zentui` 这种状态栏和界面增强做完之后，日常盯 Pi 干活的感觉会顺很多，所以最后我还是留了
+
+全部装完之后，先跑一遍：
+
+```powershell
+pi list
+```
+
+确认列表正常，再回 Pi 里执行：
+
+```text
+/reload
+```
+
+---
+
+## 六、配置索引
+
+这篇后面只有几处地方会放完整配置，其余流程章节如果需要解释，只会截相关片段。你可以按下面这个索引跳着看：
+
+1. 第七节看 `@gotgenes/pi-permission-system`
+   对应 `~/.pi/agent/extensions/pi-permission-system/config.json`
+
+2. 第八节看 `pi-subagents`
+   对应 `~/.pi/agent/settings.json` 里的 `subagents` 片段
+   以及 `~/.pi/agent/extensions/subagent/config.json`
+
+3. 第九节看 `pi-mcp-adapter`
+   对应 `~/.pi/agent/mcp.json`
+
+4. 第十节看长会话压缩和 `pi-observational-memory`
+   对应 `~/.pi/agent/settings.json` 里的 `compaction` 和 `observational-memory`
+
+5. 第十一节看完整全局配置
+   对应 `~/.pi/agent/settings.json` 和 `~/.pi/agent/models.json`
+
+注意不是每个 package 都有独立配置文件，像 `pi-rewind`、`pi-wtf`、`pi-web-access`、`pi-markdown-preview`、`rpiv-todo`、`rpiv-advisor`、`pi-zentui` 这类包，大多数装完就能用。
+
+真正需要你手配的，主要还是权限系统、subagents、MCP、长会话压缩、模型/provider 这几块。`pi-lens` 则更特殊一点，它在我当前全局 `~/.pi` 下面没有单独配置文件，我现在的做法是让它尽量遵循项目本身已有的 LSP、formatter、lint 配置。也就是说，像 Python 这种语言，我是通过项目自己的 `black`、LSP、工作区配置来对齐
+
+---
+
+## 七、先把权限系统配好
+
+Pi 默认不带强约束权限系统，我现在在用的 package `@gotgenes/pi-permission-system` 的权限配置文件位置是：
+
+`~/.pi/agent/extensions/pi-permission-system/config.json`
+
+[details="pi-permission-system 配置示例"]
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/gotgenes/pi-packages/main/packages/pi-permission-system/schemas/permissions.schema.json",
+  "debugLog": false,
+  "permissionReviewLog": false,
+  "yoloMode": false,
+  "piInfrastructureReadPaths": [
+    "~/.pi/agent",
+    "~/.pi/agent/*",
+    "~/AppData/Roaming/npm/node_modules/@earendil-works",
+    "~/AppData/Roaming/npm/node_modules/@earendil-works/*"
+  ],
+  "permission": {
+    "*": "allow",
+    "grep": "deny",
+    "find": "deny",
+    "external_directory": {
+      "*": "ask",
+      "~/.pi/agent": "allow",
+      "~/.pi/agent/*": "allow"
+    },
+    "path": {
+      "*": "allow",
+      "*.env": "deny",
+      "*.env.*": "deny",
+      "*.env.example": "allow",
+      "~/.ssh/*": "deny",
+      "$HOME/.ssh/*": "deny",
+      "~/.pi/agent/auth.json": "deny",
+      "~/.pi/agent/models.json": "deny",
+      "~/.codex/auth.json": "deny"
+    },
+    "bash": {
+      "*": "allow",
+      "Remove-Item *": "ask",
+      "rm *": "ask",
+      "del *": "ask",
+      "erase *": "ask",
+      "rd *": "ask",
+      "rmdir *": "ask",
+      "ri *": "ask",
+      "mv *": "ask",
+      "Move-Item *": "ask",
+      "Rename-Item *": "ask",
+      "Clear-Content *": "ask",
+      "Set-Content *": "ask",
+      "Out-File *": "ask",
+      "cmd /c del *": "ask",
+      "cmd /c erase *": "ask",
+      "cmd /c rd *": "ask",
+      "cmd /c rmdir *": "ask",
+      "cmd.exe /c del *": "ask",
+      "cmd.exe /c erase *": "ask",
+      "cmd.exe /c rd *": "ask",
+      "cmd.exe /c rmdir *": "ask",
+      "powershell *Remove-Item*": "ask",
+      "powershell.exe *Remove-Item*": "ask",
+      "pwsh *Remove-Item*": "ask",
+      "pwsh.exe *Remove-Item*": "ask",
+      "powershell *Move-Item*": "ask",
+      "powershell.exe *Move-Item*": "ask",
+      "pwsh *Move-Item*": "ask",
+      "pwsh.exe *Move-Item*": "ask",
+      "powershell *Rename-Item*": "ask",
+      "powershell.exe *Rename-Item*": "ask",
+      "pwsh *Rename-Item*": "ask",
+      "pwsh.exe *Rename-Item*": "ask",
+      "powershell *Clear-Content*": "ask",
+      "powershell.exe *Clear-Content*": "ask",
+      "pwsh *Clear-Content*": "ask",
+      "pwsh.exe *Clear-Content*": "ask",
+      "powershell *Set-Content*": "ask",
+      "powershell.exe *Set-Content*": "ask",
+      "pwsh *Set-Content*": "ask",
+      "pwsh.exe *Set-Content*": "ask",
+      "powershell *Out-File*": "ask",
+      "powershell.exe *Out-File*": "ask",
+      "pwsh *Out-File*": "ask",
+      "pwsh.exe *Out-File*": "ask",
+      "git clean *": "ask",
+      "git reset --hard *": "ask",
+      "git checkout -- *": "ask",
+      "git restore *": "ask"
+    }
+  }
+}
+```
+[/details]
+
+这里我强调三个关键点：
+
+1. 我显式把 `grep` 和 `find` 关掉，是为了把搜索统一交给 `pi-fff`，顺便避免 permission-system 把原本隐藏的内置工具重新暴露出来
+2. 我对“删除、移动、重命名、重置 git”这类命令一律设成 `ask`，因为我更相信人来拍板
+3. Windows 下别只盯着 `rm`。`cmd /c del`、`pwsh Remove-Item`、`Move-Item`、`Out-File` 这类变体我都一起拦了
+
+---
+
+## 八、subagents 怎么配
+
+`pi-subagents` 它只是给 Pi 增加了 delegation 能力，你还得自己把模型、并发和提示词习惯配好
+
+我现在的 `settings.json` 里，subagents 这块是这样的：
+
+[details="settings.json 里的 subagents 配置"]
+```json
+{
+  "subagents": {
+    "defaultModel": "gpt-5.6-luna",
+    "agentOverrides": {
+      "delegate": {
+        "model": "gpt-5.6-luna",
+        "thinking": "low"
+      },
+      "scout": {
+        "model": "gpt-5.6-luna",
+        "thinking": "low"
+      },
+      "context-builder": {
+        "model": "gpt-5.6-luna",
+        "thinking": "medium",
+        "fallbackModels": [
+          "gpt-5.6-terra"
+        ]
+      },
+      "researcher": {
+        "model": "gpt-5.6-luna",
+        "thinking": "medium",
+        "fallbackModels": [
+          "gpt-5.6-terra"
+        ]
+      },
+      "planner": {
+        "model": "gpt-5.6-terra",
+        "thinking": "high",
+        "inheritProjectContext": true,
+        "fallbackModels": [
+          "claude-sonnet-4-6"
+        ]
+      },
+      "worker": {
+        "model": "gpt-5.6-terra",
+        "thinking": "high",
+        "inheritProjectContext": true,
+        "fallbackModels": [
+          "claude-sonnet-4-6"
+        ]
+      },
+      "reviewer": {
+        "model": "claude-sonnet-4-6",
+        "thinking": "high",
+        "inheritProjectContext": true,
+        "fallbackModels": [
+          "gpt-5.6-terra"
+        ]
+      },
+      "oracle": {
+        "model": "gpt-5.6-terra",
+        "thinking": "high",
+        "inheritProjectContext": true,
+        "fallbackModels": [
+          "claude-sonnet-4-6"
+        ]
+      }
+    }
+  }
+}
+```
+[/details]
+
+而 `~/.pi/agent/extensions/subagent/config.json` 我现在用的是：
+
+[details="subagent 扩展配置"]
+```json
+{
+  "toolDescriptionMode": "compact",
+  "asyncByDefault": false,
+  "globalConcurrencyLimit": 4,
+  "maxSubagentSpawnsPerSession": 16,
+  "worktreeBaseDir": "C:\\Users\\<YOUR_USER>\\.pi\\agent\\repos\\subagents-worktrees"
+}
+```
+[/details]
+
+这里 `worktreeBaseDir` 里的用户名我换成了 `<YOUR_USER>`。你得改成你自己机器上的实际路径
+
+这组配置的核心思路其实很简单，就是让 `gpt-5.6-luna` 去干轻活，让 `gpt-5.6-terra` 去扛主力规划和执行，再把 `claude-sonnet-4-6` 留给 reviewer，同时把并发收紧一点，不要一上来就乱飞
+
+另外别忘了这个诊断命令：
+
+```text
+/subagents-doctor
+```
+
+如果你装了以后感觉“怎么从来没触发过”，先跑这个，而不是先怀疑人生
+
+---
+
+## 九、MCP 怎么配
+
+我当时配置好 `pi-mcp-adapter` 把 Codex 的 MCP 迁到 Pi，第一眼看到 `0/N` 还以为迁移没生效。后来查 README 才意识到，默认 MCP 加载 是 lazy 的
+
+如果你也准备配 MCP，我建议先把“共享 MCP 配置”和“Pi 专属覆盖”分开。跨工具共用的放 `~/.config/mcp/mcp.json`，Pi 自己的覆盖层放 `~/.pi/agent/mcp.json`。
+
+我当前 `~/.pi/agent/mcp.json` 的思路是：
+
+[details="Pi MCP 配置示例"]
+```json
+{
+  "settings": {
+    "directTools": false
+  },
+  "mcpServers": {
+    "sequential-thinking": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ],
+      "lifecycle": "eager",
+      "directTools": true
+    },
+    "context7-1": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "lifecycle": "eager",
+      "directTools": true
+    },
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest"
+      ],
+      "lifecycle": "lazy"
+    },
+    "mcp-server-time": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-time",
+        "--local-timezone=Asia/Shanghai"
+      ],
+      "lifecycle": "eager",
+      "directTools": true
+    },
+    "shrimp-task-manager": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-shrimp-task-manager"
+      ],
+      "lifecycle": "eager",
+      "directTools": true,
+      "env": {
+        "DATA_DIR": "D:/<YOUR_SHRIMP_TASK_MANAGER_DATA_DIR>",
+        "ENABLE_GUI": "true",
+        "TEMPLATES_USE": "en"
+      }
+    },
+    "mcp-deepwiki": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-deepwiki@latest"
+      ],
+      "lifecycle": "eager",
+      "directTools": true
+    }
+  }
+}
+```
+[/details]
+
+`DATA_DIR` 和 `--directory` 这两个路径位在我真实 `~/.pi` 里都有具体值，这里我换成了占位符
+
+文档、思考、时间、任务管理这类轻工具我希望启动后就可用，所以设成 `eager`；而 `playwright` 这类重型服务，我保留成 `lazy` 按需加载
+
+---
+
+## 十、长会话和压缩怎么配
+
+这块我更建议你现在别先抄我的数字，而是先回 [Pi 模型目录](https://pi.dev/models) 看你当前模型到底支持多大的上下文窗口，再按那个长度去反推自己的压缩和 memory 触发线。一个比较稳的起手式，就是先按大约 80% 去设。比如某个模型你确认能吃 `1,000,000` tokens，那你的主要触发线就可以先往 `800,000` 左右去靠，再结合自己的实际工作流慢慢微调。
+
+我现在的配置是：
+
+[details="compaction 和 observational-memory 配置"]
+```json
+{
+  "compaction": {
+    "enabled": true,
+    "reserveTokens": 32768,
+    "keepRecentTokens": 48000
+  },
+  "observational-memory": {
+    "observeAfterTokens": 30000,
+    "reflectAfterTokens": 90000,
+    "compactAfterTokens": 200000,
+    "compactAfterTokensMode": "ratio",
+    "compactAfterTokensRatio": 0.8,
+    "observationsPoolMaxTokens": 32000,
+    "observationsPoolTargetTokens": 16000,
+    "agentMaxTurns": 16,
+    "passive": false,
+    "debugLog": false
+  }
+}
+```
+[/details]
+
+上面这一组是我当前的实配，和我自己的模型、relay、工作习惯有关。这里这组值更适合拿来参考字段怎么写，而不是直接当成唯一标准答案，我还是建议先去官网确认你当前模型支持的上下文长度，再把 `compaction` 和 memory 的关键触发线按 80% 左右去设
+
+---
+
+## 十一、我的完整配置
+
+如果你就想直接复刻一套和我现在很接近的 Pi 配置，其实只需要参考：
+
+1. `~/.pi/agent/settings.json`
+2. `~/.pi/agent/models.json`
+
+前面权限系统、subagents 扩展、MCP 我已经分别给了独立配置。这里我把这两份一起放出来
+
+[details="完整 settings.json"]
+```json
+{
+  "lastChangelogVersion": "0.80.6",
+  "shellPath": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+  "defaultProvider": "openai",
+  "defaultModel": "gpt-5.6-terra",
+  "subagents": {
+    "defaultModel": "gpt-5.6-luna",
+    "agentOverrides": {
+      "delegate": {
+        "model": "gpt-5.6-luna",
+        "thinking": "low"
+      },
+      "scout": {
+        "model": "gpt-5.6-luna",
+        "thinking": "low"
+      },
+      "context-builder": {
+        "model": "gpt-5.6-luna",
+        "thinking": "medium",
+        "fallbackModels": [
+          "gpt-5.6-terra"
+        ]
+      },
+      "researcher": {
+        "model": "gpt-5.6-luna",
+        "thinking": "medium",
+        "fallbackModels": [
+          "gpt-5.6-terra"
+        ]
+      },
+      "planner": {
+        "model": "gpt-5.6-terra",
+        "thinking": "high",
+        "inheritProjectContext": true,
+        "fallbackModels": [
+          "claude-sonnet-4-6"
+        ]
+      },
+      "worker": {
+        "model": "gpt-5.6-terra",
+        "thinking": "high",
+        "inheritProjectContext": true,
+        "fallbackModels": [
+          "claude-sonnet-4-6"
+        ]
+      },
+      "reviewer": {
+        "model": "claude-sonnet-4-6",
+        "thinking": "high",
+        "inheritProjectContext": true,
+        "fallbackModels": [
+          "gpt-5.6-terra"
+        ]
+      },
+      "oracle": {
+        "model": "gpt-5.6-terra",
+        "thinking": "high",
+        "inheritProjectContext": true,
+        "fallbackModels": [
+          "claude-sonnet-4-6"
+        ]
+      }
+    }
+  },
+  "defaultThinkingLevel": "xhigh",
+  "hideThinkingBlock": true,
+  "enabledModels": [
+    "gpt-5.5",
+    "gpt-5.6-luna",
+    "gpt-5.6-terra",
+    "gpt-5.6-sol",
+    "claude-sonnet-4-6",
+    "claude-opus-4-8"
+  ],
+  "packages": [
+    "npm:pi-mcp-adapter",
+    "npm:context-mode",
+    "npm:pi-until-done",
+    "npm:@narumitw/pi-plan-mode",
+    "git:github.com/daynin/nano-context",
+    "npm:@juicesharp/rpiv-advisor",
+    "npm:pi-simplify",
+    "npm:pi-markdown-preview",
+    "npm:@juicesharp/rpiv-ask-user-question",
+    "npm:@juicesharp/rpiv-i18n",
+    "npm:pi-rewind",
+    "npm:@gotgenes/pi-permission-system",
+    "npm:pi-observational-memory",
+    "npm:pi-wtf",
+    "npm:@ff-labs/pi-fff",
+    "npm:pi-web-access",
+    "npm:@juicesharp/rpiv-todo",
+    "npm:pi-lens",
+    "npm:pi-zentui",
+    "npm:pi-subagents"
+  ],
+  "compaction": {
+    "enabled": true,
+    "reserveTokens": 32768,
+    "keepRecentTokens": 48000
+  },
+  "observational-memory": {
+    "observeAfterTokens": 30000,
+    "reflectAfterTokens": 90000,
+    "compactAfterTokens": 200000,
+    "compactAfterTokensMode": "ratio",
+    "compactAfterTokensRatio": 0.8,
+    "observationsPoolMaxTokens": 32000,
+    "observationsPoolTargetTokens": 16000,
+    "agentMaxTurns": 16,
+    "passive": false,
+    "debugLog": false
+  },
+  "theme": "dark",
+  "thinkingBudgets": {
+    "minimal": 1024,
+    "low": 4096,
+    "medium": 12288,
+    "high": 32768,
+    "xhigh": 65536
+  },
+  "steeringMode": "one-at-a-time",
+  "followUpMode": "one-at-a-time",
+  "transport": "auto",
+  "images": {
+    "autoResize": true,
+    "blockImages": false
+  },
+  "retry": {
+    "enabled": true
+  },
+  "terminal": {
+    "showImages": true
+  },
+  "enableSkillCommands": true,
+  "quietStartup": false,
+  "defaultProjectTrust": "ask",
+  "treeFilterMode": "default",
+  "doubleEscapeAction": "tree",
+  "httpIdleTimeoutMs": 300000
+}
+```
+[/details]
+
+注意你真正安装 package 还是建议老老实实用 `pi install ...`，当前 `settings.json` 里的 `packages` 只是我安装的的清单
+
+[details="完整 models.json"]
+```json
+{
+  "providers": {
+    "openai": {
+      "baseUrl": "<YOUR_OPENAI_COMPAT_BASE_URL>",
+      "modelOverrides": {
+        "gpt-5.6-luna": {
+          "contextWindow": 1050000
+        },
+        "gpt-5.6-terra": {
+          "contextWindow": 1050000
+        },
+        "gpt-5.6-sol": {
+          "contextWindow": 1050000
+        }
+      }
+    },
+    "anthropic": {
+      "baseUrl": "<YOUR_ANTHROPIC_COMPAT_BASE_URL>"
+    }
+  }
+}
+```
+[/details]
+
+注意你得自己把中转地址补上
+
+---
+
+## 十二、最后一轮检查命令
+
+全部配完之后，我建议你按这个顺序检查：
+
+```text
+/model
+/reload
+/mcp
+/subagents-doctor
+```
+
+然后终端里跑：
+
+```powershell
+pi list
+```
+
+只要这几步都正常，你这套 Pi 基本就已经能用了
+
+---
+
+## 最后
+
+Pi 这套东西，最容易走偏的地方不是“不会配”，而是“什么都想配”
+
+我自己现在写完这篇文章回头看，这次折腾收获最大的不是最后装了多少 package，而是我终于把整套配置收敛到了自己能说清楚的程度，这样搭出来的 Pi 才是能长期用的，而不是一个“看起来很强，实际上自己也不敢动”的配置博物馆
