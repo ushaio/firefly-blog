@@ -1,4 +1,564 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Firefly</title><description>生活|摄影|工作</description><link>https://shaio.top/</link><templateTheme>Firefly</templateTheme><templateThemeVersion>6.12.2</templateThemeVersion><templateThemeUrl>https://github.com/CuteLeaf/Firefly</templateThemeUrl><lastBuildDate>2026年10月20日 22:59:53</lastBuildDate><item><title>261020品牌运营</title><link>https://shaio.top/posts/%E8%BF%90%E8%90%A5/261020%E5%93%81%E7%89%8C%E8%BF%90%E8%90%A5/</link><guid isPermaLink="true">https://shaio.top/posts/%E8%BF%90%E8%90%A5/261020%E5%93%81%E7%89%8C%E8%BF%90%E8%90%A5/</guid><description>宠物行业 AI 内容运营平台的功能梳理：信息聚合与信息发布。</description><pubDate>Tue, 20 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;section&gt;&lt;h1&gt;信息聚合&lt;a href=&quot;#信息聚合&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h1&gt;&lt;blockquote&gt;&lt;p&gt;收集各平台相关数据，聚合提炼有用信息，用于AI做内容分析&lt;/p&gt;&lt;/blockquote&gt;&lt;p&gt;其中细分如下功能板块：&lt;/p&gt;&lt;ul&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Firefly</title><description>生活|摄影|工作</description><link>https://shaio.top/</link><templateTheme>Firefly</templateTheme><templateThemeVersion>6.12.2</templateThemeVersion><templateThemeUrl>https://github.com/CuteLeaf/Firefly</templateThemeUrl><lastBuildDate>2026年10月23日 07:38:31</lastBuildDate><item><title>幻觉率怎么测</title><link>https://shaio.top/posts/02ai%E6%98%AF%E5%A4%A9%E5%9D%91/261022%E5%B9%BB%E8%A7%89%E7%8E%87%E4%BC%98%E5%8C%96/</link><guid isPermaLink="true">https://shaio.top/posts/02ai%E6%98%AF%E5%A4%A9%E5%9D%91/261022%E5%B9%BB%E8%A7%89%E7%8E%87%E4%BC%98%E5%8C%96/</guid><description>幻觉率的标注口径：参照系、claim 级判定、回答级三角、归因与门禁</description><pubDate>Thu, 22 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;section&gt;&lt;h1&gt;幻觉率怎么测&lt;a href=&quot;#幻觉率怎么测&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h1&gt;&lt;p&gt;幻觉率是标注口径的产物。口径不定死，同一套系统两个人能量出两个数，而说不出差在哪。下面这条链子把它拆成六步：参照系 → 判定单位 → 样本 → 指标 → 归因 → 门禁。顺序不能换，换掉任何一环，后面得到的数都是虚的。&lt;/p&gt;&lt;section&gt;&lt;h2&gt;一、参照系：幻觉是相对谁说的&lt;a href=&quot;#一参照系幻觉是相对谁说的&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;幻觉指断言与参照系冲突。参照系不同，测的就不是同一件事：&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;RAG 系统：检索到的证据&lt;/li&gt;
+&lt;li&gt;纯模型：外部事实&lt;/li&gt;
+&lt;li&gt;Agent：工具真实返回值&lt;/li&gt;
+&lt;li&gt;LLM wiki：原始源，wiki 页面本身不能当参照系&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;混着算没有意义。这是整套流程里唯一不能商量的一步。&lt;/p&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;二、判定单位&lt;a href=&quot;#二判定单位&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;一条回答里 5 个知识点错 1 个，按回答级算 100% 污染，按 claim 级算 20%，而学生被误导的程度是同一个。所以判定单位是 claim：把回答拆成原子命题，一条只含一个事实。&lt;/p&gt;&lt;p&gt;怎么拆、怎么判，文末有一个完整判例。&lt;/p&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;三、样本&lt;a href=&quot;#三样本&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;真实日志分层抽：学科 × 学段 × 题型 × 是否命中知识库&lt;/li&gt;
+&lt;li&gt;不可回答集，占 10–15%&lt;/li&gt;
+&lt;li&gt;伪前提集，前提本身是假的&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;自己设计的好题测出来的率，只证明题出得好。&lt;/p&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;四、指标：一个率，一个三角&lt;a href=&quot;#四指标一个率一个三角&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;claim 幻觉率 =（contradicted + fabricated）/ 全部 claim&lt;/p&gt;&lt;p&gt;回答级看三角：有效 + 污染 + 拒答，三项之和恒等于 100%。同一条问题只有三种去向，必须同时报。只报幻觉率，模型会学会说”我不确定”把数字刷下去。脚本会专门抓这种组合：幻觉率过关、拒答率超线，提示”用不会换不出错”。&lt;/p&gt;&lt;p&gt;每个比例要带 Wilson 区间。演示数据 447 条 claim 算出 2.9%，抽样误差 ±1.6%；压到 ±1% 需要 1085 条，要证明”相对下降 40%“每组各需 2633 条。样本不够就老老实实写”方向可用、不可对外报数”。拿 100 条算出”8% 降到 5%“就宣布优化成功，那点样本分不出信号和噪声。&lt;/p&gt;&lt;p&gt;分层必须做。同一批数据里地理 7.3%，是全局均值的 2.5 倍；不可回答组 11.4%，是可回答组 2.2% 的五倍。这两个数在总均值里都被稀释掉了，而家长投诉就来自这部分。&lt;/p&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;五、归因&lt;a href=&quot;#五归因&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;每个错误 claim 归到一个环节：检索未召回、召回但内容错、有据不依、知识过时、过度断言。&lt;/p&gt;&lt;p&gt;五类的修法完全不同。演示数据里最大项是”召回但内容错”，占 46%，该动的是切片和 rerank，改 prompt 没用。率决定能不能上线，归因决定改哪里。&lt;/p&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;六、门禁&lt;a href=&quot;#六门禁&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;claim 级 κ ≥ 0.7 才进入统计，低于 0.7 回头改规范&lt;/li&gt;
+&lt;li&gt;judge 先和人工对 200 条，一致率 ≥ 90% 才允许用于自动化&lt;/li&gt;
+&lt;li&gt;每版回归，不达标不许上线&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;κ 那条不能跳过。两个人对”什么叫幻觉”理解不一样，标出来的数字就不可复现，指标会莫名波动，而且查不出原因。&lt;/p&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;一个完整例子：这条回答算不算幻觉&lt;a href=&quot;#一个完整例子这条回答算不算幻觉&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;用户问&lt;/strong&gt;：地中海气候的分布和成因是什么？&lt;/p&gt;&lt;p&gt;&lt;strong&gt;系统答&lt;/strong&gt;：&lt;/p&gt;&lt;blockquote&gt;&lt;p&gt;地中海气候分布在南北纬 30°–40° 大陆西岸，以地中海沿岸最典型。夏季受副热带高气压带控制，炎热干燥；冬季受西风带影响，温和多雨。人教版必修一第 47 页有罗马的气温曲线和降水柱状图，可以对照看。&lt;/p&gt;&lt;/blockquote&gt;&lt;p&gt;&lt;strong&gt;证据取自系统日志里当时检索到的文段&lt;/strong&gt;：&lt;/p&gt;&lt;blockquote&gt;&lt;p&gt;地中海气候分布在南北纬 30°～40° 大陆西岸。夏季受副热带高压控制，炎热干燥；冬季受西风带控制，温和多雨。&lt;/p&gt;&lt;/blockquote&gt;&lt;p&gt;这一条要卡死。事后翻教材补证据，等于替系统把检索错误抹平，最后测出来的是”一个假想中检索完美的系统”的幻觉率。归因也跟着失真，因为分不清是检索错了，还是生成不忠实。RAG 的日志里本来就有它当时看到的文档，取那份就行。&lt;/p&gt;&lt;p&gt;&lt;strong&gt;拆成五条断言，逐条对照&lt;/strong&gt;：&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;回答 ID&lt;/th&gt;&lt;th&gt;断言&lt;/th&gt;&lt;th&gt;当时检索到的证据&lt;/th&gt;&lt;th&gt;标签&lt;/th&gt;&lt;th&gt;归因&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;A-017&lt;/td&gt;&lt;td&gt;分布在南北纬 30–40° 大陆西岸&lt;/td&gt;&lt;td&gt;”分布在南北纬 30°～40° 大陆西岸”&lt;/td&gt;&lt;td&gt;supported&lt;/td&gt;&lt;td&gt;—&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;A-017&lt;/td&gt;&lt;td&gt;以地中海沿岸最典型&lt;/td&gt;&lt;td&gt;（检索结果里没有）&lt;/td&gt;&lt;td&gt;unsupported&lt;/td&gt;&lt;td&gt;—&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;A-017&lt;/td&gt;&lt;td&gt;夏季受副高控制，炎热干燥&lt;/td&gt;&lt;td&gt;”夏季受副热带高压控制，炎热干燥”&lt;/td&gt;&lt;td&gt;supported&lt;/td&gt;&lt;td&gt;—&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;A-017&lt;/td&gt;&lt;td&gt;冬季受西风带影响，温和多雨&lt;/td&gt;&lt;td&gt;”冬季受西风带控制，温和多雨”&lt;/td&gt;&lt;td&gt;supported&lt;/td&gt;&lt;td&gt;—&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;A-017&lt;/td&gt;&lt;td&gt;人教版必修一第 47 页有罗马气温降水图&lt;/td&gt;&lt;td&gt;（检索结果里没有，翻教材也没有）&lt;/td&gt;&lt;td&gt;fabricated&lt;/td&gt;&lt;td&gt;unfaithful&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;p&gt;&lt;strong&gt;判定只有三个出口&lt;/strong&gt;：&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;证据里找得到，意思一致 → supported&lt;/li&gt;
+&lt;li&gt;证据里找得到，意思相反 → contradicted&lt;/li&gt;
+&lt;li&gt;证据里找不到，再看它有没有编出具体的东西（页码、题号、人名、数据来源）：编了记 fabricated，没编记 unsupported&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;补一条：证据里没有、但事实本身可判定（算式、史实、地理坐标），直接用事实判，错了记 contradicted。&lt;/p&gt;&lt;p&gt;&lt;strong&gt;“意思相反”拆成五类，不靠感觉&lt;/strong&gt;：&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;形态&lt;/th&gt;&lt;th&gt;例子&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;数值、方向反&lt;/td&gt;&lt;td&gt;升高 / 降低；30–40° / 40–60°&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;因果颠倒&lt;/td&gt;&lt;td&gt;A 导致 B / B 导致 A&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;主体错位&lt;/td&gt;&lt;td&gt;甲状腺激素 / 胰岛素&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;限定词改变&lt;/td&gt;&lt;td&gt;全部 / 部分；一定 / 可能；主要 / 唯一&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;时序颠倒&lt;/td&gt;&lt;td&gt;先 A 后 B / 先 B 后 A&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;p&gt;证据说”促进新陈代谢”，答”抑制新陈代谢”，命中第一类，判 contradicted。两个词只差一个字，LLM judge 经常漏。证据说”夏季炎热干燥”，答”夏季高温少雨”，五项都不冲突，判 supported。&lt;/p&gt;&lt;p&gt;&lt;strong&gt;这条回答的毛病在哪&lt;/strong&gt;：读起来通顺、专业、挑不出问题，唯一的毛病是最后一句的页码是编的。人眼扫过去会漏，拆成五条一条条对，漏不掉。对应的数：claim 级 1÷5 = 20%，回答级这一条进”污染”桶，归因填 unfaithful。检索和证据都没问题，是生成时自己加了一句。&lt;/p&gt;&lt;p&gt;&lt;strong&gt;“依据”列空着不是数据缺失&lt;/strong&gt;：检索结果里确实没有那句话，空就是结论，直接记 unsupported。真要说缺，缺的是知识库覆盖度，那要另外修。&lt;/p&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;从哪开始&lt;a href=&quot;#从哪开始&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;抽 50 条试标，算一次 κ。一天之内就知道这套口径在团队里能不能落地，这一步过不了，后面所有数字都是自己骗自己。&lt;/p&gt;&lt;p&gt;跑一轮大约 3–4 天，成本在标注，不在写代码。标注表四列：断言、当时检索到的证据、标签、归因。按规范标 150–300 条真实日志存成 jsonl，&lt;code&gt;measure.py --input 数据.jsonl --md 报告.md&lt;/code&gt; 直接出报告，&lt;code&gt;data.example.jsonl&lt;/code&gt; 里有三行手写样例可以照着填。&lt;/p&gt;&lt;/section&gt;&lt;/section&gt;</content:encoded></item><item><title>本地资源库索引优化方案：从库文件分层到 FTS5 定向维护</title><link>https://shaio.top/posts/03mogallery/desktop/261022%E6%9C%AC%E5%9C%B0%E8%B5%84%E6%BA%90%E5%BA%93%E7%B4%A2%E5%BC%95%E4%BC%98%E5%8C%96/</link><guid isPermaLink="true">https://shaio.top/posts/03mogallery/desktop/261022%E6%9C%AC%E5%9C%B0%E8%B5%84%E6%BA%90%E5%BA%93%E7%B4%A2%E5%BC%95%E4%BC%98%E5%8C%96/</guid><description>Emulsion Desktop 本地资源库的索引设计：库文件拆成元数据与缓存两库、扫描走整库内存 diff 而非逐文件增删、FTS5 索引从 O(N²) 改成 rowid 定向维护、查询与分页、批量写入与 SQLite 调优、缩略图记账与增量监听。</description><pubDate>Thu, 22 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;section&gt;&lt;h1&gt;本地资源库索引优化方案：从库文件分层到 FTS5 定向维护&lt;a href=&quot;#本地资源库索引优化方案从库文件分层到-fts5-定向维护&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h1&gt;&lt;p&gt;本地资源库的索引要解决的是一个老问题：磁盘上有一堆照片，散在各级文件夹里，程序得知道每一张的内容、位置和拍摄时间，还要能按关键词搜出来、按时间或大小排序翻页。&lt;/p&gt;&lt;p&gt;这个索引同时被三种压力拉扯。写入要快，否则首次建库和后续增删都难受；查询要快，关键词和深翻页都不能随数据量退化；已有的索引重复走一遍还得便宜，否则每次扫描都在做无用功。&lt;/p&gt;&lt;p&gt;Emulsion Desktop 的本地库把这几块拆成七个相对独立的决定：库文件怎么分、扫描怎么比、FTS 索引怎么维护、查询怎么拼、写入怎么批、缩略图怎么记账、改动怎么监听。下面按代码里实际的层次讲这套方案是怎么落地的。&lt;/p&gt;&lt;section&gt;&lt;h2&gt;库文件分层：元数据与缓存分开存&lt;a href=&quot;#库文件分层元数据与缓存分开存&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;本地库有两个 SQLite 文件。&lt;/p&gt;&lt;p&gt;&lt;code&gt;library.db&lt;/code&gt; 存资产、文件夹、EXIF、标签、相册、人脸、向量这些元数据，是真正不可丢的索引。&lt;code&gt;derivatives.db&lt;/code&gt; 存缩略图和预览的记账，属于纯缓存，删了顶多重画一遍。&lt;/p&gt;&lt;p&gt;拆开的收益很直接（见 &lt;code&gt;local_library/store_derivatives.go&lt;/code&gt; 顶部注释）：&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;缩略图 worker 不再和扫描器抢 &lt;code&gt;library.db&lt;/code&gt; 的唯一写连接，批量索引期间写锁归扫描器独占。&lt;/li&gt;
+&lt;li&gt;缓存库可以开 &lt;code&gt;synchronous=OFF&lt;/code&gt;，因为每一行都能从源文件重建，写坏一行的代价只是重画一张缩略图。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;library.db&lt;/code&gt; 保持小体积，在线备份和 &lt;code&gt;PRAGMA quick_check&lt;/code&gt; 在大库上才跑得动。&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;后两条在库体量变大之后很实际。缓存数据是每张图一行的量级，把它塞进主库，备份体积和完整性检查时间会被一起拖大。&lt;/p&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;扫描走整库内存 diff&lt;a href=&quot;#扫描走整库内存-diff&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;旧的初始化写法是逐文件一套 &lt;code&gt;BEGIN IMMEDIATE ... COMMIT&lt;/code&gt;。单写连接下，每个文件一次 WAL 提交，哪怕这个文件什么都没变，也要付一次事务的代价。文件一多，这条路径就是纯线性的开销堆叠。&lt;/p&gt;&lt;p&gt;现在的扫描管线在 &lt;code&gt;local_library/scan_pipeline.go&lt;/code&gt; 顶部写成四步：&lt;/p&gt;&lt;ol&gt;
+&lt;li&gt;一次目录遍历，收齐路径、大小、修改时间。&lt;code&gt;entry.Info()&lt;/code&gt; 直接复用操作系统已经返回的目录项，不再额外 &lt;code&gt;stat&lt;/code&gt; 一次。&lt;/li&gt;
+&lt;li&gt;把现有索引整库读进内存，在内存里做 diff。&lt;/li&gt;
+&lt;li&gt;只有变化的文件进入并行 inspect（解码头、读 EXIF、探测 Live Photo），由一个写者批量提交。&lt;/li&gt;
+&lt;li&gt;索引对齐之后再进入缩略图预热，这一步可以交给后台。&lt;/li&gt;
+&lt;/ol&gt;&lt;p&gt;第 2 步是整套方案的核心。&lt;code&gt;indexSnapshot&lt;/code&gt; 一次顺序全表读把资产读成 &lt;code&gt;map[path_key]assetIndexRow&lt;/code&gt;，&lt;code&gt;folderSnapshot&lt;/code&gt; 同理把文件夹读进来。然后 &lt;code&gt;classifyScanEntries&lt;/code&gt; 拿目录树和这份快照做纯内存比对，大小和 mtime 都对得上的文件直接判为未变，写入次数为零。&lt;/p&gt;&lt;p&gt;带来的直接结果是：对已经索引过的库，一次扫描的写入成本为零，主体只剩一次顺序读；冷库首次没有快照可用，成本落在真正的 inspect 和写入上，这部分省不掉，只能靠批量摊薄。&lt;/p&gt;&lt;p&gt;第 3 步的并行度是 &lt;code&gt;max(2, min(GOMAXPROCS, 8))&lt;/code&gt;，批量大小 &lt;code&gt;indexWriteBatchSize = 256&lt;/code&gt;。首批在攒够 32 条或过一个 250ms 的 tick 就先落地，后面按 256 条一批提交。首批先落地是为了让界面早点看到东西，256 这个值则是提交开销和进度响应之间的折中。&lt;/p&gt;&lt;p&gt;文件夹祖先的解析也做了缓存。&lt;code&gt;ensureFolders&lt;/code&gt; 在一个事务里按相对路径逐级建父目录，路径段走内存 &lt;code&gt;cache&lt;/code&gt;，所以五万个文件散在五百个文件夹里，实际查库次数是五百量级。&lt;/p&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;FTS5 索引改成 rowid 定向维护&lt;a href=&quot;#fts5-索引改成-rowid-定向维护&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;FTS5 这块是老问题最集中的地方，&lt;code&gt;local_library/store_search.go&lt;/code&gt; 开头把来龙去脉写得很清楚。&lt;/p&gt;&lt;p&gt;旧版的 &lt;code&gt;asset_search&lt;/code&gt; 表里有一列 &lt;code&gt;UNINDEXED asset_id&lt;/code&gt;，靠触发器维护，逻辑是 &lt;code&gt;DELETE FROM asset_search WHERE asset_id=?&lt;/code&gt; 再重新插入。问题是 UNINDEXED 列没有索引，每次删除都得扫整个索引。索引 N 个资产，总代价是 O(N²)。&lt;/p&gt;&lt;p&gt;现在的做法换了键。&lt;code&gt;asset_search&lt;/code&gt; 直接用 &lt;code&gt;assets.local_id&lt;/code&gt; 当 FTS 的 rowid：&lt;/p&gt;&lt;div&gt;&lt;figure&gt;&lt;figcaption&gt;&lt;/figcaption&gt;&lt;pre&gt;&lt;code&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;1&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;CREATE&lt;/span&gt;&lt;span&gt; VIRTUAL &lt;/span&gt;&lt;span&gt;TABLE&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;IF&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;NOT&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;EXISTS&lt;/span&gt;&lt;span&gt; asset_search &lt;/span&gt;&lt;span&gt;USING&lt;/span&gt;&lt;span&gt; fts5(&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;2&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&lt;span&gt;    &lt;/span&gt;&lt;/span&gt;&lt;span&gt;file_name, relative_path, display_title, notes, tags, collections, camera,&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;3&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&lt;span&gt;    &lt;/span&gt;&lt;/span&gt;&lt;span&gt;tokenize&lt;/span&gt;&lt;span&gt;=&lt;/span&gt;&lt;span&gt;&apos;unicode61&apos;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;4&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;)&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/code&gt;&lt;/pre&gt;&lt;div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;p&gt;维护就变成 rowid 查找。更关键的是触发器完全不碰索引本体了，它们只往 &lt;code&gt;asset_search_dirty&lt;/code&gt; 这张队列表里追加脏行：&lt;/p&gt;&lt;div&gt;&lt;figure&gt;&lt;figcaption&gt;&lt;/figcaption&gt;&lt;pre&gt;&lt;code&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;1&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;CREATE&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;TRIGGER&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;IF&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;NOT&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;EXISTS&lt;/span&gt;&lt;span&gt; asset_search_assets_insert &lt;/span&gt;&lt;span&gt;AFTER&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;INSERT&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;ON&lt;/span&gt;&lt;span&gt; assets &lt;/span&gt;&lt;span&gt;BEGIN&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;2&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;    &lt;/span&gt;&lt;span&gt;INSERT INTO&lt;/span&gt;&lt;span&gt; asset_search_dirty(asset_id)&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;3&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;    &lt;/span&gt;&lt;span&gt;SELECT&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;NEW&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span&gt;id&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;WHERE&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;NOT&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;EXISTS&lt;/span&gt;&lt;span&gt; (&lt;/span&gt;&lt;span&gt;SELECT&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;1&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;FROM&lt;/span&gt;&lt;span&gt; asset_search_dirty dirty &lt;/span&gt;&lt;span&gt;WHERE&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;dirty&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span&gt;asset_id&lt;/span&gt;&lt;span&gt;=&lt;/span&gt;&lt;span&gt;NEW&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span&gt;id&lt;/span&gt;&lt;span&gt;);&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;4&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;END&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/code&gt;&lt;/pre&gt;&lt;div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;p&gt;真正的重建在 &lt;code&gt;flushAssetSearch&lt;/code&gt;，用 set-based 的 &lt;code&gt;DELETE ... WHERE rowid IN (...)&lt;/code&gt; 加 &lt;code&gt;INSERT ... SELECT&lt;/code&gt; 一批换掉。批量索引因此是每批一次合并写，而不是每行一次昂贵重建。&lt;/p&gt;&lt;p&gt;这段代码里还有个容易被忽略的坑，注释专门记了：触发器写在 &lt;code&gt;INSERT OR IGNORE&lt;/code&gt; 上会炸 &lt;code&gt;UNIQUE constraint failed&lt;/code&gt;。因为外层 UPSERT 自带 &lt;code&gt;ON CONFLICT&lt;/code&gt; 子句，SQLite 规定触发器跟随外层语句的冲突策略，其他约束就走默认的 ABORT。所以触发器体改成自己写 &lt;code&gt;WHERE NOT EXISTS&lt;/code&gt; 守卫，不依赖冲突子句。&lt;/p&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;查询侧的子查询与游标分页&lt;a href=&quot;#查询侧的子查询与游标分页&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;关键词过滤在拼 &lt;code&gt;where&lt;/code&gt; 时是一条子查询：&lt;/p&gt;&lt;div&gt;&lt;figure&gt;&lt;figcaption&gt;&lt;/figcaption&gt;&lt;pre&gt;&lt;code&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;1&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;a&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span&gt;local_id&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;IN&lt;/span&gt;&lt;span&gt; (&lt;/span&gt;&lt;span&gt;SELECT&lt;/span&gt;&lt;span&gt; rowid &lt;/span&gt;&lt;span&gt;FROM&lt;/span&gt;&lt;span&gt; asset_search &lt;/span&gt;&lt;span&gt;WHERE&lt;/span&gt;&lt;span&gt; asset_search &lt;/span&gt;&lt;span&gt;MATCH&lt;/span&gt;&lt;span&gt; ?)&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/code&gt;&lt;/pre&gt;&lt;div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;p&gt;旧写法是对每个候选资产行重算一次 &lt;code&gt;MATCH&lt;/code&gt; 的 correlated EXISTS，行数一多就是重复劳动。改成子查询后整条查询只做一次 FTS 匹配。&lt;/p&gt;&lt;p&gt;分页用 keyset 游标，不用 OFFSET。排序表达式同时进游标比较和 &lt;code&gt;SELECT&lt;/code&gt; 列，深翻页不会越翻越慢。单页上限 200。count 查询和主查询共用同一份 &lt;code&gt;where&lt;/code&gt;，避免两处拼接漂移。&lt;/p&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;写入批量与 SQLite 调优&lt;a href=&quot;#写入批量与-sqlite-调优&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;openStoreWithMigration&lt;/code&gt; 里的 DSN 是一组针对大库批量导入的 pragma：&lt;/p&gt;&lt;div&gt;&lt;figure&gt;&lt;figcaption&gt;&lt;/figcaption&gt;&lt;pre&gt;&lt;code&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;1&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;journal_mode(WAL)&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;2&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;synchronous(NORMAL)&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;3&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;cache_size(-32768)&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;4&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;temp_store(2)&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;5&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;wal_autocheckpoint(4000)&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;6&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;busy_timeout(10000)&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;7&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;foreign_keys(1)&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;8&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;txlock=immediate&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/code&gt;&lt;/pre&gt;&lt;div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;p&gt;&lt;code&gt;cache_size&lt;/code&gt; 取负值是按 KiB 表达，这里是 32 MiB 页缓存，让资产和文件夹的 B 树在索引期间常驻内存。&lt;code&gt;temp_store=2&lt;/code&gt; 是 MEMORY，排序和 FTS 合并的临时结构不落盘。&lt;code&gt;wal_autocheckpoint=4000&lt;/code&gt; 把 checkpoint 间隔拉长，避免批量导入时每几百页就回写一次。&lt;code&gt;_txlock=immediate&lt;/code&gt; 让事务一开就拿到 WAL 写预留，躲开延迟事务先读旧快照、再被缩略图 worker 抢先提交后撞上的 &lt;code&gt;SQLITE_BUSY_SNAPSHOT&lt;/code&gt;。&lt;/p&gt;&lt;p&gt;连接数固定为 1。modernc 驱动的页缓存状态是连接级的，同时开多个连接访问同一个大 WAL 库，在 Windows 上会冒出误导性的 &lt;code&gt;SQLITE_CANTOPEN&lt;/code&gt;。&lt;/p&gt;&lt;p&gt;批量 API 是一整套，不是零散几处：&lt;code&gt;writeIndexedFiles&lt;/code&gt;、&lt;code&gt;setPreviewResults&lt;/code&gt;、&lt;code&gt;updateLivePhotos&lt;/code&gt;、&lt;code&gt;markAssetsMissing&lt;/code&gt;、&lt;code&gt;stampScanToken&lt;/code&gt;、&lt;code&gt;reactivateAssets&lt;/code&gt;、&lt;code&gt;derivativeStore.setResults&lt;/code&gt; 全部单事务批处理。绑定参数用 &lt;code&gt;chunkedAssetIDs&lt;/code&gt; 压到 500 以内，避开 &lt;code&gt;SQLITE_MAX_VARIABLE_NUMBER&lt;/code&gt;。&lt;/p&gt;&lt;p&gt;覆盖度上，建库脚本里有 22 条显式 &lt;code&gt;CREATE INDEX&lt;/code&gt;（&lt;code&gt;library.db&lt;/code&gt; 21 条，&lt;code&gt;derivatives.db&lt;/code&gt; 1 条），全部带 &lt;code&gt;IF NOT EXISTS&lt;/code&gt;，跟着 &lt;code&gt;migrate()&lt;/code&gt; 每次开库幂等执行。按用途分组：&lt;/p&gt;&lt;p&gt;&lt;strong&gt;资产列表的主查询路径&lt;/strong&gt;，都是「可用性 + 排序键 + id」的复合索引，和 &lt;code&gt;listAssets&lt;/code&gt; 的几种排序对应：&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;idx_assets_availability_discovered (availability, discovered_at DESC, id DESC)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;idx_assets_modified (availability, modified_at_ns DESC, id DESC)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;idx_assets_rating (availability, rating DESC, id DESC)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;idx_assets_favorite (availability, is_favorite, discovered_at DESC)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;idx_assets_folder_name (folder_id, file_name COLLATE NOCASE, id)&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;&lt;strong&gt;FTS 的挂载点&lt;/strong&gt;：&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;idx_assets_local_id ON assets(local_id)&lt;/code&gt;，唯一索引，&lt;code&gt;asset_search&lt;/code&gt; 的 rowid 就靠它对齐&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;&lt;strong&gt;关联表与子表&lt;/strong&gt;（外键反查与过滤用）：&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;idx_asset_tags_tag_asset (tag_id, asset_id)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;idx_collection_assets_asset_collection (asset_id, collection_id)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;idx_asset_live_photos_live (is_live_photo, asset_id)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;idx_asset_clips_asset (asset_id, start_ms)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;idx_asset_derivations_source (source_asset_id, created_at DESC)&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;&lt;strong&gt;文件夹与相册树的层级遍历&lt;/strong&gt;：&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;idx_folders_parent (parent_id, name COLLATE NOCASE)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;idx_collection_groups_parent_position (parent_id, position, name COLLATE NOCASE)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;idx_collections_group_position (group_id, position, name COLLATE NOCASE)&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;&lt;strong&gt;人脸与向量&lt;/strong&gt;（按模型空间过滤）：&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;idx_asset_faces_asset (asset_id, model_id, model_version)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;idx_asset_faces_model (model_id, model_version, quality)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;idx_person_groups_model (model_id, model_version, state)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;idx_asset_embeddings_model (model_id, model_version, dim)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;idx_asset_embedding_status_model (model_id, model_version, status)&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;&lt;strong&gt;云同步状态&lt;/strong&gt;（&lt;code&gt;M009&lt;/code&gt;/&lt;code&gt;M010&lt;/code&gt; 迁移里单独建，不在主 schema 数组里）：&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;idx_assets_cloud_photo (cloud_photo_id)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;idx_assets_cloud_source (cloud_storage_source_id)&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;&lt;strong&gt;缓存库&lt;/strong&gt;：&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;idx_asset_derivatives_variant_accessed (variant, status, last_accessed_at)&lt;/code&gt;，&lt;code&gt;trimPreviewCache&lt;/code&gt; 的 LRU 裁剪和 &lt;code&gt;previewDerivativeEntries&lt;/code&gt; 的排序都走它&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;另有一批不写成 &lt;code&gt;CREATE INDEX&lt;/code&gt; 的索引：&lt;code&gt;assets.id&lt;/code&gt;、&lt;code&gt;assets.path_key&lt;/code&gt; 上的 &lt;code&gt;UNIQUE&lt;/code&gt; 约束，&lt;code&gt;tags.name_key&lt;/code&gt; 的 &lt;code&gt;UNIQUE&lt;/code&gt;，以及各关联表的复合主键，SQLite 都会自动建隐式索引（&lt;code&gt;sqlite_autoindex_*&lt;/code&gt;）。&lt;code&gt;asset_search&lt;/code&gt; 是 FTS5 虚拟表，它的倒排索引和 shadow 表由 FTS5 自己维护，也不在这份清单里。&lt;/p&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;缩略图记账独立成库&lt;a href=&quot;#缩略图记账独立成库&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;缩略图这一段同样绕开了”每张图一次往返”。&lt;/p&gt;&lt;p&gt;批量预热按 &lt;code&gt;thumbnailPrefetchBatch = 500&lt;/code&gt; 一次预取资产行，worker 池并发生成。记账走合并写，只有用户当前可见的交互请求才即时 flush。旧缓存文件只删被新 key 取代的那一个，不再 glob 整个目录（旧实现每生成一张就扫一次目录，是另一处 O(N²)）。预览缓存按 &lt;code&gt;last_accessed&lt;/code&gt; LRU 裁到 2GB 上限。&lt;/p&gt;&lt;p&gt;因为 &lt;code&gt;derivatives.db&lt;/code&gt; 是独立文件，这整段的写入压力都不落在 &lt;code&gt;library.db&lt;/code&gt; 的写锁上。&lt;/p&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;增量监听按路径 reconcile&lt;a href=&quot;#增量监听按路径-reconcile&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;日常增删几个文件不该触发整库遍历。&lt;code&gt;fsnotify&lt;/code&gt; 递归注册目录，事件做 700ms 去抖后按路径增量 &lt;code&gt;reconcilePath&lt;/code&gt;。只有目录级事件、或者删除/改名后已经 stat 不到的路径，才回退到全扫。&lt;/p&gt;&lt;p&gt;&lt;code&gt;reconcilePath&lt;/code&gt; 复用和扫描同一条管线，所以监听器改一个文件，走的也是”先比大小 mtime，未变就直接返回”这套判断。增量路径和全量扫描共用同一套判定，是这套方案能同时覆盖两种场景的前提。&lt;/p&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;方案小结&lt;a href=&quot;#方案小结&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;上面几节各自只解决一段，合起来是同一个取舍：把按文件计的开销，摊成按批计。&lt;/p&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;未变文件零写入&lt;/strong&gt;。整库 diff 在内存完成，重复扫描的主体只剩一次顺序读。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;FTS 从 O(N²) 变 rowid 维护&lt;/strong&gt;。脏队列加 set-based 重建，批量索引每批一次合并写。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;查询一条 FTS 子查询加 keyset 游标&lt;/strong&gt;。关键词与深翻页不随数据量二次放大。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;库文件分层&lt;/strong&gt;。缓存写入不抢主库写锁，备份和完整性检查保持轻量。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;批量写入与 pragma&lt;/strong&gt;。提交摊薄、页缓存常驻、临时结构不进磁盘。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;缩略图记账独立成库&lt;/strong&gt;。记账合并且有容量上限，不占主库写锁。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;增量监听&lt;/strong&gt;。日常改动不触发全量遍历，且与全量扫描共用同一套判定。&lt;/li&gt;
+&lt;/ol&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;方案目前的边界&lt;a href=&quot;#方案目前的边界&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;代码和文档里都标了没覆盖的部分，记一下，免得看上面以为已经封顶。&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;前端还在整查询 drain&lt;/strong&gt;。&lt;code&gt;LocalLibraryWorkbench.tsx&lt;/code&gt; 现在是 &lt;code&gt;while (result.nextCursor)&lt;/code&gt; 一页页把整个查询拉完，文档把”改成按需加载”列为独立待办。结果集大时，首屏之后的持续拉取仍然占着后端。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;非 JPEG 的元数据 inspect 偏贵&lt;/strong&gt;。这部分还留在初始化流程里，优化它们是另一项工作。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;语义检索是暴力 KNN&lt;/strong&gt;。&lt;code&gt;embeddingSearchSemanticRank&lt;/code&gt; 读该向量空间的全部向量逐一算余弦，O(N) 一次查询，靠 &lt;code&gt;embeddingSearchRankWindow = 200&lt;/code&gt; 截断排名窗口，再和 FTS 的 bm25 排名用 RRF（常数 60）融合。库里开了 embedding 之后，这一路是实际成本。关键词通道走 FTS5 不受影响。&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;这套索引的本体是把”每文件一次往返”换成”整库一次 diff 加批量提交”，再给 FTS 换一把能定向维护的钥匙。剩下的边界，都在前端取数和向量检索那两头。&lt;/p&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;额外补充：几万张照片时，怎么让它别卡在开库那一下&lt;a href=&quot;#额外补充几万张照片时怎么让它别卡在开库那一下&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;前面讲的是方案本身。这一节换个视角，从”打开一个几万张照片的库”这个具体场景回看上面那些决定各自挡在哪。&lt;/p&gt;&lt;p&gt;&lt;strong&gt;首次建库（冷库）&lt;/strong&gt;。这时候没有快照可比，每张照片都要真的打开读一遍，文件头、EXIF、Live Photo 探测一样都省不掉。成本落在 inspect 和写入上，只能靠两处摊薄：inspect 用 worker 池并行，写入按 256 条一批提交。进度条靠首批 32 条或 250ms 的 tick 先动起来，用户不用盯着一个静止的界面等。&lt;/p&gt;&lt;p&gt;&lt;strong&gt;再次开库（热库）&lt;/strong&gt;。这是差别最大的一步。整库 diff 在内存里跑完，大小和 mtime 都对的照片一条都不写。剩下的主体工作只有一次顺序全表读，把索引拉进内存。文件数从两万涨到十万，这一段的耗时涨得很慢。&lt;/p&gt;&lt;p&gt;&lt;strong&gt;开库之后立刻能看到什么&lt;/strong&gt;。索引对齐完就解锁文件夹操作，缩略图预热接着跑，可以交给后台。也就是说”能浏览”和”缩略图全画完”被解耦了，不必等所有缩略图都生成才让用户进门。&lt;/p&gt;&lt;p&gt;&lt;strong&gt;卡顿最容易藏在哪&lt;/strong&gt;。三个地方值得盯：FTS 维护如果还是旧的 UNINDEXED 删法，索引到几万条就是 O(N²)，开库会随库变大显著变慢；缩略图记账如果每张图一次提交又每张扫一遍目录，预热阶段是另一处 O(N²)；前端如果一页页把整个查询 drain 完，库越大首屏之后的持续拉取越重。前两个已经在方案里改掉了，第三个还留着，见上一节。&lt;/p&gt;&lt;p&gt;&lt;strong&gt;几个数量级的感觉&lt;/strong&gt;。五万个文件散在五百个文件夹里，文件夹解析的查库次数是五百量级；未变文件的写入次数是零；关键词查询整条只做一次 FTS 匹配，旧的写法是每行一次；深翻页走游标，页码翻到几百页也不变慢。&lt;/p&gt;&lt;p&gt;开库慢的根源是每个文件都要单独走一遍数据库。把它换成整库比一次，再按批提交只写变化的部分，卡顿的那一下就被摊平了。&lt;/p&gt;&lt;/section&gt;&lt;/section&gt;</content:encoded></item><item><title>Vue2 和 Vue3 的对比</title><link>https://shaio.top/posts/%E4%B8%AB%E4%B8%AB%E5%AD%A6%E8%AF%AD/vue/vue2-%E5%92%8C-vue3-%E7%9A%84%E5%AF%B9%E6%AF%94/</link><guid isPermaLink="true">https://shaio.top/posts/%E4%B8%AB%E4%B8%AB%E5%AD%A6%E8%AF%AD/vue/vue2-%E5%92%8C-vue3-%E7%9A%84%E5%AF%B9%E6%AF%94/</guid><description>data / methods / computed / watch / 生命周期在两版的写法对照，初始化流程里「谁能访问谁」的顺序差别，以及 this 的位置和兼容边界</description><pubDate>Thu, 22 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;section&gt;&lt;h1&gt;Vue2 和 Vue3 的对比&lt;a href=&quot;#vue2-和-vue3-的对比&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h1&gt;&lt;p&gt;同一个组件两套写法。写法差异往下追一层是初始化顺序，再往下追一层是响应式的实现方式，所以从响应式看起比较省事。&lt;/p&gt;&lt;section&gt;&lt;h2&gt;写法对照&lt;a href=&quot;#写法对照&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;/th&gt;&lt;th&gt;Vue2（Options API）&lt;/th&gt;&lt;th&gt;Vue3（Composition API）&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;状态&lt;/td&gt;&lt;td&gt;&lt;code&gt;data() { return { count: 0 } }&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;const count = ref(0)&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;方法&lt;/td&gt;&lt;td&gt;&lt;code&gt;methods: { inc() { this.count++ } }&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;const inc = () =&amp;gt; count.value++&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;派生&lt;/td&gt;&lt;td&gt;&lt;code&gt;computed: { double() { return this.count * 2 } }&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;const double = computed(() =&amp;gt; count.value * 2)&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;监听&lt;/td&gt;&lt;td&gt;&lt;code&gt;watch: { count(n, o) {} }&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;watch(count, (n, o) =&amp;gt; {})&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;自动监听&lt;/td&gt;&lt;td&gt;无对应写法&lt;/td&gt;&lt;td&gt;&lt;code&gt;watchEffect(() =&amp;gt; {})&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;生命周期&lt;/td&gt;&lt;td&gt;&lt;code&gt;created&lt;/code&gt; / &lt;code&gt;mounted&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;setup&lt;/code&gt; 内 / &lt;code&gt;onMounted&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;逻辑复用&lt;/td&gt;&lt;td&gt;mixins，命名冲突和来源不明&lt;/td&gt;&lt;td&gt;组合式函数 &lt;code&gt;useXxx()&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;Vue2 的加载顺序&lt;a href=&quot;#vue2-的加载顺序&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div&gt;&lt;figure&gt;&lt;figcaption&gt;&lt;/figcaption&gt;&lt;pre&gt;&lt;code&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;1&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;new Vue(options)&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;2&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&lt;span&gt;  &lt;/span&gt;&lt;/span&gt;&lt;span&gt;→ mergeOptions（data 策略合并、methods 覆盖、钩子合并成数组）&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;3&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&lt;span&gt;  &lt;/span&gt;&lt;/span&gt;&lt;span&gt;→ initLifecycle / initEvents / initRender&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;4&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&lt;span&gt;  &lt;/span&gt;&lt;/span&gt;&lt;span&gt;→ beforeCreate&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;5&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&lt;span&gt;  &lt;/span&gt;&lt;/span&gt;&lt;span&gt;→ initInjections&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;6&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&lt;span&gt;  &lt;/span&gt;&lt;/span&gt;&lt;span&gt;→ initState：props → methods → data → computed → watch&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;7&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&lt;span&gt;  &lt;/span&gt;&lt;/span&gt;&lt;span&gt;→ initProvide&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;8&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&lt;span&gt;  &lt;/span&gt;&lt;/span&gt;&lt;span&gt;→ created&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;9&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&lt;span&gt;  &lt;/span&gt;&lt;/span&gt;&lt;span&gt;→ $mount → render → patch → mounted&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/code&gt;&lt;/pre&gt;&lt;div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;p&gt;&lt;code&gt;initState&lt;/code&gt; 里那五步的顺序不是随意排的，它直接决定谁能访问谁：&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;props&lt;/code&gt; 最先初始化，所以 &lt;code&gt;data&lt;/code&gt; 里能读 &lt;code&gt;this.xxx&lt;/code&gt;（props）&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;methods&lt;/code&gt; 排在 &lt;code&gt;data&lt;/code&gt; 前，所以 &lt;code&gt;data&lt;/code&gt; 里能调 methods&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;computed&lt;/code&gt; 排在 &lt;code&gt;data&lt;/code&gt; 后，所以计算属性能依赖 data&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;watch&lt;/code&gt; 排最后，因为 &lt;code&gt;immediate&lt;/code&gt; 会立刻执行回调，而回调里通常要读 data 和 computed&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;反向访问都不成立：data 里读不到 computed，props 里读不到 data。&lt;/p&gt;&lt;p&gt;&lt;code&gt;data&lt;/code&gt; 在这一步被 &lt;code&gt;observe&lt;/code&gt; 递归处理，用 &lt;code&gt;Object.defineProperty&lt;/code&gt; 逐个属性重写 getter/setter。所以对象有多大，初始化就要遍历多大；数组的索引赋值和 &lt;code&gt;length&lt;/code&gt; 变化拦不住，得用 &lt;code&gt;Vue.set&lt;/code&gt; 或 &lt;code&gt;splice&lt;/code&gt;。&lt;/p&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;Vue3 的加载顺序&lt;a href=&quot;#vue3-的加载顺序&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div&gt;&lt;figure&gt;&lt;figcaption&gt;&lt;/figcaption&gt;&lt;pre&gt;&lt;code&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;1&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;createApp(options).mount()&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;2&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&lt;span&gt;  &lt;/span&gt;&lt;/span&gt;&lt;span&gt;→ createVNode → setupComponent&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;3&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&lt;span&gt;  &lt;/span&gt;&lt;/span&gt;&lt;span&gt;→ setup() 执行（此时 this 未就绪）&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;4&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&lt;span&gt;  &lt;/span&gt;&lt;/span&gt;&lt;span&gt;→ beforeCreate&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;5&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&lt;span&gt;  &lt;/span&gt;&lt;/span&gt;&lt;span&gt;→ 注入 → methods → data → computed → watch → provide&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;6&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&lt;span&gt;  &lt;/span&gt;&lt;/span&gt;&lt;span&gt;→ created&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;7&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&lt;span&gt;  &lt;/span&gt;&lt;/span&gt;&lt;span&gt;→ 建立渲染 effect（renderEffect）&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;8&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&lt;span&gt;  &lt;/span&gt;&lt;/span&gt;&lt;span&gt;→ patch → mounted&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/code&gt;&lt;/pre&gt;&lt;div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;p&gt;两处要留意。&lt;/p&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;setup&lt;/code&gt; 跑在 &lt;code&gt;beforeCreate&lt;/code&gt; 之前。&lt;/strong&gt; 所以 &lt;code&gt;setup&lt;/code&gt; 里 &lt;code&gt;this&lt;/code&gt; 是 &lt;code&gt;undefined&lt;/code&gt;，拿不到 data、methods、&lt;code&gt;$refs&lt;/code&gt;。Composition API 本来就走显式引用，不用 &lt;code&gt;this&lt;/code&gt;。&lt;/p&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;initState&lt;/code&gt; 的五步顺序在兼容层里被原样保留。&lt;/strong&gt; Vue3 的 Options API 跑在 Composition API 之上（&lt;code&gt;applyOptions&lt;/code&gt;），老代码的访问关系不变。混用两种写法时，&lt;code&gt;setup&lt;/code&gt; 先于 &lt;code&gt;data&lt;/code&gt;，所以 &lt;code&gt;setup&lt;/code&gt; 里拿不到 &lt;code&gt;data&lt;/code&gt;；在 &lt;code&gt;data&lt;/code&gt; 里访问 &lt;code&gt;setup&lt;/code&gt; 的返回值属于未定义行为，不要依赖。&lt;/p&gt;&lt;p&gt;响应式换成了 Proxy，包在 &lt;code&gt;data&lt;/code&gt; 返回的对象外层。Proxy 是惰性的，嵌套对象在第一次访问时才创建代理，初始化成本跟对象大小无关。新增属性、索引赋值、&lt;code&gt;delete&lt;/code&gt; 都能拦截。&lt;/p&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;computed 的实现差异&lt;a href=&quot;#computed-的实现差异&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Vue2 的 &lt;code&gt;initComputed&lt;/code&gt; 用 &lt;code&gt;Object.defineProperty&lt;/code&gt; 把计算属性定义在 &lt;code&gt;vm&lt;/code&gt; 上，getter 里判断 &lt;code&gt;watcher.dirty&lt;/code&gt;：&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;dirty === true&lt;/code&gt; 才真正求值，求值时把 &lt;code&gt;Dep.target&lt;/code&gt; 指向这个 computed watcher 来收集依赖&lt;/li&gt;
+&lt;li&gt;依赖变化只执行 &lt;code&gt;update()&lt;/code&gt;，把 &lt;code&gt;dirty&lt;/code&gt; 置 true，不立刻重算&lt;/li&gt;
+&lt;li&gt;下次访问才重算，缓存就是这么来的&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;Vue3 的 &lt;code&gt;ComputedRefImpl&lt;/code&gt; 内部包一个 &lt;code&gt;ReactiveEffect&lt;/code&gt;，&lt;code&gt;get value&lt;/code&gt; 时判断 &lt;code&gt;_dirty&lt;/code&gt;，依赖触发时置脏并通知订阅者。&lt;/p&gt;&lt;p&gt;差别落在两点：Vue2 的 computed 依附 &lt;code&gt;vm&lt;/code&gt;，Vue3 的是独立 &lt;code&gt;ref&lt;/code&gt;，可以脱离组件使用，也能当普通值传给子组件或放进数组。另外 Vue3 的 computed 默认只读，要可写必须传 get 和 set：&lt;/p&gt;&lt;div&gt;&lt;figure&gt;&lt;figcaption&gt;&lt;/figcaption&gt;&lt;pre&gt;&lt;code&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;1&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;const&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;full&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;=&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;computed&lt;/span&gt;&lt;span&gt;({&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;2&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;  &lt;/span&gt;&lt;span&gt;get&lt;/span&gt;&lt;span&gt;:&lt;/span&gt;&lt;span&gt; () &lt;/span&gt;&lt;span&gt;=&amp;gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;first&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;/span&gt;&lt;span&gt;value&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;+&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;&apos; &apos;&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;+&lt;/span&gt;&lt;span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;last&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;/span&gt;&lt;span&gt;value&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;3&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;  &lt;/span&gt;&lt;span&gt;set&lt;/span&gt;&lt;span&gt;:&lt;/span&gt;&lt;span&gt;&lt;span&gt; (&lt;/span&gt;&lt;span&gt;v&lt;/span&gt;&lt;span&gt;) &lt;/span&gt;&lt;/span&gt;&lt;span&gt;=&amp;gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt; ([&lt;/span&gt;&lt;span&gt;first&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;/span&gt;&lt;span&gt;value&lt;/span&gt;&lt;span&gt;&lt;span&gt;, &lt;/span&gt;&lt;span&gt;last&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;/span&gt;&lt;span&gt;value&lt;/span&gt;&lt;span&gt;] &lt;/span&gt;&lt;span&gt;=&lt;/span&gt;&lt;span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;v&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;/span&gt;&lt;span&gt;split&lt;/span&gt;&lt;span&gt;(&lt;/span&gt;&lt;span&gt;&apos; &apos;&lt;/span&gt;&lt;span&gt;)),&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;4&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;})&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/code&gt;&lt;/pre&gt;&lt;div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;watch 的实现差异&lt;a href=&quot;#watch-的实现差异&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Vue2 走 &lt;code&gt;this.$watch(expOrFn, cb, options)&lt;/code&gt;，创建一个 user watcher：&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;expOrFn&lt;/code&gt; 支持字符串路径（&lt;code&gt;&apos;a.b.c&apos;&lt;/code&gt;，内部用 &lt;code&gt;parsePath&lt;/code&gt; 解析）、函数、数组（多源）&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;deep&lt;/code&gt; 靠 &lt;code&gt;traverse&lt;/code&gt; 递归读一遍所有属性，用「读」触发依赖收集&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;immediate&lt;/code&gt; 让回调在创建时先跑一次&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;Vue3 走 &lt;code&gt;watch(source, cb, options)&lt;/code&gt;，&lt;code&gt;source&lt;/code&gt; 可以是 &lt;code&gt;ref&lt;/code&gt;、getter 函数、&lt;code&gt;reactive&lt;/code&gt; 对象、数组。多了三样东西：&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;flush&lt;/code&gt;&lt;/strong&gt;：&lt;code&gt;&apos;pre&apos;&lt;/code&gt;（默认，组件更新前）、&lt;code&gt;&apos;post&apos;&lt;/code&gt;（更新后，能拿到新 DOM）、&lt;code&gt;&apos;sync&apos;&lt;/code&gt;。要在回调里读 DOM，必须改成 &lt;code&gt;post&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;返回 &lt;code&gt;stop&lt;/code&gt; 句柄&lt;/strong&gt;：Vue2 里叫 &lt;code&gt;unwatch&lt;/code&gt;，行为一样&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;onCleanup&lt;/code&gt;&lt;/strong&gt;：在回调里注册清理函数，处理异步竞态&lt;/li&gt;
+&lt;/ul&gt;&lt;div&gt;&lt;figure&gt;&lt;figcaption&gt;&lt;/figcaption&gt;&lt;pre&gt;&lt;code&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;1&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;watch&lt;/span&gt;&lt;span&gt;&lt;span&gt;(&lt;/span&gt;&lt;span&gt;keyword&lt;/span&gt;&lt;span&gt;, &lt;/span&gt;&lt;/span&gt;&lt;span&gt;async&lt;/span&gt;&lt;span&gt;&lt;span&gt; (&lt;/span&gt;&lt;span&gt;kw&lt;/span&gt;&lt;span&gt;, &lt;/span&gt;&lt;span&gt;_&lt;/span&gt;&lt;span&gt;, &lt;/span&gt;&lt;span&gt;onCleanup&lt;/span&gt;&lt;span&gt;) &lt;/span&gt;&lt;/span&gt;&lt;span&gt;=&amp;gt;&lt;/span&gt;&lt;span&gt; {&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;2&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;  &lt;/span&gt;&lt;span&gt;let&lt;/span&gt;&lt;span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;cancelled&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;/span&gt;&lt;span&gt;=&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;false&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;3&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;  &lt;/span&gt;&lt;span&gt;onCleanup&lt;/span&gt;&lt;span&gt;(() &lt;/span&gt;&lt;span&gt;=&amp;gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt; (&lt;/span&gt;&lt;span&gt;cancelled&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;/span&gt;&lt;span&gt;=&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;true&lt;/span&gt;&lt;span&gt;))&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;4&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;  &lt;/span&gt;&lt;span&gt;const&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;res&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;=&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;await&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;search&lt;/span&gt;&lt;span&gt;&lt;span&gt;(&lt;/span&gt;&lt;span&gt;kw&lt;/span&gt;&lt;span&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;5&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;  &lt;/span&gt;&lt;span&gt;if&lt;/span&gt;&lt;span&gt; (&lt;/span&gt;&lt;span&gt;!&lt;/span&gt;&lt;span&gt;&lt;span&gt;cancelled&lt;/span&gt;&lt;span&gt;) &lt;/span&gt;&lt;span&gt;list&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;/span&gt;&lt;span&gt;value&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;=&lt;/span&gt;&lt;span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;res&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;6&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;})&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/code&gt;&lt;/pre&gt;&lt;div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;p&gt;&lt;code&gt;watchEffect&lt;/code&gt; 是 Vue3 独有的：不指定 source，自动收集依赖，且立即执行一次。依赖一堆、懒得逐个列的时候用它，代价是依赖关系不写在代码里。&lt;/p&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;生命周期的对应关系&lt;a href=&quot;#生命周期的对应关系&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;时机&lt;/th&gt;&lt;th&gt;Vue2 Options API&lt;/th&gt;&lt;th&gt;Vue3 组合式&lt;/th&gt;&lt;th&gt;备注&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;实例创建前&lt;/td&gt;&lt;td&gt;&lt;code&gt;beforeCreate&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;setup&lt;/code&gt; 开头&lt;/td&gt;&lt;td&gt;无 &lt;code&gt;onBeforeCreate&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;实例创建后&lt;/td&gt;&lt;td&gt;&lt;code&gt;created&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;setup&lt;/code&gt; 结尾&lt;/td&gt;&lt;td&gt;无 &lt;code&gt;onCreated&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;挂载前&lt;/td&gt;&lt;td&gt;&lt;code&gt;beforeMount&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;onBeforeMount&lt;/code&gt;&lt;/td&gt;&lt;td&gt;DOM 还没生成&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;挂载后&lt;/td&gt;&lt;td&gt;&lt;code&gt;mounted&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;onMounted&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;$refs&lt;/code&gt; 可用&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;更新前&lt;/td&gt;&lt;td&gt;&lt;code&gt;beforeUpdate&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;onBeforeUpdate&lt;/code&gt;&lt;/td&gt;&lt;td&gt;DOM 还是旧值&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;更新后&lt;/td&gt;&lt;td&gt;&lt;code&gt;updated&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;onUpdated&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;激活&lt;/td&gt;&lt;td&gt;&lt;code&gt;activated&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;onActivated&lt;/code&gt;&lt;/td&gt;&lt;td&gt;组件需在 &lt;code&gt;KeepAlive&lt;/code&gt; 内&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;停用&lt;/td&gt;&lt;td&gt;&lt;code&gt;deactivated&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;onDeactivated&lt;/code&gt;&lt;/td&gt;&lt;td&gt;同上&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;卸载前&lt;/td&gt;&lt;td&gt;&lt;code&gt;beforeDestroy&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;onBeforeUnmount&lt;/code&gt;&lt;/td&gt;&lt;td&gt;改名&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;卸载后&lt;/td&gt;&lt;td&gt;&lt;code&gt;destroyed&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;onUnmounted&lt;/code&gt;&lt;/td&gt;&lt;td&gt;改名&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;捕获后代错误&lt;/td&gt;&lt;td&gt;&lt;code&gt;errorCaptured&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;onErrorCaptured&lt;/code&gt;&lt;/td&gt;&lt;td&gt;返回 &lt;code&gt;false&lt;/code&gt; 阻止继续向上传播&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;服务端预取&lt;/td&gt;&lt;td&gt;&lt;code&gt;serverPrefetch&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;onServerPrefetch&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;依赖收集（仅开发）&lt;/td&gt;&lt;td&gt;无&lt;/td&gt;&lt;td&gt;&lt;code&gt;onRenderTracked&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;触发渲染（仅开发）&lt;/td&gt;&lt;td&gt;无&lt;/td&gt;&lt;td&gt;&lt;code&gt;onRenderTriggered&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;p&gt;&lt;code&gt;beforeCreate&lt;/code&gt; 和 &lt;code&gt;created&lt;/code&gt; 在 Vue3 的 Options API 里照样会执行，写 &lt;code&gt;created() {}&lt;/code&gt; 有效。组合式那一列没有对应函数，因为 &lt;code&gt;setup&lt;/code&gt; 本身就落在 &lt;code&gt;beforeCreate&lt;/code&gt; 之前开始、&lt;code&gt;created&lt;/code&gt; 之前结束，两个时机被它一并覆盖。&lt;/p&gt;&lt;p&gt;四处结构性差别值得单独记。&lt;/p&gt;&lt;p&gt;&lt;strong&gt;第一处：&lt;code&gt;setup&lt;/code&gt; 承担了 &lt;code&gt;created&lt;/code&gt; 的活，但没有 &lt;code&gt;this&lt;/code&gt;。&lt;/strong&gt; 原来写在 &lt;code&gt;created&lt;/code&gt; 里的初始化逻辑搬到 &lt;code&gt;setup&lt;/code&gt; 顶层，把 &lt;code&gt;this.$route&lt;/code&gt; 换成 &lt;code&gt;useRoute()&lt;/code&gt;，&lt;code&gt;this.$store&lt;/code&gt; 换成 &lt;code&gt;useStore()&lt;/code&gt;。只有依赖 DOM 的部分需要挪进 &lt;code&gt;onMounted&lt;/code&gt;。&lt;/p&gt;&lt;p&gt;&lt;strong&gt;第二处：组合式钩子必须在 &lt;code&gt;setup&lt;/code&gt; 同步执行期间调用。&lt;/strong&gt; 放进 &lt;code&gt;await&lt;/code&gt; 之后，或任何异步回调里，都会报 &lt;code&gt;onMounted is called when there is no active component instance&lt;/code&gt;。Options API 没有这个限制，因为钩子是声明式的，框架构造实例时读取一次。写法调整很直接：把 &lt;code&gt;await&lt;/code&gt; 放进 &lt;code&gt;onMounted&lt;/code&gt; 的回调内部，而不是把 &lt;code&gt;onMounted&lt;/code&gt; 放在 &lt;code&gt;await&lt;/code&gt; 后面。&lt;/p&gt;&lt;p&gt;&lt;strong&gt;第三处：同一个钩子可以注册多次，按注册顺序执行。&lt;/strong&gt; Options API 每个钩子只能挂一个函数。这带来一个新问题：组合式函数内部注册的钩子，调用方看不见。&lt;code&gt;useXxx()&lt;/code&gt; 里可能悄悄注册了 &lt;code&gt;onMounted&lt;/code&gt;，排查执行时序时要翻进函数体。&lt;/p&gt;&lt;p&gt;&lt;strong&gt;第四处：父子执行顺序两版一致，但组合式里更难看出。&lt;/strong&gt; 挂载是父 &lt;code&gt;beforeMount&lt;/code&gt; → 子 &lt;code&gt;beforeMount&lt;/code&gt; → 子 &lt;code&gt;mounted&lt;/code&gt; → 父 &lt;code&gt;mounted&lt;/code&gt;，卸载是父 &lt;code&gt;beforeUnmount&lt;/code&gt; → 子 &lt;code&gt;beforeUnmount&lt;/code&gt; → 子 &lt;code&gt;unmounted&lt;/code&gt; → 父 &lt;code&gt;unmounted&lt;/code&gt;。父先开始、子先结束，所以子组件 &lt;code&gt;mounted&lt;/code&gt; 时父组件的 DOM 还没就绪，依赖父级布局的测量要放到 &lt;code&gt;nextTick&lt;/code&gt; 或父的 &lt;code&gt;onMounted&lt;/code&gt; 里。&lt;/p&gt;&lt;p&gt;&lt;code&gt;$nextTick&lt;/code&gt; 在 Vue3 里是独立导入的 &lt;code&gt;nextTick&lt;/code&gt;，不再是实例方法。清理逻辑的配对方式没变，只是两个钩子都要从 &lt;code&gt;vue&lt;/code&gt; 引入：&lt;/p&gt;&lt;div&gt;&lt;figure&gt;&lt;figcaption&gt;&lt;/figcaption&gt;&lt;pre&gt;&lt;code&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;1&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;import&lt;/span&gt;&lt;span&gt; { &lt;/span&gt;&lt;span&gt;onMounted&lt;/span&gt;&lt;span&gt;, &lt;/span&gt;&lt;span&gt;onBeforeUnmount&lt;/span&gt;&lt;span&gt; } &lt;/span&gt;&lt;span&gt;from&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;&apos;vue&apos;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;2&lt;/div&gt;&lt;/div&gt;&lt;div&gt;
+&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;3&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;let&lt;/span&gt;&lt;span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;timer&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;/span&gt;&lt;span&gt;=&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;null&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;4&lt;/div&gt;&lt;/div&gt;&lt;div&gt;
+&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;5&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;onMounted&lt;/span&gt;&lt;span&gt;(() &lt;/span&gt;&lt;span&gt;=&amp;gt;&lt;/span&gt;&lt;span&gt; {&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;6&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;&lt;span&gt;  &lt;/span&gt;&lt;/span&gt;&lt;span&gt;timer&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;=&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;setInterval&lt;/span&gt;&lt;span&gt;&lt;span&gt;(&lt;/span&gt;&lt;span&gt;poll&lt;/span&gt;&lt;span&gt;, &lt;/span&gt;&lt;/span&gt;&lt;span&gt;5000&lt;/span&gt;&lt;span&gt;)&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;7&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;})&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;8&lt;/div&gt;&lt;/div&gt;&lt;div&gt;
+&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;9&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;onBeforeUnmount&lt;/span&gt;&lt;span&gt;(() &lt;/span&gt;&lt;span&gt;=&amp;gt;&lt;/span&gt;&lt;span&gt; {&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;10&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;  &lt;/span&gt;&lt;span&gt;clearInterval&lt;/span&gt;&lt;span&gt;&lt;span&gt;(&lt;/span&gt;&lt;span&gt;timer&lt;/span&gt;&lt;span&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;11&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;})&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/code&gt;&lt;/pre&gt;&lt;div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;p&gt;&lt;code&gt;onBeforeUnmount&lt;/code&gt; 里 DOM 还在，&lt;code&gt;onUnmounted&lt;/code&gt; 里已经从文档移除，需要读 &lt;code&gt;$el&lt;/code&gt; 的操作放在前者。&lt;/p&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;this 在 Vue3 里的位置&lt;a href=&quot;#this-在-vue3-里的位置&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;位置&lt;/th&gt;&lt;th&gt;&lt;code&gt;this&lt;/code&gt; 是什么&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;Options API 的选项里&lt;/td&gt;&lt;td&gt;组件实例的公开代理，&lt;code&gt;$refs&lt;/code&gt;、&lt;code&gt;$emit&lt;/code&gt; 可用&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;setup()&lt;/code&gt; 函数体内&lt;/td&gt;&lt;td&gt;&lt;code&gt;undefined&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;&amp;lt;script setup&amp;gt;&lt;/code&gt; 顶层&lt;/td&gt;&lt;td&gt;&lt;code&gt;undefined&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;p&gt;后两行是同一个原因。&lt;code&gt;setup&lt;/code&gt; 跑在 &lt;code&gt;beforeCreate&lt;/code&gt; 之前，实例还没构造完，官方没有给它一个半成品 &lt;code&gt;this&lt;/code&gt;。调用 &lt;code&gt;setup(props, context)&lt;/code&gt; 时也没有任何绑定动作，而 ESM 模块处于严格模式，普通函数调用时 &lt;code&gt;this&lt;/code&gt; 的默认值就是 &lt;code&gt;undefined&lt;/code&gt;。&lt;code&gt;&amp;lt;script setup&amp;gt;&lt;/code&gt; 顶层是模块作用域，规则一样。&lt;/p&gt;&lt;p&gt;第一行那个 &lt;code&gt;this&lt;/code&gt; 是 &lt;code&gt;PublicInstanceProxyHandlers&lt;/code&gt; 生成的 Proxy，和 instance 是两个对象，&lt;code&gt;this === instance&lt;/code&gt; 为 &lt;code&gt;false&lt;/code&gt;。它的 &lt;code&gt;get&lt;/code&gt; 陷阱按 &lt;code&gt;setupState → data → props → ctx → appContext.config.globalProperties&lt;/code&gt; 的顺序查找，&lt;code&gt;this.$router&lt;/code&gt; 取的是最后一层。每个 &lt;code&gt;this.xxx&lt;/code&gt; 都要走一遍这串查找，&lt;code&gt;&amp;lt;script setup&amp;gt;&lt;/code&gt; 里的闭包变量是一次直接引用，性能差别出在这里。&lt;/p&gt;&lt;p&gt;&lt;code&gt;this&lt;/code&gt; 缺席带来的连带影响有两个。&lt;/p&gt;&lt;p&gt;一是 &lt;code&gt;methods&lt;/code&gt; 里不能再写箭头函数。箭头函数不绑定 &lt;code&gt;this&lt;/code&gt;，取的是外层作用域的值，在模块里就是 &lt;code&gt;undefined&lt;/code&gt;，&lt;code&gt;inc: () =&amp;gt; this.count++&lt;/code&gt; 会直接报错。Options API 的 method 必须写成传统函数。Composition API 里箭头函数变多，根子也在这一条：&lt;code&gt;const inc = () =&amp;gt; count.value++&lt;/code&gt; 捕捉的是外层声明的 &lt;code&gt;count&lt;/code&gt;，不需要 &lt;code&gt;this&lt;/code&gt;，所以怎么写都行。&lt;/p&gt;&lt;p&gt;二是模板里不能写 &lt;code&gt;this&lt;/code&gt;。Vue2 编译出来是 &lt;code&gt;with(this){ ... }&lt;/code&gt;，&lt;code&gt;{{ this.msg }}&lt;/code&gt; 恰好能工作；Vue3 编译成 &lt;code&gt;_ctx.msg&lt;/code&gt;，写 &lt;code&gt;this.msg&lt;/code&gt; 会变成 &lt;code&gt;_ctx.this.msg&lt;/code&gt;，取到 &lt;code&gt;undefined&lt;/code&gt;。从 Vue2 复制模板片段时可能带过来。&lt;/p&gt;&lt;p&gt;确实需要实例时用 &lt;code&gt;getCurrentInstance()&lt;/code&gt;，限定在插件、组合式函数封装、需要读 &lt;code&gt;appContext&lt;/code&gt; 的库里。业务组件拿它去取 &lt;code&gt;$refs&lt;/code&gt; 或 &lt;code&gt;$router&lt;/code&gt;，等于把刚省下的那层代理又绕回去，前者有 &lt;code&gt;ref()&lt;/code&gt;，后者有 &lt;code&gt;useRouter()&lt;/code&gt;。&lt;/p&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;Vue3 兼容 Vue2 的写法吗&lt;a href=&quot;#vue3-兼容-vue2-的写法吗&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;分四层看，结论不一样。&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;层&lt;/th&gt;&lt;th&gt;状态&lt;/th&gt;&lt;th&gt;涉及内容&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;语法层&lt;/td&gt;&lt;td&gt;兼容&lt;/td&gt;&lt;td&gt;&lt;code&gt;data&lt;/code&gt; / &lt;code&gt;methods&lt;/code&gt; / &lt;code&gt;computed&lt;/code&gt; / &lt;code&gt;watch&lt;/code&gt; / &lt;code&gt;props&lt;/code&gt; / 生命周期&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;行为层&lt;/td&gt;&lt;td&gt;兼容但有变化&lt;/td&gt;&lt;td&gt;&lt;code&gt;v-if&lt;/code&gt; 与 &lt;code&gt;v-for&lt;/code&gt; 优先级、&lt;code&gt;$attrs&lt;/code&gt; 内容、多根节点、&lt;code&gt;$children&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;API 层&lt;/td&gt;&lt;td&gt;已移除&lt;/td&gt;&lt;td&gt;&lt;code&gt;$on&lt;/code&gt; / &lt;code&gt;$off&lt;/code&gt; / &lt;code&gt;$once&lt;/code&gt;、&lt;code&gt;filters&lt;/code&gt;、&lt;code&gt;.sync&lt;/code&gt;、&lt;code&gt;functional&lt;/code&gt;、&lt;code&gt;$set&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;生态层&lt;/td&gt;&lt;td&gt;需换代&lt;/td&gt;&lt;td&gt;Element UI、Vuex、vue-router 3、IE11&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;p&gt;语法层的兼容由 &lt;code&gt;applyOptions&lt;/code&gt; 实现，它把各个选项翻译成 &lt;code&gt;setup&lt;/code&gt; 里的调用序列，顺序沿用 &lt;code&gt;initState&lt;/code&gt; 的 props → methods → data → computed → watch。顺序不变，老代码里「&lt;code&gt;data&lt;/code&gt; 用 methods、&lt;code&gt;computed&lt;/code&gt; 用 data」的访问关系就不变，&lt;code&gt;$refs&lt;/code&gt;、&lt;code&gt;$emit&lt;/code&gt;、&lt;code&gt;$watch&lt;/code&gt;、&lt;code&gt;$nextTick&lt;/code&gt; 也都还在。&lt;/p&gt;&lt;p&gt;有一个前提容易忽略：字符串模板需要带编译器的构建。打包工具默认把 &lt;code&gt;vue&lt;/code&gt; 解析到 &lt;code&gt;vue.runtime.esm-bundler.js&lt;/code&gt;，这个版本不含编译器，写 &lt;code&gt;template: &apos;&amp;lt;div&amp;gt;{{ msg }}&amp;lt;/div&amp;gt;&apos;&lt;/code&gt; 会报错。单文件组件的模板在构建期就编译完了，不受影响；CDN 引完整版、&lt;code&gt;new Vue({ template })&lt;/code&gt; 这类写法必须换成 &lt;code&gt;vue/dist/vue.esm-bundler.js&lt;/code&gt;。&lt;/p&gt;&lt;p&gt;被移除的 API 对应关系：&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Vue2&lt;/th&gt;&lt;th&gt;Vue3&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;$on&lt;/code&gt; / &lt;code&gt;$off&lt;/code&gt; / &lt;code&gt;$once&lt;/code&gt;&lt;/td&gt;&lt;td&gt;实例不再是事件总线，换 &lt;code&gt;mitt&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;filters&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;computed&lt;/code&gt; 或普通方法&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;.sync&lt;/code&gt; 加 &lt;code&gt;model&lt;/code&gt; 选项&lt;/td&gt;&lt;td&gt;&lt;code&gt;v-model:propName&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;$children&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;$refs&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;$listeners&lt;/code&gt;&lt;/td&gt;&lt;td&gt;合并进 &lt;code&gt;$attrs&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;$scopedSlots&lt;/code&gt;&lt;/td&gt;&lt;td&gt;合并进 &lt;code&gt;$slots&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;$set&lt;/code&gt; / &lt;code&gt;$delete&lt;/code&gt;&lt;/td&gt;&lt;td&gt;不再需要，Proxy 处理新增属性&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;Vue.observable&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;reactive&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;new Vue()&lt;/code&gt; / &lt;code&gt;Vue.prototype&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;createApp()&lt;/code&gt; / &lt;code&gt;app.config.globalProperties&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;&amp;lt;template functional&amp;gt;&lt;/code&gt;&lt;/td&gt;&lt;td&gt;普通函数组件&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;code&gt;render(h)&lt;/code&gt; 里的 &lt;code&gt;h&lt;/code&gt; 参数&lt;/td&gt;&lt;td&gt;从 &lt;code&gt;vue&lt;/code&gt; 导入 &lt;code&gt;h&lt;/code&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;p&gt;行为层有四处要改代码，最后一处不会报错。&lt;/p&gt;&lt;p&gt;&lt;code&gt;v-if&lt;/code&gt; 与 &lt;code&gt;v-for&lt;/code&gt; 的优先级反转了。Vue2 里 &lt;code&gt;v-for&lt;/code&gt; 先执行，&lt;code&gt;v-if&lt;/code&gt; 能拿到循环变量；Vue3 里 &lt;code&gt;v-if&lt;/code&gt; 先执行，同一元素上两者并用会报变量未定义。这条是升级时最常撞上的，报错信息也不直白。&lt;/p&gt;&lt;p&gt;&lt;code&gt;$attrs&lt;/code&gt; 的内容变宽，现在包含 &lt;code&gt;class&lt;/code&gt;、&lt;code&gt;style&lt;/code&gt;，也包含没在 &lt;code&gt;emits&lt;/code&gt; 里声明的事件监听器。用了 &lt;code&gt;inheritAttrs: false&lt;/code&gt; 加 &lt;code&gt;v-bind=&quot;$attrs&quot;&lt;/code&gt; 的组件要逐个检查，否则会给内层元素挂上不该有的样式。&lt;/p&gt;&lt;p&gt;多根节点不再自动继承属性。Vue2 只有一个根节点，属性自然落上去；Vue3 没有唯一落点，需要显式 &lt;code&gt;v-bind=&quot;$attrs&quot;&lt;/code&gt;。原本单根、升级后想加第二个根节点的组件，要补这一行。&lt;/p&gt;&lt;p&gt;还有一条不报错也不警告：&lt;code&gt;beforeDestroy&lt;/code&gt; 与 &lt;code&gt;destroyed&lt;/code&gt; 改名成 &lt;code&gt;beforeUnmount&lt;/code&gt; 与 &lt;code&gt;unmounted&lt;/code&gt;。非迁移构建下老名字被静默忽略，钩子不执行。定时器没清、监听没解绑、连接没关，页面看起来一切正常，内存慢慢涨。&lt;/p&gt;&lt;p&gt;要迁存量项目，官方提供 &lt;code&gt;@vue/compat&lt;/code&gt; 迁移构建。别名指向它之后，Vue3 运行时能跑 Vue2 代码，被移除或行为变化的特性会打印运行时警告，&lt;code&gt;configureCompat&lt;/code&gt; 可以按特性单独设 &lt;code&gt;false&lt;/code&gt; / &lt;code&gt;2&lt;/code&gt; / &lt;code&gt;3&lt;/code&gt; 逐个切换。它的体积和性能都有代价，只用于过渡期。&lt;/p&gt;&lt;p&gt;不改存量、只判断新代码怎么写：Options API 在 Vue3 里继续可用，是一等公民。存量组件留着不动，新组件从 &lt;code&gt;&amp;lt;script setup&amp;gt;&lt;/code&gt; 起，同一个文件里两种写法混着是最差的状态，两套响应式来源，读代码要在两个位置找变量。&lt;/p&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;迁移时容易踩的六处&lt;a href=&quot;#迁移时容易踩的六处&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;watch&lt;/code&gt; 监听 &lt;code&gt;reactive&lt;/code&gt; 对象，新旧值相等&lt;/strong&gt;。传进来的是同一个 proxy 引用，&lt;code&gt;newValue === oldValue&lt;/code&gt;。要对比得自己存快照，&lt;code&gt;toRaw&lt;/code&gt; 加浅拷贝，或者 &lt;code&gt;JSON.parse(JSON.stringify())&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;watch&lt;/code&gt; 默认浅监听&lt;/strong&gt;。监听 &lt;code&gt;reactive&lt;/code&gt; 对象的嵌套属性必须加 &lt;code&gt;deep: true&lt;/code&gt;；Vue2 里监听对象会隐式深度&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;computed&lt;/code&gt; 变成只读&lt;/strong&gt;，直接赋值会报错。Vue2 里只是警告&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;flush&lt;/code&gt; 默认 &lt;code&gt;pre&lt;/code&gt;&lt;/strong&gt;。在回调里读 DOM 拿到的是旧值，要改 &lt;code&gt;post&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;生命周期改名&lt;/strong&gt;：&lt;code&gt;beforeDestroy&lt;/code&gt; 改 &lt;code&gt;onBeforeUnmount&lt;/code&gt;，&lt;code&gt;destroyed&lt;/code&gt; 改 &lt;code&gt;onUnmounted&lt;/code&gt;。名字变了，语义没变&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;methods&lt;/code&gt; 里的 &lt;code&gt;this&lt;/code&gt; 没了&lt;/strong&gt;。从 mixin 迁到组合式函数，所有 &lt;code&gt;this.xxx&lt;/code&gt; 都要改成显式引用，这是迁移里改动量最大的机械劳动&lt;/li&gt;
+&lt;/ol&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;一句话记&lt;a href=&quot;#一句话记&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;加载顺序上最大的差别是 &lt;code&gt;setup&lt;/code&gt; 跑在 &lt;code&gt;beforeCreate&lt;/code&gt; 之前，所以内部没有 &lt;code&gt;this&lt;/code&gt;；而 &lt;code&gt;initState&lt;/code&gt; 的五步顺序被兼容层保留，两版混用时的访问关系一致。响应式从 &lt;code&gt;Object.defineProperty&lt;/code&gt; 换成 Proxy，computed 因此脱离组件实例；&lt;code&gt;watch&lt;/code&gt; 新增了 &lt;code&gt;flush&lt;/code&gt;、&lt;code&gt;stop&lt;/code&gt; 句柄和 &lt;code&gt;onCleanup&lt;/code&gt;，默认浅监听加 &lt;code&gt;pre&lt;/code&gt; 时机这两条最容易写错。&lt;/p&gt;&lt;p&gt;兼容性上，Options API 由 &lt;code&gt;applyOptions&lt;/code&gt; 完整保留，字符串模板还要挑带编译器的构建；被删的 &lt;code&gt;$on&lt;/code&gt;、&lt;code&gt;filters&lt;/code&gt;、&lt;code&gt;.sync&lt;/code&gt;、&lt;code&gt;$set&lt;/code&gt; 和整个组件库生态需要换代。&lt;code&gt;v-if&lt;/code&gt; 与 &lt;code&gt;v-for&lt;/code&gt; 的优先级反转、生命周期改名的静默失效，是升级时最不容易发现的两处。&lt;/p&gt;&lt;/section&gt;&lt;/section&gt;</content:encoded></item><item><title>什么是归一化</title><link>https://shaio.top/posts/%E5%85%AB%E8%82%A1%E6%96%87%E5%AD%A6/%E4%BB%80%E4%B9%88%E6%98%AF%E5%BD%92%E4%B8%80%E5%8C%96/</link><guid isPermaLink="true">https://shaio.top/posts/%E5%85%AB%E8%82%A1%E6%96%87%E5%AD%A6/%E4%BB%80%E4%B9%88%E6%98%AF%E5%BD%92%E4%B8%80%E5%8C%96/</guid><description>WAF 归一化做什么、具体改写哪些内容，以及归一化与后端解析不一致时留下的绕过口子</description><pubDate>Thu, 22 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;section&gt;&lt;h1&gt;什么是归一化&lt;a href=&quot;#什么是归一化&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h1&gt;&lt;p&gt;归一化是 WAF 在匹配规则之前做的一次改写：把同一条语句的各种编码变体，还原成唯一形态，让一条规则覆盖全部写法。&lt;/p&gt;&lt;section&gt;&lt;h2&gt;位置&lt;a href=&quot;#位置&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;请求进入 WAF 后的处理顺序：TLS 终结 → 协议解析 → &lt;strong&gt;归一化&lt;/strong&gt; → 规则匹配 → 处置。&lt;/p&gt;&lt;p&gt;前提是 WAF 终结了 TLS。链路加密时 WAF 看到的是密文，归一化无从谈起，这也是 HTTPS 站点接 WAF 必须先传证书的原因。业务自己做端到端加密的情况，WAF 能拿到明文也读不懂字段，规则同样失效。&lt;/p&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;为什么需要&lt;a href=&quot;#为什么需要&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;规则是按标准形态写的，比如 &lt;code&gt;@rx (?i)union\s+select&lt;/code&gt;。把语句换个编码，正则就匹配不上。下面六条指向同一句话：&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;变体&lt;/th&gt;&lt;th&gt;报文里的样子&lt;/th&gt;&lt;th&gt;还原手段&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;原文&lt;/td&gt;&lt;td&gt;&lt;code&gt;1&apos; OR 1=1--&lt;/code&gt;&lt;/td&gt;&lt;td&gt;—&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;URL 编码&lt;/td&gt;&lt;td&gt;&lt;code&gt;1%27%20OR%201%3D1--&lt;/code&gt;&lt;/td&gt;&lt;td&gt;URL 解码&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;双重编码&lt;/td&gt;&lt;td&gt;&lt;code&gt;1%2527%20OR%201%3D1--&lt;/code&gt;&lt;/td&gt;&lt;td&gt;解码两次&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;大小写混写&lt;/td&gt;&lt;td&gt;&lt;code&gt;1&apos; oR 1=1--&lt;/code&gt;&lt;/td&gt;&lt;td&gt;统一大小写&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;注释插入&lt;/td&gt;&lt;td&gt;&lt;code&gt;1&apos;/**/OR/**/1=1--&lt;/code&gt;&lt;/td&gt;&lt;td&gt;剥离注释&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;换行替代空格&lt;/td&gt;&lt;td&gt;&lt;code&gt;1&apos;%0aOR%0a1=1--&lt;/code&gt;&lt;/td&gt;&lt;td&gt;空白压缩&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;p&gt;每种写法单写一条规则，规则集膨胀六倍，而且补不完。归一化把成本从「规则数量」转移到「解析质量」，这是它存在的唯一理由。&lt;/p&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;具体改哪些内容&lt;a href=&quot;#具体改哪些内容&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;按处理顺序：&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;URL 解码&lt;/strong&gt;。解码一次还是循环解码到稳定，各家实现不同，这个次数本身就是绕过点。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Unicode 与宽字节&lt;/strong&gt;。&lt;code&gt;%u0027&lt;/code&gt; 这类 IIS 时代的老写法，以及 GBK 宽字节 &lt;code&gt;%bf%27&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;HTML 实体还原&lt;/strong&gt;。&lt;code&gt;&amp;amp;#39;&lt;/code&gt;、&lt;code&gt;&amp;amp;apos;&lt;/code&gt;、&lt;code&gt;&amp;amp;lt;&lt;/code&gt; 还原成原字符。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;大小写统一&lt;/strong&gt;。或者在规则里加 &lt;code&gt;(?i)&lt;/code&gt;，两种做法取其一即可。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;剥离注释&lt;/strong&gt;。&lt;code&gt;/**/&lt;/code&gt;、&lt;code&gt;--&lt;/code&gt;、&lt;code&gt;#&lt;/code&gt; 在 SQL 里是注释，在等价性上是空白。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;空白压缩&lt;/strong&gt;。多个空格、tab、换行压成单空格，&lt;code&gt;OR%0a%0a1=1&lt;/code&gt; 与 &lt;code&gt;OR 1=1&lt;/code&gt; 才算同一条。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;路径规范化&lt;/strong&gt;。&lt;code&gt;/a/../b&lt;/code&gt; 还原成 &lt;code&gt;/b&lt;/code&gt;，&lt;code&gt;//api///user&lt;/code&gt; 还原成 &lt;code&gt;/api/user&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;分块传输重组&lt;/strong&gt;。chunked 编码的 body 要拼回完整内容再匹配，否则规则看到的是一堆长度头。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Content-Type 容错&lt;/strong&gt;。声明成 &lt;code&gt;text/plain&lt;/code&gt; 实际内容是 JSON，也得按结构解析，否则把整个 body 当字符串匹配容易漏。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;同名参数处理&lt;/strong&gt;。&lt;code&gt;?id=1&amp;amp;id=2&lt;/code&gt; 取第一个还是最后一个，必须与后端保持一致。&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;&lt;strong&gt;最容易混的一处&lt;/strong&gt;：最后这条。HTTP Parameter Pollution 的绕过原理就在这里，WAF 取第一个、后端取最后一个，&lt;code&gt;?id=1%20union%20select...&lt;/code&gt; 排在后面就能穿过检测。&lt;/p&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;与后端解析不一致就是绕过&lt;a href=&quot;#与后端解析不一致就是绕过&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;归一化的判定标准只有一条：&lt;strong&gt;和后端解析出的形态一致&lt;/strong&gt;。四个常见的不一致点：&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;解码次数&lt;/strong&gt;：WAF 解一次，框架解两次。双重编码的载荷在 WAF 眼里仍是编码态。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;参数取值&lt;/strong&gt;：同名字段的取前取后不同，见上条。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;路径处理&lt;/strong&gt;：后端把 &lt;code&gt;/api/../admin&lt;/code&gt; 归一成 &lt;code&gt;/admin&lt;/code&gt;，WAF 没做路径规范化，规则按 &lt;code&gt;/api/...&lt;/code&gt; 判，判定落在错误的规则组上。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;字符集&lt;/strong&gt;：WAF 按 UTF-8 解码，后端按 GBK，宽字节字符在两边长度不同。&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;这类问题的共同特征：WAF 日志里一切正常，攻击实际生效。定位绕过时，第一件事是比对 WAF 记录的归一化结果和后端实际收到的内容。&lt;/p&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;它不做的事&lt;a href=&quot;#它不做的事&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;不做业务校验。越权、刷券、批量导出这类请求，归一化之后依然完全合法。&lt;/li&gt;
+&lt;li&gt;不判断语义是否恶意。归一化只产出字符串，判断交给规则；语义级检测（如 &lt;code&gt;@detectSQLi&lt;/code&gt;）是归一化之后另一层的事。&lt;/li&gt;
+&lt;li&gt;不修改数据。它是只读的预处理，改写结果只给规则引擎看，不会改变转发给后端的内容。&lt;/li&gt;
+&lt;/ul&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;怎么验&lt;a href=&quot;#怎么验&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;拿一条已知 payload，做编码、双重编码、注释插入三组变体打过去，看是否全部命中同一条规则。&lt;/li&gt;
+&lt;li&gt;看日志里有没有「归一化后内容」字段，多数 WAF 会记录，这是排查误杀和绕过最直接的证据。&lt;/li&gt;
+&lt;li&gt;把这批变体固化成回归用例。规则改动、换 WAF 厂商、升级版本之后各跑一遍。&lt;/li&gt;
+&lt;/ul&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;一句话&lt;a href=&quot;#一句话&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;归一化决定了规则能覆盖多少写法。规则数量堆得再多，归一化缺一环，绕过去只需要换一种编码。&lt;/p&gt;&lt;/section&gt;&lt;/section&gt;</content:encoded></item><item><title>Docker 笔记：基本概念、容器网络与私有仓库部署</title><link>https://shaio.top/posts/%E8%BF%90%E7%BB%B4/261022docker/</link><guid isPermaLink="true">https://shaio.top/posts/%E8%BF%90%E7%BB%B4/261022docker/</guid><description>Docker 实操笔记。从分层存储和生命周期讲起，到 Dockerfile 与 compose 写法、两个容器怎么互通、私有仓库推送后如何在服务器上升级和回滚。</description><pubDate>Thu, 22 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;section&gt;&lt;h2&gt;基本概念&lt;a href=&quot;#基本概念&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;镜像、容器、仓库三者的关系，以及分层存储和写时复制（overlay2）。这是后面所有“为什么改一个文件要重新 build”的根。&lt;/li&gt;
+&lt;li&gt;容器本质是带 namespace 隔离和 cgroup 限制的普通进程，不是虚拟机。如果这点讲清楚，读者就不会再问“容器里能不能装 systemd”。&lt;/li&gt;
+&lt;li&gt;生命周期状态：created / running / paused / exited / dead，以及 &lt;code&gt;restart&lt;/code&gt; 会在什么情况下无效。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;加分但很值&lt;/strong&gt;：容器内 1 号进程不转发信号这个坑。它能解释后面“为什么 &lt;code&gt;docker stop&lt;/code&gt; 要等十秒才强杀”。&lt;/li&gt;
+&lt;/ul&gt;&lt;/section&gt;
+&lt;section&gt;&lt;h2&gt;配置文件&lt;a href=&quot;#配置文件&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Dockerfile 常用指令逐个过一遍，重点放在 &lt;code&gt;COPY&lt;/code&gt; 与 &lt;code&gt;ADD&lt;/code&gt; 的区别、&lt;code&gt;CMD&lt;/code&gt; 与 &lt;code&gt;ENTRYPOINT&lt;/code&gt; 组合时的覆盖规则，以及 exec form 和 shell form 对信号的影响。&lt;/li&gt;
+&lt;li&gt;构建缓存与层顺序：先 &lt;code&gt;COPY&lt;/code&gt; 依赖清单再装依赖，最后才 &lt;code&gt;COPY&lt;/code&gt; 源码。这条决定了改一行代码时是等 3 秒还是等 3 分钟。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;.dockerignore&lt;/code&gt;。少了它，&lt;code&gt;node_modules&lt;/code&gt; 和 &lt;code&gt;.git&lt;/code&gt; 会被塞进构建上下文。&lt;/li&gt;
+&lt;li&gt;多阶段构建。讲一个具体例子，比讲概念有用得多。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;坑位提醒&lt;/strong&gt;：基础镜像选择。alpine 用 musl，时区和 glibc 兼容问题能卡半天；&lt;code&gt;latest&lt;/code&gt; 标签不要用。&lt;/li&gt;
+&lt;li&gt;docker-compose.yml 的结构也应该放在这一节：&lt;code&gt;services&lt;/code&gt; / &lt;code&gt;volumes&lt;/code&gt; / &lt;code&gt;networks&lt;/code&gt;，以及 &lt;code&gt;depends_on&lt;/code&gt; 默认只等容器起来、不等服务就绪，要配 &lt;code&gt;healthcheck&lt;/code&gt; + &lt;code&gt;condition: service_healthy&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;&lt;/section&gt;
+&lt;section&gt;&lt;h2&gt;环境变量&lt;a href=&quot;#环境变量&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;ENV&lt;/code&gt;（构建期+运行期，进镜像）和 &lt;code&gt;ARG&lt;/code&gt;（仅构建期）的区别与优先级。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;最容易混的一处&lt;/strong&gt;：compose 的 &lt;code&gt;.env&lt;/code&gt; 是给 compose 文件本身做变量替换用的，&lt;code&gt;env_file&lt;/code&gt; 才是把变量注入容器。两个都叫“环境变量文件”，行为完全不同。&lt;/li&gt;
+&lt;li&gt;优先级链：&lt;code&gt;docker run -e&lt;/code&gt; &amp;gt; &lt;code&gt;--env-file&lt;/code&gt; &amp;gt; 镜像内 &lt;code&gt;ENV&lt;/code&gt;。写清楚，排障时直接照着查。&lt;/li&gt;
+&lt;li&gt;密钥不要用 &lt;code&gt;ARG&lt;/code&gt; 或 &lt;code&gt;ENV&lt;/code&gt; 传，构建历史里能翻出来。用 BuildKit 的 &lt;code&gt;--mount=type=secret&lt;/code&gt; 或挂载文件。&lt;/li&gt;
+&lt;li&gt;顺手带上 &lt;code&gt;TZ&lt;/code&gt; 和 locale：容器默认 UTC，中文乱码大多出在这里。&lt;/li&gt;
+&lt;/ul&gt;&lt;/section&gt;
+&lt;section&gt;&lt;h2&gt;部署方式&lt;a href=&quot;#部署方式&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;docker run&lt;/code&gt; 的参数表：&lt;code&gt;-d --name -p -v -e --env-file --restart --network --memory --cpus --ulimit&lt;/code&gt;。做一张表，比逐条列文字更容易查。&lt;/li&gt;
+&lt;li&gt;端口绑定的安全细节：&lt;code&gt;-p 127.0.0.1:8080:80&lt;/code&gt; 和 &lt;code&gt;-p 8080:80&lt;/code&gt; 的差别是是否直接暴露到公网。&lt;/li&gt;
+&lt;li&gt;三种挂载：bind mount、volume、tmpfs，以及 UID/GID 不匹配导致“容器写不进目录”的经典问题。&lt;/li&gt;
+&lt;li&gt;网络：默认 bridge、自定义 bridge（有 DNS，能按服务名互访）、host 模式各自适用什么场景。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;restart&lt;/code&gt; 策略四个值的行为差异，特别是 &lt;code&gt;always&lt;/code&gt; 和 &lt;code&gt;unless-stopped&lt;/code&gt; 只差一个“手动停过没有”。&lt;/li&gt;
+&lt;li&gt;compose 实战命令：&lt;code&gt;up -d&lt;/code&gt;、&lt;code&gt;down&lt;/code&gt;（注意 &lt;code&gt;-v&lt;/code&gt; 会把数据卷一起删掉）、&lt;code&gt;logs -f&lt;/code&gt;、&lt;code&gt;exec&lt;/code&gt;、override 文件做开发/生产差异。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;必须写的运维项&lt;/strong&gt;：日志驱动默认的 &lt;code&gt;json-file&lt;/code&gt; 不轮转，磁盘会被写满。配 &lt;code&gt;max-size&lt;/code&gt; / &lt;code&gt;max-file&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;升级与回滚流程：换 tag → &lt;code&gt;pull&lt;/code&gt; → &lt;code&gt;up -d&lt;/code&gt;，数据卷不动。&lt;/li&gt;
+&lt;li&gt;优雅停机：&lt;code&gt;--stop-timeout&lt;/code&gt;、&lt;code&gt;--init&lt;/code&gt;，接上前面 1 号进程那个坑。&lt;/li&gt;
+&lt;/ul&gt;&lt;/section&gt;
+&lt;section&gt;&lt;h2&gt;容器打包&lt;a href=&quot;#容器打包&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;完整链路：&lt;code&gt;build&lt;/code&gt; → &lt;code&gt;tag&lt;/code&gt; → &lt;code&gt;push&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;镜像名就是地址。&lt;code&gt;docker push&lt;/code&gt; 没有「指定推到哪里」的参数，目标全部写死在镜像名里：&lt;code&gt;[仓库域名[:端口]/]命名空间/仓库名[:tag]&lt;/code&gt;。不写域名默认 Docker Hub，不写命名空间默认 &lt;code&gt;library&lt;/code&gt;（&lt;code&gt;library&lt;/code&gt; 是官方镜像的位置，个人账号没有推送权限），不写 tag 就是 &lt;code&gt;latest&lt;/code&gt;。所以 &lt;code&gt;docker tag&lt;/code&gt; 干的事不是复制镜像，是给它再挂一个「带地址的名字」。&lt;/li&gt;
+&lt;li&gt;瘦身四招：多阶段、合并 &lt;code&gt;RUN&lt;/code&gt;、清包管理器缓存、用 &lt;code&gt;dive&lt;/code&gt; 看每层大小。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;导出迁移要分清&lt;/strong&gt;：&lt;code&gt;save&lt;/code&gt;/&lt;code&gt;load&lt;/code&gt; 搬镜像（保留元数据），&lt;code&gt;export&lt;/code&gt;/&lt;code&gt;import&lt;/code&gt; 搬容器文件系统（丢 &lt;code&gt;CMD&lt;/code&gt;、&lt;code&gt;ENV&lt;/code&gt;、历史）。这两个混用是常见事故。&lt;/li&gt;
+&lt;li&gt;私有仓库：&lt;code&gt;registry&lt;/code&gt; 或 harbor 搭建，&lt;code&gt;insecure-registry&lt;/code&gt; 怎么配。&lt;/li&gt;
+&lt;li&gt;跨架构构建：&lt;code&gt;buildx --platform linux/arm64&lt;/code&gt;。现在 arm 服务器不少，这条迟早用得上。&lt;/li&gt;
+&lt;li&gt;加一点安全：非 root 的 &lt;code&gt;USER&lt;/code&gt;、&lt;code&gt;trivy&lt;/code&gt; 扫漏洞、镜像签名。&lt;/li&gt;
+&lt;/ul&gt;&lt;/section&gt;
+&lt;section&gt;&lt;h2&gt;docker网络&lt;a href=&quot;#docker网络&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;一句话答案：两个容器挂在&lt;strong&gt;同一张用户自定义 bridge 网络&lt;/strong&gt;里，然后把容器名当主机名用。&lt;/li&gt;
+&lt;li&gt;为什么默认 &lt;code&gt;bridge&lt;/code&gt; 不行：它没有内置 DNS，容器之间只能靠 IP（重启就变）或早废弃的 &lt;code&gt;--link&lt;/code&gt;。自定义网络自带 127.0.0.11 的 DNS，容器名和 &lt;code&gt;--network-alias&lt;/code&gt; 都能直接解析。&lt;/li&gt;
+&lt;li&gt;独立启动的最小流程：&lt;/li&gt;
+&lt;/ul&gt;&lt;div&gt;&lt;figure&gt;&lt;figcaption&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;Terminal window&lt;/span&gt;&lt;/figcaption&gt;&lt;pre&gt;&lt;code&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;1&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;docker&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;network&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;create&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;app-net&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;2&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;docker&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;run&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;-d&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;--name&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;mysql-db&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;--network&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;app-net&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;\&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;3&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;  &lt;/span&gt;&lt;span&gt;-e&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;MYSQL_ROOT_PASSWORD=xxx&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;-v&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;mysql-data:/var/lib/mysql&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;mysql:8.0&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;4&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;docker&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;run&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;-d&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;--name&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;api&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;--network&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;app-net&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;\&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;5&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;  &lt;/span&gt;&lt;span&gt;-e&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;DB_HOST=mysql-db&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;-e&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;DB_PORT=&lt;/span&gt;&lt;span&gt;3306&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;-p&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;8080:8080&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;my-api:1.0&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/code&gt;&lt;/pre&gt;&lt;div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;应用侧连接串写 &lt;code&gt;mysql-db:3306&lt;/code&gt;。&lt;strong&gt;容器间通信不需要 &lt;code&gt;-p&lt;/code&gt;&lt;/strong&gt;，&lt;code&gt;-p&lt;/code&gt; 只解决宿主机和外部访问。数据库更不要 publish，等于白送一个公网攻击面。&lt;/li&gt;
+&lt;li&gt;同一个 compose 项目里的服务本来就在 &lt;code&gt;&amp;lt;项目名&amp;gt;_default&lt;/code&gt; 这张网络上，直接用 service 名互访，不用额外配置。&lt;/li&gt;
+&lt;li&gt;一个 run 起的容器 + 一个 compose 项目，或两个独立 compose 项目：网络要在外面先建好，compose 里声明 &lt;code&gt;external: true&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;&lt;div&gt;&lt;figure&gt;&lt;figcaption&gt;&lt;/figcaption&gt;&lt;pre&gt;&lt;code&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;1&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;services&lt;/span&gt;&lt;span&gt;:&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;2&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;  &lt;/span&gt;&lt;span&gt;api&lt;/span&gt;&lt;span&gt;:&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;3&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;    &lt;/span&gt;&lt;span&gt;networks&lt;/span&gt;&lt;span&gt;: [&lt;/span&gt;&lt;span&gt;app-net&lt;/span&gt;&lt;span&gt;]&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;4&lt;/div&gt;&lt;/div&gt;&lt;div&gt;
+&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;5&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;networks&lt;/span&gt;&lt;span&gt;:&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;6&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;  &lt;/span&gt;&lt;span&gt;app-net&lt;/span&gt;&lt;span&gt;:&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;7&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;    &lt;/span&gt;&lt;span&gt;external&lt;/span&gt;&lt;span&gt;: &lt;/span&gt;&lt;span&gt;true&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/code&gt;&lt;/pre&gt;&lt;div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;一个容器可以同时接多张网络（&lt;code&gt;docker network connect&lt;/code&gt; 或 compose 里列出来），用这个做隔离：DB 只挂在 internal 网络上，API 挂两张，既连得到 DB 又出得去外网。&lt;/li&gt;
+&lt;/ul&gt;&lt;div&gt;&lt;figure&gt;&lt;figcaption&gt;&lt;/figcaption&gt;&lt;pre&gt;&lt;code&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;1&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;networks&lt;/span&gt;&lt;span&gt;:&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;2&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;  &lt;/span&gt;&lt;span&gt;db-net&lt;/span&gt;&lt;span&gt;:&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;3&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;    &lt;/span&gt;&lt;span&gt;internal&lt;/span&gt;&lt;span&gt;: &lt;/span&gt;&lt;span&gt;true&lt;/span&gt;&lt;span&gt;   &lt;/span&gt;&lt;span&gt;# 无外部出入口&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;4&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;  &lt;/span&gt;&lt;span&gt;app-net&lt;/span&gt;&lt;span&gt;: {}&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/code&gt;&lt;/pre&gt;&lt;div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;跨主机通信是另一套（overlay，靠 swarm 或 k8s）。单机部署不用碰。&lt;/li&gt;
+&lt;/ul&gt;&lt;section&gt;&lt;h3&gt;踩过的坑&lt;a href=&quot;#踩过的坑&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;不要硬编码 IP。容器重建 IP 就变，&lt;code&gt;--ip&lt;/code&gt; + 自定义子网能固定但没必要。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;depends_on&lt;/code&gt; 只保证启动顺序，不保证 DB 就绪。要 &lt;code&gt;healthcheck&lt;/code&gt; + &lt;code&gt;condition: service_healthy&lt;/code&gt;，应用侧还得有自己的重试。&lt;/li&gt;
+&lt;li&gt;网络通 ≠ 能连上。MySQL 8 账号 host 不是 &lt;code&gt;%&lt;/code&gt; 时，报 &lt;code&gt;Access denied for user &apos;root&apos;@&apos;172.18.0.5&apos;&lt;/code&gt;，看着像网络问题，其实是授权问题。&lt;/li&gt;
+&lt;li&gt;容器要访问宿主机上的服务：Linux 加 &lt;code&gt;--add-host=host.docker.internal:host-gateway&lt;/code&gt;，或者直接 &lt;code&gt;--network host&lt;/code&gt;（性能最好，但端口和宿主机抢，隔离也没了）。&lt;/li&gt;
+&lt;/ul&gt;&lt;/section&gt;&lt;section&gt;&lt;h3&gt;排障三招&lt;a href=&quot;#排障三招&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h3&gt;&lt;div&gt;&lt;figure&gt;&lt;figcaption&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;Terminal window&lt;/span&gt;&lt;/figcaption&gt;&lt;pre&gt;&lt;code&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;1&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;docker&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;network&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;inspect&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;app-net&lt;/span&gt;&lt;span&gt;          &lt;/span&gt;&lt;span&gt;# 看谁在这张网里、各自 IP&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;2&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;docker&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;exec&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;-it&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;api&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;nslookup&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;mysql-db&lt;/span&gt;&lt;span&gt;   &lt;/span&gt;&lt;span&gt;# DNS 解析通不通&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;3&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;docker&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;exec&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;-it&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;api&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;nc&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;-zv&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;mysql-db&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;3306&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;# 端口通不通&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/code&gt;&lt;/pre&gt;&lt;div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;p&gt;镜像精简时 &lt;code&gt;ping&lt;/code&gt; 往往不存在，别拿它当判断依据。&lt;/p&gt;&lt;/section&gt;&lt;/section&gt;
+&lt;section&gt;&lt;h2&gt;常见场景&lt;a href=&quot;#常见场景&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;section&gt;&lt;h3&gt;私有仓库，推送到服务器docker部署/升级&lt;a href=&quot;#私有仓库推送到服务器docker部署升级&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;链路就四步：本地或 CI 构建 → 打 tag → push 到私有仓库 → 服务器 pull 后 &lt;code&gt;up -d&lt;/code&gt;。&lt;/p&gt;&lt;section&gt;&lt;h4&gt;1. 仓库先起来&lt;a href=&quot;#1-仓库先起来&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h4&gt;&lt;div&gt;&lt;figure&gt;&lt;figcaption&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;Terminal window&lt;/span&gt;&lt;/figcaption&gt;&lt;pre&gt;&lt;code&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;1&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;docker&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;run&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;-d&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;--name&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;registry&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;--restart&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;unless-stopped&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;\&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;2&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;  &lt;/span&gt;&lt;span&gt;-p&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;5000:5000&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;\&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;3&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;  &lt;/span&gt;&lt;span&gt;-v&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;/opt/registry:/var/lib/registry&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;\&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;4&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;  &lt;/span&gt;&lt;span&gt;-e&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;REGISTRY_STORAGE_DELETE_ENABLED=&lt;/span&gt;&lt;span&gt;true&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;\&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;5&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;  &lt;/span&gt;&lt;span&gt;registry:2&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/code&gt;&lt;/pre&gt;&lt;div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;registry 默认只认 HTTPS，&lt;code&gt;localhost&lt;/code&gt; 除外。生产套一层 nginx + 证书；内网自签就把 &lt;code&gt;ca.crt&lt;/code&gt; 放到每台机器的 &lt;code&gt;/etc/docker/certs.d/&amp;lt;域名&amp;gt;:5000/ca.crt&lt;/code&gt;，比全局开 &lt;code&gt;insecure-registries&lt;/code&gt; 干净。&lt;/li&gt;
+&lt;li&gt;项目多、要按人分权限，直接上 Harbor。&lt;code&gt;registry:2&lt;/code&gt; 只是个存储，没有 UI、没有 RBAC、没有扫描。&lt;/li&gt;
+&lt;/ul&gt;&lt;/section&gt;&lt;section&gt;&lt;h4&gt;2. 命名与 tag&lt;a href=&quot;#2-命名与-tag&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;镜像名必须带仓库地址：&lt;code&gt;registry.example.com/ns/app:1.2.3&lt;/code&gt;，否则默认往 Docker Hub 推。&lt;/li&gt;
+&lt;li&gt;双 tag：版本号给人看（&lt;code&gt;1.2.3&lt;/code&gt;），commit sha 给回滚定位（&lt;code&gt;sha-a1b2c3d&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;别把 &lt;code&gt;latest&lt;/code&gt; 理解成「最新版本」。它只是不写 tag 时的默认值，指向最后一次被 push 成 &lt;code&gt;latest&lt;/code&gt; 的那个镜像，和「最新 commit」「最新的 tag」都没有自动关系；Docker 不会主动比较版本号大小。&lt;/li&gt;
+&lt;li&gt;仓库里只有一张 &lt;code&gt;tag → digest&lt;/code&gt; 的名字表，&lt;code&gt;latest&lt;/code&gt; 是其中独立的一行，不会跟着别的 tag 走，也没有「自动兜底到最新」这种机制。只推了 &lt;code&gt;1.2.4&lt;/code&gt; 没推 &lt;code&gt;latest&lt;/code&gt;，&lt;code&gt;docker pull app&lt;/code&gt; 会直接报 &lt;code&gt;manifest unknown&lt;/code&gt;——这就是它在查表、而表里没这一行。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;git 仓库更新 ≠ 镜像更新&lt;/strong&gt;。两者之间没有任何自动同步，中间必须有人或 CI 去 build + push。tag 长期不动而主分支一直在提交，说明这条链路断了，而不是「镜像会自动跟上」。这种断法不报错：&lt;code&gt;pull&lt;/code&gt; 到的还是老镜像，服务照跑，改的 bug 就是不生效。&lt;/li&gt;
+&lt;li&gt;想跟着 master 最新代码走，用 sha tag，不用 &lt;code&gt;latest&lt;/code&gt;：CI 里 &lt;code&gt;docker build -t app:sha-$GIT_SHA -t app:latest&lt;/code&gt;，推两个 tag 只多花一次 manifest 的时间（层已经在了）。部署用 &lt;code&gt;sha-&lt;/code&gt;，&lt;code&gt;latest&lt;/code&gt; 只是给人看的别名。&lt;/li&gt;
+&lt;li&gt;只有一条主分支、一个人部署的小项目，只推 &lt;code&gt;latest&lt;/code&gt; 也能跑得挺好。代价是覆盖那一刻旧镜像就失去名字了，出问题没有「上一个版本」可退。最低成本的补救不是建整套版本号体系，是 tag 里带上短 sha，两行 shell 的事。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;不要在同一 tag 上重复 push&lt;/strong&gt;。tag 名没变，编排层就认为「镜像没换」，靠 &lt;code&gt;--pull always&lt;/code&gt; / &lt;code&gt;--force-recreate&lt;/code&gt; 去补太脆弱；换了 sha 就是天然的一次新部署。&lt;/li&gt;
+&lt;/ul&gt;&lt;/section&gt;&lt;section&gt;&lt;h4&gt;3. 登录&lt;a href=&quot;#3-登录&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h4&gt;&lt;div&gt;&lt;figure&gt;&lt;figcaption&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;Terminal window&lt;/span&gt;&lt;/figcaption&gt;&lt;pre&gt;&lt;code&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;1&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;docker&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;login&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;registry.example.com&lt;/span&gt;&lt;span&gt;          &lt;/span&gt;&lt;span&gt;# 交互输密码&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;2&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;echo&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;&quot;&lt;/span&gt;&lt;span&gt;$TOKEN&lt;/span&gt;&lt;span&gt;&quot;&lt;/span&gt;&lt;span&gt; | &lt;/span&gt;&lt;span&gt;docker&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;login&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;registry.example.com&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;-u&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;ci&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;-p&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;--password-stdin&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/code&gt;&lt;/pre&gt;&lt;div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;p&gt;凭据存在 &lt;code&gt;~/.docker/config.json&lt;/code&gt;，只是 base64，不是加密。服务器上给一个只读账号，别用管理员。&lt;/p&gt;&lt;/section&gt;&lt;section&gt;&lt;h4&gt;4. 服务器侧用变量接 tag&lt;a href=&quot;#4-服务器侧用变量接-tag&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h4&gt;&lt;div&gt;&lt;figure&gt;&lt;figcaption&gt;&lt;/figcaption&gt;&lt;pre&gt;&lt;code&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;1&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;services&lt;/span&gt;&lt;span&gt;:&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;2&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;  &lt;/span&gt;&lt;span&gt;api&lt;/span&gt;&lt;span&gt;:&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;3&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;    &lt;/span&gt;&lt;span&gt;image&lt;/span&gt;&lt;span&gt;: &lt;/span&gt;&lt;span&gt;registry.example.com/ns/app:${TAG:?TAG required}&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;4&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;    &lt;/span&gt;&lt;span&gt;restart&lt;/span&gt;&lt;span&gt;: &lt;/span&gt;&lt;span&gt;unless-stopped&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/code&gt;&lt;/pre&gt;&lt;div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;p&gt;&lt;code&gt;.env&lt;/code&gt; 里写 &lt;code&gt;TAG=1.2.3&lt;/code&gt;。&lt;code&gt;${TAG:?}&lt;/code&gt; 的意思是没设就报错——防止手滑拉到空值或 &lt;code&gt;latest&lt;/code&gt;。&lt;/p&gt;&lt;/section&gt;&lt;section&gt;&lt;h4&gt;5. 升级和回滚都是改一行&lt;a href=&quot;#5-升级和回滚都是改一行&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h4&gt;&lt;div&gt;&lt;figure&gt;&lt;figcaption&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;Terminal window&lt;/span&gt;&lt;/figcaption&gt;&lt;pre&gt;&lt;code&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;1&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;# 升级&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;2&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;sed&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;-i&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;&apos;s/^TAG=.*/TAG=1.2.4/&apos;&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;.env&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;3&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;docker&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;compose&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;pull&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;4&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;docker&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;compose&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;up&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;-d&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;--remove-orphans&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;5&lt;/div&gt;&lt;/div&gt;&lt;div&gt;
+&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;6&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;# 回滚：改回旧 tag 再来一次&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;7&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;sed&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;-i&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;&apos;s/^TAG=.*/TAG=1.2.3/&apos;&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;.env&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;8&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;span&gt;docker&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;compose&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;up&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;-d&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/code&gt;&lt;/pre&gt;&lt;div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;up -d&lt;/code&gt; 只重建容器，命名卷不动，数据还在。&lt;/li&gt;
+&lt;li&gt;回滚的前提是旧镜像还在本地。&lt;code&gt;docker image prune -a&lt;/code&gt; 会把回滚能力一起清掉，用 &lt;code&gt;--filter until=168h&lt;/code&gt;，或者按 tag 留最近三个。&lt;/li&gt;
+&lt;/ul&gt;&lt;/section&gt;&lt;section&gt;&lt;h4&gt;6. 坑&lt;a href=&quot;#6-坑&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;数据库迁移不可回滚&lt;/strong&gt;。镜像能退回去，schema 退不了。迁移脚本写前向兼容：先加列，不删列，隔一版再清。&lt;/li&gt;
+&lt;li&gt;registry 磁盘只涨不降。&lt;code&gt;REGISTRY_STORAGE_DELETE_ENABLED=true&lt;/code&gt; 只是允许删，删完还得跑 garbage-collect 才真释放空间。&lt;/li&gt;
+&lt;li&gt;单机 compose 没有滚动发布，&lt;code&gt;up -d&lt;/code&gt; 那几秒服务是不可用的。要零停机，前面挂反代做蓝绿，或者干脆上 swarm / k8s。&lt;/li&gt;
+&lt;li&gt;服务器和 registry 跨机房时拉镜像很慢，registry 就近部署，或者用 Harbor 的复制做多地分发。&lt;/li&gt;
+&lt;li&gt;开机自启别指望 &lt;code&gt;restart: unless-stopped&lt;/code&gt;——容器没起来它管不了。写个 systemd unit 跑 &lt;code&gt;docker compose up -d&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;&lt;/section&gt;&lt;/section&gt;&lt;section&gt;&lt;h3&gt;…&lt;/h3&gt;&lt;/section&gt;&lt;/section&gt;</content:encoded></item><item><title>261020品牌运营</title><link>https://shaio.top/posts/%E8%BF%90%E8%90%A5/261020%E5%93%81%E7%89%8C%E8%BF%90%E8%90%A5/</link><guid isPermaLink="true">https://shaio.top/posts/%E8%BF%90%E8%90%A5/261020%E5%93%81%E7%89%8C%E8%BF%90%E8%90%A5/</guid><description>宠物行业 AI 内容运营平台的功能梳理：信息聚合与信息发布。</description><pubDate>Tue, 20 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;section&gt;&lt;h1&gt;信息聚合&lt;a href=&quot;#信息聚合&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h1&gt;&lt;blockquote&gt;&lt;p&gt;收集各平台相关数据，聚合提炼有用信息，用于AI做内容分析&lt;/p&gt;&lt;/blockquote&gt;&lt;p&gt;其中细分如下功能板块：&lt;/p&gt;&lt;ul&gt;
 &lt;li&gt;机构发布：
 &lt;ul&gt;
 &lt;li&gt;学术平台&lt;/li&gt;
