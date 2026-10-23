@@ -1,7 +1,7 @@
 ---
 title: Embedding
 published: 2026-10-22
-description:
+description: Embedding
 tags:
   - Emulsion
   - SQLite
