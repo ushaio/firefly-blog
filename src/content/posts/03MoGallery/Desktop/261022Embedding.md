@@ -3,7 +3,6 @@ title: Embedding
 published: 2026-10-22
 description:
 tags:
-  - MO Gallery
   - Emulsion
   - SQLite
   - 架构设计
