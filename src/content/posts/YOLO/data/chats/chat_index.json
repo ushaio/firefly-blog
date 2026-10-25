@@ -118,5 +118,13 @@
     "schemaVersion": 1,
     "isPinned": false,
     "origin": "user"
+  },
+  {
+    "id": "2b264659-63e1-4671-acef-e85ac79ee8fa",
+    "title": "LangChain 是什么、用途与使用方法",
+    "updatedAt": 1792938815829,
+    "schemaVersion": 1,
+    "isPinned": false,
+    "origin": "user"
   }
 ]
