@@ -1,0 +1,118 @@
+{
+  "id": "f31c5058-1d24-4a82-a7a2-f391bcc26c97",
+  "title": "Spring扫描到Bean中的切点规则",
+  "messages": [
+    {
+      "role": "user",
+      "content": {
+        "root": {
+          "children": [
+            {
+              "children": [
+                {
+                  "detail": 0,
+                  "format": 0,
+                  "mode": "normal",
+                  "style": "",
+                  "text": "261025SpringBoot的泪… (11 词/字)",
+                  "type": "mention",
+                  "version": 1,
+                  "mentionName": "261025SpringBoot的泪.md (11 词/字)",
+                  "mentionable": {
+                    "type": "block",
+                    "file": "丫丫学语/爪哇/SpringBoot/261025SpringBoot的泪.md",
+                    "startLine": 24,
+                    "endLine": 24,
+                    "source": "selection",
+                    "contentHash": "a57fde99"
+                  }
+                },
+                {
+                  "detail": 0,
+                  "format": 0,
+                  "mode": "normal",
+                  "style": "",
+                  "text": " 这个说扫描到Bean，Bean是哪个Bean？",
+                  "type": "text",
+                  "version": 1
+                }
+              ],
+              "direction": "ltr",
+              "format": "",
+              "indent": 0,
+              "type": "paragraph",
+              "version": 1,
+              "textFormat": 0,
+              "textStyle": ""
+            }
+          ],
+          "direction": "ltr",
+          "format": "",
+          "indent": 0,
+          "type": "root",
+          "version": 1
+        }
+      },
+      "promptContent": null,
+      "snapshotRef": {
+        "hash": "722c6a68"
+      },
+      "id": "f53557ad-4100-467b-8192-96f0b1a0f935",
+      "mentionables": [
+        {
+          "type": "block",
+          "content": "Spring 扫描到 Bean 中有切点规则",
+          "file": "丫丫学语/爪哇/SpringBoot/261025SpringBoot的泪.md",
+          "startLine": 24,
+          "endLine": 24,
+          "source": "selection",
+          "contentHash": "a57fde99"
+        }
+      ],
+      "selectedSkills": [],
+      "selectedModelIds": [],
+      "reasoningLevel": "high",
+      "timeContext": "2026-10-25 21:01 (Sunday)",
+      "injectedContext": [
+        {
+          "type": "text",
+          "text": "# Editor Snapshot\nYou are answering a request about a user-selected passage.\n\nScope rules:\n1. The text between <selected_text_start> and </selected_text_end> is the only target of the user's request.\n2. Do not translate, rewrite, summarize, or explain text outside the selected text unless the user explicitly asks for broader context.\n3. Use the surrounding text only to understand the selected text.\n4. Your output should correspond only to the selected text.\n5. If the user's request is ambiguous, assume it applies only to the selected text.\n\nFile title: 261025SpringBoot的泪\nFile path: 丫丫学语/爪哇/SpringBoot/261025SpringBoot的泪.md\n<selection_context path=\"丫丫学语/爪哇/SpringBoot/261025SpringBoot的泪.md\">\n---\ntitle: 未命名\npublished: 2026/10/25\ndescription: 未命名\ntags: []\ncategory: \ndraft: true\n---\n面试被问到SpringBoot和Spring有什么区别，一下子傻了眼，遂回答：依赖注入、控制反转、面向切片编程、自动装配、集成Tomcat和Jetty内置服务，省去大量配置步骤。回答完后，双方对视尴尬一笑。果不其然，回答的可以说是驴头不对马嘴。。。\n\n## 面向切片编程AOP\n\n玄学概念，对着个理解一直感觉很抽象，比较简单的例子，过去开发时，常在Service层业务方法需要简化获取租户ID，即在方法上添加`@TenantScope`即可在方法下的传参。\n\n>AI：AOP 就是“在不修改业务代码的前提下，在方法执行的前后悄悄插入一段通用逻辑”。\n\n```java\n@TenantScope // 自动获取tenantId塞进param中\nprivate List<DailyDetail> getDailyDetail(Map<String,Object> param){\n\t// TODO\n}\n```\n**梳理：**\n1. 运行时，Spring 扫描到 Bean 中有切点规则<<CURSOR>>（例如标记了自定义注解 `@TenantScope`）；\n2. Spring 不会直接把原对象暴露给调用方，而是造了一个“替身”——代理对象（Proxy）（通过 JDK 动态代理或 CGLIB 生成）；\n3. 当外部调用该方法时，实际调用的是**代理对象**：\n\t`调用方 -> [代理对象：执行前置切面逻辑] -> [真实业务方法] -> [代理对象：执行后置/异常/事务逻辑] -> 返回结果`\n\n另一个场景就是为项目额外封装的事务注解`@MTSTransactional`，效果和`@Transactional`一致。\n```java\n@MTSTransactional\npublic CMReturn insertRow(DataRow datarow){\n\t// TODO\n}\n```\n\n## 控制反转IOC\n\n## 依赖注入DI\n\n依赖注入？依赖啥？注入啥？\n\n前置基础代码举例：\n```java\n    @Override\n    public User findById(int id) {\n        // 这里写具体的 JDBC / SQL 语句，去 MySQL 查数据返回\n        System.out.println(\"去 MySQL 查了用户数据...\");\n        return new User();\n    }\n\n    @Override\n    public void save(User user) {\n        System.out.println(\"把用户存到了 MySQL...\");\n    }\n}\n```\n\n**没有依赖注入前：**\n```java\npublic class UserService {\n    // 自己控制 UserDao 的创建和生命周期 （多态）\n    private UserDao userDao = new UserDaoImpl(); \n}\n```\n\n通过依赖注入实现：\n```java\n@Service\npublic class UserService {\n    private final UserDao userDao;\n\n    // 容器自动把 UserDao 的实现注入进来\n    // (构造器方式注入)\n    public UserService(UserDao userDao) {\n        this.userDao = userDao;\n    }\n}\n```\n\n### 构造器注入\n\n```java\n@Service\npublic class UserService {\n    private final UserDao userDao;\n\n    // 容器自动把 UserDao 的实现注入进来\n    public UserService(UserDao userDao) {\n        this.userDao = userDao;\n    }\n}\n```\n\n### **字段注入**\n\n**`@Autowired`**\n\n- Spring 原生注解\n- 默认按照类型byType可以搭配 `@Qualifier(\"beanName\")` 按名称指定\n\n**`@Resource`**\n\n\n来源于Java官方\n\n\n### Setter 方法注入\n\n\n\n## 集成内置服务器\n\n内置servlet容器，打成可执行jar直接跑\n\n\n## 自动装配\n\n### 是什么\n\n自动装配是 Spring Boot 的核心机制：**根据 classpath 下有哪些 jar、容器里已经注册了哪些 Bean、你在 application.yml 里配了什么，自动推断出还需要哪些 Bean 并注册进容器**，不需要手写 XML 或 @Configuration。\n\n两个关键词：\n\n- 约定优于配置：引入 starter 就默认给你一套能跑的配置，想改再覆盖\n- 条件注册：每个自动配置类都挂着 `@ConditionalOnXxx`，条件不满足就不生效\n\n本质 = Spring 把你以前要从旧项目 copy 过来的模板配置，写成了官方自带、且带条件判断的配置类。\n\n### 干嘛用\n\n- 引一个 `spring-boot-starter-web`：DispatcherServlet、字符编码、Jackson、消息转换器、内嵌 Tomcat 全配好\n- 引一个 `spring-boot-starter-data-redis`：RedisTemplate 直接能用\n- 默认可被覆盖：`@ConditionalOnMissingBean` 保证「用户配了就听用户的」\n- 第三方只需发布 starter + 一个自动配置类，用户引依赖即可用\n\n### \n\n<selected_text_start>\nSpring 扫描到 Bean 中有切点规则\n</selected_text_end>\n</selection_context>\n"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": "在 Spring AOP 的上下文和你的笔记语境中，这里的 **Bean** 指的是：**包含被拦截方法、被切面规则命中的目标业务对象（Target Bean）**。\n\n具体可以从以下几个维度来理解：\n\n---\n\n### 1. 对应到代码里，具体是谁？\n就是声明了业务方法的那个类在 Spring 容器中的实例，通常是你的 **Service 层组件**。\n\n例如，你笔记中的示例方法实际上属于某个具体的业务类：\n```java\n@Service // 1. 标记为 Spring 管理的 Bean\npublic class DailyDetailServiceImpl implements DailyDetailService {\n\n    @TenantScope // 2. 切点规则匹配的目标方法\n    public List<DailyDetail> getDailyDetail(Map<String, Object> param) {\n        // TODO 真实业务逻辑\n    }\n}\n```\n这里的 **Bean** 指的就是容器在初始化过程中的 **`DailyDetailServiceImpl` 实例**（即 AOP 概念中的**目标对象 / Target**）。\n\n---\n\n### 2. Spring 是怎么“扫描”它的？\nSpring 容器启动和初始化的过程可以分为两组角色：\n\n| 角色 | 负责的事情 | 例子 |\n| :--- | :--- | :--- |\n| **切面 Bean（Aspect）** | 定义“在哪里切”（切点 Pointcut）以及“切进去做什么”（通知 Advice）。 | 例如配了 `@Aspect` 的 `TenantScopeAspect` 类。 |\n| **目标 Bean（Target Bean）**<br>*(即句中所指的 Bean)* | 普通业务组件，里面写了具体的业务逻辑代码。 | 如 `DailyDetailServiceImpl`、`OrderServiceImpl` 等。 |\n\n**扫描发生的时机：**\nSpring 在创建每一个业务 Bean（生命周期的后置处理器阶段，具体是 `BeanPostProcessor`）时，会拿切面规则去**检查当前正在初始化的这个 Bean**：\n- 检查它的类上或方法上是否匹配规则（例如是否标注了 `@TenantScope` 或 `@Transactional`）。\n- **如果匹配命中**：Spring 就会为**这个业务 Bean** 生成一个“代理对象（Proxy）”，把代理对象放回容器中供外部调用；\n- **如果不匹配**：就直接把原始 Bean 暴露出去，不创建代理。\n\n---\n\n> **补充一个小细节：**\n> 笔记示例中写成了 `private List<DailyDetail> getDailyDetail`。在 Spring AOP 机制中，由于代理对象是通过重写方法（CGLIB）或实现接口（JDK 动态代理）来拦截调用的，**`private` 方法无法被代理拦截**，且只有从外部调用该 Bean 的 `public` 方法时，AOP 切面才会生效。",
+      "id": "08547a4c-5fbf-4a37-804c-4bf45bdc4711",
+      "metadata": {
+        "model": {
+          "providerId": "magpie",
+          "id": "auto/gemini-3.8-flash",
+          "model": "auto/gemini-3.8-flash",
+          "name": "auto/gemini-3.8-flash",
+          "reasoningType": "gemini",
+          "maxContextTokens": 1048576,
+          "modalities": [
+            "text",
+            "vision"
+          ]
+        },
+        "usage": {
+          "prompt_tokens": 5660,
+          "completion_tokens": 1377,
+          "total_tokens": 7037
+        },
+        "durationMs": 16293,
+        "generationState": "completed",
+        "branchConversationId": "f31c5058-1d24-4a82-a7a2-f391bcc26c97",
+        "branchModelId": "auto/gemini-3.8-flash",
+        "branchLabel": "auto/gemini-3.8-flash"
+      }
+    }
+  ],
+  "createdAt": 1792933312348,
+  "updatedAt": 1792933328841,
+  "schemaVersion": 1,
+  "compaction": [],
+  "origin": "user"
+}

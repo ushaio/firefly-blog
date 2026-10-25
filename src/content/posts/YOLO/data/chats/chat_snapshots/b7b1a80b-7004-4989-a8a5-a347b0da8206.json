@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "entries": {
+    "1ee50bf8": {
+      "hash": "1ee50bf8",
+      "content": [
+        {
+          "type": "text",
+          "text": "<user_selected_content path=\"丫丫学语/爪哇/SpringBoot/261025SpringBoot的泪.md\" startLine=\"13\" endLine=\"28\">\n```丫丫学语/爪哇/SpringBoot/261025SpringBoot的泪.md\n13|玄学概念，对着个理解一直感觉很抽象，比较简单的例子，过去开发时，常在Service层业务方法需要简化获取租户ID，即在方法上添加`@TenantScope`即可在方法下的传参。\n14|\n15|```java\n16|@TenantScope // 自动获取tenantId塞进param中\n17|private List<DailyDetail> getDailyDetail(Map<String,Object> param){\n18|\t// TODO\n19|}\n20|```\n21|\n22|另一个场景就是为项目额外封装的事务注解`@MTSTransactional`，效果和`@Transactional`一致。\n23|```java\n24|@MTSTransactional\n25|public CMReturn insertRow(DataRow datarow){\n26|\t// TODO\n27|}\n28|```\n```\n</user_selected_content>\n\n\n261025SpringBoot的泪.md (116 词/字) 深入解释\n\n"
+        }
+      ],
+      "createdAt": 1792932989027,
+      "updatedAt": 1792932989027
+    }
+  }
+}

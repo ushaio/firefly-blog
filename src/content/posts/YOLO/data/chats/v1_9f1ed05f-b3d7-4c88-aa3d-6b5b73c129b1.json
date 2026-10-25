@@ -1,0 +1,128 @@
+{
+  "id": "9f1ed05f-b3d7-4c88-aa3d-6b5b73c129b1",
+  "title": "利欧面试：数据库不停机迁移方案",
+  "messages": [
+    {
+      "role": "user",
+      "content": {
+        "root": {
+          "children": [
+            {
+              "children": [
+                {
+                  "detail": 0,
+                  "format": 0,
+                  "mode": "normal",
+                  "style": "",
+                  "text": "@261015利欧面试.md (20 字符)",
+                  "type": "mention",
+                  "version": 1,
+                  "mentionName": "261015利欧面试.md (20 字符)",
+                  "mentionable": {
+                    "type": "block",
+                    "content": "## 如何不停机情况迁移到达梦数据库/其他数据库",
+                    "file": "记录/261015利欧面试.md",
+                    "startLine": 61,
+                    "endLine": 61,
+                    "source": "selection",
+                    "contentHash": "e60d0d14"
+                  }
+                },
+                {
+                  "detail": 0,
+                  "format": 0,
+                  "mode": "normal",
+                  "style": "",
+                  "text": " ",
+                  "type": "text",
+                  "version": 1
+                },
+                {
+                  "detail": 0,
+                  "format": 0,
+                  "mode": "normal",
+                  "style": "",
+                  "text": "提供建议",
+                  "type": "text",
+                  "version": 1
+                }
+              ],
+              "direction": "ltr",
+              "format": "",
+              "indent": 0,
+              "type": "paragraph",
+              "version": 1,
+              "textFormat": 0,
+              "textStyle": ""
+            }
+          ],
+          "direction": "ltr",
+          "format": "",
+          "indent": 0,
+          "type": "root",
+          "version": 1
+        }
+      },
+      "promptContent": null,
+      "snapshotRef": {
+        "hash": "052329c3"
+      },
+      "id": "bb6500e9-6c1c-442d-9d56-627f237338f8",
+      "mentionables": [
+        {
+          "type": "block",
+          "content": "## 如何不停机情况迁移到达梦数据库/其他数据库",
+          "file": "记录/261015利欧面试.md",
+          "startLine": 61,
+          "endLine": 61,
+          "source": "selection",
+          "contentHash": "e60d0d14"
+        }
+      ],
+      "selectedSkills": [],
+      "selectedModelIds": [],
+      "reasoningLevel": "auto",
+      "timeContext": "2026-10-25 22:19 (Sunday)",
+      "injectedContext": [
+        {
+          "type": "text",
+          "text": "# Editor Snapshot\nYou are answering a request about a user-selected passage.\n\nScope rules:\n1. The text between <selected_text_start> and </selected_text_end> is the only target of the user's request.\n2. Do not translate, rewrite, summarize, or explain text outside the selected text unless the user explicitly asks for broader context.\n3. Use the surrounding text only to understand the selected text.\n4. Your output should correspond only to the selected text.\n5. If the user's request is ambiguous, assume it applies only to the selected text.\n\nFile title: 261015利欧面试\nFile path: 记录/261015利欧面试.md\n<selection_context path=\"记录/261015利欧面试.md\">\n---\ntitle: 利欧面试\npublished: 2026-10-15\ntags:\n  - 面试\n  - 司库\ncategory: 记录\ndraft: false\n---\n\n整体下来感觉面试强度挺高的，没有问八股文相关的，都是按照简历上描述的内容细问，但很可惜，被追问下，自己也不知道该如何描述了，其中用到的技术和原理也没法详细得描述。\n\n\n\n电子回单关联方式\n\n关联失败的场景如何处理\n\n## 重复交易避免\n\n制单方面\n\n\n\n提交至银行方面\n\n每个付款单都会在制单的时候单据理保存一个业务流水号（唯一），用于提交给银行，若重复发给银行，银行会提示“业务流水号重复”。\n\n虽然银行有通过业务流水号兜底，但项目里也需要额外考虑一下如何防止这种场景：\n\n\n\n\n\n\n## 发送交易如何反悔\n\n这个得依赖于银行提供接口吧？没有理解这个问题\n\n## sass多租户设计（单库、sechema等）\n\n按过往经历，一直都是单库设计，对于面试时这么回答确实挺尴尬的，毫无技术性、扩展性可言\n\n## sass 租户用户权限如何控制\n\n整体感觉无非就是多表权限控制，租户表、角色表、角色菜单表、租户版本表、用户角色表巴拉巴拉的。以上只是表结构设计，这么一想感觉似乎也能回答更好一些，比如：\n- 如何简化用户权限查询方式？通过`@DataScope`注解自动注入权限查询SQL，免去额外的SQL拼接；\n- 前端路由加入菜单权限permission路由地址，后端进入业务菜单Controller层通过`@HasPermission`对租户+用户权限校验是否具有菜单权限。\n\n>特喵的不写不知道，一写感觉失忆又恢复了...\n\n## 达梦数据库如何兼容\n\n## 微服务了解\n\n嗯，没了解\n\n\n# 生产环境\n\n## 如何不停机情况迁移到达梦数据库/其他数据库<<CURSOR>>\n\n\n\n\n## 主从数据库\n\n读写分离：\n- 减缓读写压力\n\n多数据库\n\n## 服务高负载如何排查\n\n1. 通过 top 查询高负载占用的服务，获取对应PID\n\t![](assets/Pasted%20image%2020261025221058.png)\n2. 通过`top -Hp <PID>`获取进程下占用高的线程\n\t![](assets/Pasted%20image%2020261025221246.png)\n3. 用 `printf \"%x\\n\" <TID>` 转换为十六进制\n4. 通过 `jstack <PID> | grep -A 30 0x<十六进制TID>` 抓取堆栈，直接定位到具体的方法和代码行号\n5. 同时用 `jstat -gcutil <PID> 1000 5` 排除是否为**老年代满导致的频繁 Full GC 占满 CPU**；\n6. 生产环境首要目标是**快速止血**（摘流隔离、扩容、重启或限流），保留现场（dump 日志与堆栈）后线下分析修复。\n\n<selected_text_start>\n## 如何不停机情况迁移到达梦数据库/其他数据库\n</selected_text_end>\n</selection_context>\n"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": "针对生产环境**不停机/平滑迁移到达梦（或异构数据库）**，核心回答逻辑可提炼为十六字方针：**“存量迁移、增量同步、双写/反向兜底、灰度切流、随时回退”**。\n\n在司库/金融等对资金安全要求极高的场景下，“不停机”通常意味着**“业务感知秒级以内，且具备秒级回滚能力”**。\n\n你可以直接参考以下整理好的结构和要点填入面试复盘笔记中：\n\n---\n\n### 面试回答参考框架\n\n#### 1. 前期准备与结构兼容（改造评估）\n- **SQL 与方言适配**：通过配置多数据源方言（如 MyBatis 动态插件/适配器），排查并修改源库特有语法（如 MySQL 的 `LIMIT`、`GROUP_BY` 隐式排序、反引号、JSON/TEXT 类型映射为达梦的 `CLOB/BLOB`、自增主键转达梦 `IDENTITY` 或 `SEQUENCE`）。\n- **表结构与索引迁移**：利用达梦官方工具 **DTS（DM Data Migration Service）** 导出评估报告，先行迁移 DDL、索引及约束。\n\n---\n\n#### 2. 数据同步三步走（基准 + 增量）\n- **全量基线迁移**：\n  - 记录全量导出的起始位点（Binlog 位点 / GTID / SCN）。\n  - 使用 DTS 或全量数据搬迁工具将存量数据全量导入达梦。\n- **增量 CDC 实时追齐**：\n  - 基于 CDC（如 Canal、Debezium、Flink CDC 或达梦官方的 **DMHS 数据复制软件**）消费源库变更日志。\n  - 写入 Kafka 缓冲或直接消费写入达梦，直到增量延迟压到秒级（追齐全量迁移期间产生的增量数据）。\n\n---\n\n#### 3. 数据一致性校验（金融级关键点）\n- **静态离线校验**：全量迁移后，按主键分段做 MD5/哈希值比对，抽样比对数据量和行级内容。\n- **动态持续对账**：针对资金单据、对账流水等核心表，开发独立对账脚本，校验源库与达梦的数据最终一致性，发现不一致自动触发补偿或预警。\n\n---\n\n#### 4. 切流与回滚方案（双写 / 反向同步）\n- **双向同步兜底（最推荐的无感方案）**：\n  - 核心痛点：一旦切到达梦后发生性能瓶颈或未知 Bug，如何快速回滚且不丢数据？\n  - 做法：通过 **DMHS** 提前配置**反向同步链路（达梦 -> 源库）**。\n- **读写灰度切流**：\n  1. **读切流**：先将报表、统计、只读查询按业务模块/租户灰度切换到达梦，验证只读性能与稳定性。\n  2. **写切流（秒级无感）**：选在业务低峰期，通过 Apollo/Nacos 配置中心动态切换数据源写连接（或服务平滑滚动重启）；\n  3. **反向兜底**：切流到达梦后，新增数据实时通过反向同步写回源库；若达梦出现异常，可秒级将写流量重新切回原库，业务无感知且数据零丢失。\n\n---\n\n#### 5. 稳定观察与下线\n- 达梦主库稳定运行 1~2 周，完成至少一次完整的跨日/月末业务对账周期。\n- 确认性能指标（CPU/IO/慢查询）平稳后，解除反向同步链路，原库归档下线。\n\n---\n\n### 面试提分追问话术\n\n> **面试官追问：“双向同步时，如何避免数据死循环镜像（A 写 B，B 又同步回 A）？”**  \n> **回答要点**：\n> 1. **过滤系统标识**：同步工具（如 DMHS/Canal）在写入时打上特定会话变量（如事务标识或特定账号），同步组件过滤掉由自身同步账号触发的变更日志。\n> 2. **业务版本号/时间戳**：写入时比对 `updated_time` 或版本号字段，旧版本不覆盖新版本。",
+      "id": "060ce8f9-bf6a-45c1-bcc1-a2ff1b34e6d1",
+      "metadata": {
+        "model": {
+          "providerId": "magpie",
+          "id": "auto/gemini-3.8-flash",
+          "model": "auto/gemini-3.8-flash",
+          "name": "auto/gemini-3.8-flash",
+          "reasoningType": "gemini",
+          "maxContextTokens": 1048576,
+          "modalities": [
+            "text",
+            "vision"
+          ]
+        },
+        "usage": {
+          "prompt_tokens": 5243,
+          "completion_tokens": 1871,
+          "total_tokens": 7114
+        },
+        "durationMs": 20574,
+        "generationState": "completed",
+        "branchConversationId": "9f1ed05f-b3d7-4c88-aa3d-6b5b73c129b1",
+        "branchModelId": "auto/gemini-3.8-flash",
+        "branchLabel": "auto/gemini-3.8-flash"
+      }
+    }
+  ],
+  "createdAt": 1792937948310,
+  "updatedAt": 1792937968965,
+  "schemaVersion": 1,
+  "compaction": [],
+  "origin": "user"
+}

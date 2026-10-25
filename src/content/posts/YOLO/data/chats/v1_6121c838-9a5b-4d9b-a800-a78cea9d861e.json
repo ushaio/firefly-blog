@@ -1,0 +1,397 @@
+{
+  "id": "6121c838-9a5b-4d9b-a800-a78cea9d861e",
+  "title": "三家大模型协议对比与Harness适配要点",
+  "messages": [
+    {
+      "role": "user",
+      "content": {
+        "root": {
+          "children": [
+            {
+              "children": [
+                {
+                  "detail": 1,
+                  "format": 0,
+                  "mode": "token",
+                  "style": "",
+                  "text": "261025协议区别.md (1646 词/字)",
+                  "type": "mention",
+                  "version": 1,
+                  "mentionName": "261025协议区别.md (1646 词/字)",
+                  "mentionable": {
+                    "type": "block",
+                    "file": "02AI是天坑/Agent&Harness/261025协议区别.md",
+                    "startLine": 11,
+                    "endLine": 92,
+                    "source": "selection-sync",
+                    "contentHash": "944e7413",
+                    "contentCount": 1646,
+                    "contentUnit": "wordsCharacters"
+                  }
+                },
+                {
+                  "detail": 0,
+                  "format": 0,
+                  "mode": "normal",
+                  "style": "",
+                  "text": " 内容优化 ",
+                  "type": "text",
+                  "version": 1
+                }
+              ],
+              "direction": "ltr",
+              "format": "",
+              "indent": 0,
+              "type": "paragraph",
+              "version": 1,
+              "textFormat": 0,
+              "textStyle": ""
+            }
+          ],
+          "direction": "ltr",
+          "format": "",
+          "indent": 0,
+          "type": "root",
+          "version": 1
+        }
+      },
+      "promptContent": null,
+      "snapshotRef": {
+        "hash": "d558fade"
+      },
+      "id": "ea2c26d1-7d06-4a1d-beb2-b31b796ab780",
+      "mentionables": [
+        {
+          "type": "block",
+          "content": "目前主流的Anthropic、OpenAI、Gemini三家各自有自己的协议\n\nAnthropic：`v1/message`\nOpenAI：`/v1/chat/completions`、 `/v1/responses`\nGemini：`/v1beta/models/{m}:generateContent`\n\n有什么不同？\n\n其中最大的区别来自于OpenAI，\n\n## 一、三家横向对照\n\n| 维度        | Anthropic `/v1/messages`                     | OpenAI `/v1/chat/completions`       | OpenAI `/v1/responses`                                       | Gemini `/v1beta/models/{m}:generateContent`    |\n| --------- | -------------------------------------------- | ----------------------------------- | ------------------------------------------------------------ | ---------------------------------------------- |\n| 定位        | 面向 Agent 的原生接口                               | 事实标准，兼容面最广                          | Chat Completions 的继任者                                        | 长期 beta，靠厂商自行演进                                |\n| 会话状态      | 无状态，全量重传                                     | 无状态，全量重传                            | 有 `previous_response_id` / Conversations                     | 无状态，但缓存是可 CRUD 的资源                             |\n| system 位置 | 顶层 `system` 字段                               | messages 里的 `role: \"system\"`        | 顶层 `instructions`                                            | 顶层 `systemInstruction`                         |\n| 最小单位      | content **block** 数组                         | **message**（content 内再分 part）       | **item** 数组（消息与工具调用平级）                                       | **part** 数组                                    |\n| 工具结果归属    | `tool_result` block 放进 **user 消息**           | 独立的 `role: \"tool\"` + `tool_call_id` | `function_call_output` 作为独立 item                             | **user 角色**的 `functionResponse` part           |\n| 流式        | 细粒度事件（`message_start`/`content_block_delta`） | delta 式追加字段                         | 语义事件（`response.output_item.added`）                           | part 粒度增量                                      |\n| 内建工具      | 无                                            | 无                                   | 有：web_search / file_search / code_interpreter / computer_use | 有：google_search / code_execution / url_context |\n| 结构化输出     | 只能靠 `tool_choice` 约束工具                       | `response_format` + json_schema     | `text.format` json_schema                                    | `responseSchema` + `responseMimeType`          |\n| 推理内容      | `thinking` block，回传需带 signature              | 不暴露                                 | `reasoning` item + `reasoning.effort`                        | `thought` part + `thinkingBudget`              |\n| 缓存哲学      | 请求体内 `cache_control` 断点                      | 自动前缀缓存                              | 自动前缀缓存                                                       | 独立资源 `cachedContents`                          |\n\n## 二、URI / 版本层面\n\nAnthropic 是\"一个端点包打天下\"：`/v1/messages`，`count_tokens`、`batches` 只是旁路。版本号不写在路径里，靠请求头 `anthropic-version` 加一堆 `anthropic-beta` 开关做增量，所以 v1 不是一个冻结版本，而是长期演进的运行时。\n\nOpenAI 有两条并行路线。`/v1/chat/completions` 是兼容面最广的一条，几乎每个第三方模型、每个网关都先实现它；`/v1/responses` 是官方主推的新一代，语义更接近\"一次 Agent turn 的完整输入输出\"，把消息和工具调用平级成 item。两者不是替代式下线，官方给的是迁移指南而非弃用时间表，所以基础设施项目要同时维护两套适配器。\n\nGemini 把版本直接写进路径（`/v1beta`），方法名用 `:generateContent`、`:streamGenerateContent`、`:countTokens` 这类 **Google AIP 风格的冒号方法**，而不是 RESTful 子资源。`v1beta` 意味着 surface 会增删改，这在工程上必须由适配层隔离。\n\n## 三、请求体组织的差异（真正的痛点）\n\n### 1. system 到底算不算一条消息\n\n这是适配层最容易踩的地方。Anthropic 和 Gemini 把 system 提到顶层，OpenAI 用消息表示。看似只是搬家，影响却在**多段 system**：Anthropic 的 `system` 可以是 block 数组并挂 `cache_control` 断点，OpenAI 可以给多条 `role: \"system\"`，Gemini 的 `systemInstruction` 也能多 part。一旦跨层翻译，\"几段 system\"常被压成一段，缓存断点也跟着丢。\n\n### 2. 工具调用结果的归属\n\n三家差异最大、最容易写错的一处：\n\n- **Chat Completions**：assistant 带 `tool_calls` → 下一条 `role: \"tool\"` + `tool_call_id`，结果是独立消息。\n- **Anthropic**：`tool_use` 是 assistant 消息里的一个 block → 结果以 `tool_result` block 放在下一条 **user** 消息里，靠 `tool_use_id` 关联，且 `tool_use` 后必须紧跟对应 `tool_result`，不配对直接 400。\n- **Gemini**：`functionCall` 是 model 返回 parts 里的一个 part → 结果用 **user 角色**的 `functionResponse` part 回传，早期版本靠函数名匹配，`id` 是后来才补齐的。\n\n同一个 workflow 在三种协议里落地成三种不同的消息图谱。\"OpenAI 兼容层\"看着简单，真要端到端支持工具循环，做的是**状态机对齐**而不是字段映射。\n\n### 3. 流式增量怎么切\n\n因为最小单位不同（message / block / part），流式增量的切分维度也就不同。Anthropic 要处理\"一个 content block 开始 / 若干 delta / block 结束\"，Gemini 按 part 推增量，Chat Completions 则是在平坦的 delta 字段上做累积。写统一的流式渲染器时，这三种节奏必须先归一化。\n\n### 4. 推理内容能不能回传\n\nAnthropic 的 `thinking` block 在下一轮必须原样带回（含 signature），Gemini 的 `thought` 类似；而 Chat Completions 根本没有这一层概念。所以**任何经过 Chat Completions 格式中转的链路都会丢推理上下文**——这是不少自建网关的通病。Responses 则用 `encrypted_content` 显式支持回传。\n\n## 四、会话状态归属：这是分水岭\n\nChat Completions 和 Messages 都是**无状态**协议：每轮重传完整历史，服务端不认\"你在继续聊\"。上下文管理完全落在客户端——截断、摘要、压缩、检索召回都是 harness 自己干的事。\n\nResponses 把一部分状态搬到服务端（`previous_response_id`、Conversations、`store`），甚至能服务端托管工具执行和文件。好处是省带宽、可复用 reasoning item；成本是状态绑在厂商侧，成本与隐私的黑盒变深。\n\nGemini 走中间路线：主体无状态，但把 `cachedContents` 做成可 CRUD 的一等资源，缓存不再藏在请求体的标记位里。\n\n## 五、对 Agent / Harness 的落地影响\n\n1. **适配层要做语义转换，不是字段重命名。** 内部定义一套 IR，把 message / block / item 三种模型先归一（选 block 模型表达力最强），再分发到各 provider。\n2. **工具循环必须写成状态机。** 每个 provider 对\"tool_use 之后必须出现什么\"的约束不同，出错要能识别并修正（比如 Anthropic 缺 `tool_result` 时的补救），而不是盲目重试。\n3. **推理内容单独建通道。** 在 IR 里保留 reasoning block，对不支持的目标显式降级，而不是静默丢弃。\n4. **缓存按 provider 分别建模。** 断点式、自动前缀式、资源式三种策略，一个\"打开缓存\"开关糊不过去，否则命中率会静默归零。\n5. **错误语义要收敛。** 各家错误体结构、错误码、幂等性、`request_id` 追踪都不同，得在适配器里统一成错误分类，上层才能做正确的退避。\n\n## 六、一个观察\n\n三家协议的分歧，本质上不在\"怎么传参数\"，而在\"谁拥有这次对话\"**：\n\n- Anthropic 明确表态对话归客户端，服务端只做无状态推理，所以把表达力做得很足（block、cache 断点、thinking 全回传）；\n- OpenAI 在 Chat Completions 上继承了同样姿态，但用 Responses 开始往服务端收；\n- Gemini 是 Google 一贯的\"资源 + 方法\"世界观，缓存、文件、批量都做成一等资源。\n\n所以写 harness 时最先该定的不是\"支持哪几家\"，而是\"状态归属选哪一边\"：客户端持有，适配层复杂但可控；服务端持有，短期省事但会被单一厂商锁定。",
+          "file": "02AI是天坑/Agent&Harness/261025协议区别.md",
+          "startLine": 11,
+          "endLine": 92,
+          "source": "selection-sync",
+          "contentHash": "944e7413",
+          "contentCount": 1646,
+          "contentUnit": "wordsCharacters"
+        }
+      ],
+      "selectedSkills": [],
+      "selectedModelIds": [],
+      "reasoningLevel": "auto",
+      "timeContext": "2026-10-25 21:54 (Sunday)",
+      "injectedContext": [
+        {
+          "type": "text",
+          "text": "# Current Context (auto-attached, content NOT included)\nThe user is currently viewing this file. Use an available file-reading tool if you need its content.\n\nFile: 02AI是天坑/Agent&Harness/261025协议区别.md\nTotal: 93 lines\nVisible: lines 60-93\nCursor: line 93\n\n"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "toolCallRequests": [
+        {
+          "id": "call_00_uTVIX0VZQq416mpEoNoN7234",
+          "name": "yolo_local__fs_read",
+          "arguments": {
+            "kind": "complete",
+            "value": {
+              "paths": [
+                "02AI是天坑/Agent&Harness/261025协议区别.md"
+              ],
+              "startLine": 1,
+              "endLine": 12
+            },
+            "rawText": "{\"paths\": [\"02AI是天坑/Agent&Harness/261025协议区别.md\"], \"startLine\": 1, \"endLine\": 12}"
+          }
+        }
+      ],
+      "id": "312eb7a3-1165-438b-9bd3-15aa0b709817",
+      "metadata": {
+        "model": {
+          "providerId": "magpie",
+          "id": "auto/deepseek-v4.1-flash",
+          "model": "auto/deepseek-v4.1-flash",
+          "name": "auto/deepseek-v4.1-flash",
+          "reasoningType": "openai",
+          "maxContextTokens": 1048576,
+          "modalities": [
+            "text",
+            "vision"
+          ]
+        },
+        "usage": {
+          "prompt_tokens": 6026,
+          "completion_tokens": 87,
+          "total_tokens": 6113,
+          "cache_read_input_tokens": 3456
+        },
+        "durationMs": 1958,
+        "generationState": "completed",
+        "branchConversationId": "6121c838-9a5b-4d9b-a800-a78cea9d861e",
+        "branchModelId": "auto/deepseek-v4.1-flash",
+        "branchLabel": "auto/deepseek-v4.1-flash"
+      }
+    },
+    {
+      "role": "tool",
+      "toolCalls": [
+        {
+          "request": {
+            "id": "call_00_uTVIX0VZQq416mpEoNoN7234",
+            "name": "yolo_local__fs_read",
+            "arguments": {
+              "kind": "complete",
+              "value": {
+                "paths": [
+                  "02AI是天坑/Agent&Harness/261025协议区别.md"
+                ],
+                "startLine": 1,
+                "endLine": 12
+              },
+              "rawText": "{\"paths\": [\"02AI是天坑/Agent&Harness/261025协议区别.md\"], \"startLine\": 1, \"endLine\": 12}"
+            }
+          },
+          "response": {
+            "status": "success",
+            "data": {
+              "type": "text",
+              "text": "{\n  \"toolCallId\": \"call_00_uTVIX0VZQq416mpEoNoN7234\",\n  \"requestedOperation\": {\n    \"type\": \"lines\"\n  },\n  \"results\": [\n    {\n      \"path\": \"02AI是天坑/Agent&Harness/261025协议区别.md\",\n      \"ok\": true,\n      \"totalLines\": 93,\n      \"returnedRange\": {\n        \"startLine\": 1,\n        \"endLine\": 12\n      },\n      \"hasMoreBelow\": true,\n      \"nextStartLine\": 13,\n      \"content\": \"1|---\\n2|title: 261025协议区别\\n3|published: 2026/10/25\\n4|description: 261025协议区别\\n5|tags:\\n6|  - AI\\n7|  - LLM\\n8|category:\\n9|draft: true\\n10|---\\n11|目前主流的Anthropic、OpenAI、Gemini三家各自有自己的协议\\n12|\"\n    }\n  ]\n}",
+              "metadata": {
+                "fsReadOperation": {
+                  "type": "lines",
+                  "startLine": 1,
+                  "endLine": 12,
+                  "isPdf": false
+                }
+              }
+            }
+          }
+        }
+      ],
+      "id": "de2c4a46-42d5-4823-a799-623ebdf52dbf",
+      "metadata": {
+        "branchConversationId": "6121c838-9a5b-4d9b-a800-a78cea9d861e",
+        "branchModelId": "auto/deepseek-v4.1-flash",
+        "branchLabel": "auto/deepseek-v4.1-flash"
+      }
+    },
+    {
+      "role": "assistant",
+      "content": "# 《261025协议区别》优化建议\n\n这篇的骨架其实很好：横向对照 → 版本层 → 请求体痛点 → 状态归属 → 落地影响 → 收尾观点。主要问题集中在**开头缺少导语、表格信息密度过高而正文兜底不足、几处断言过满、结尾缺一句可执行的判据**。下面按优先级给出。\n\n---\n\n## 一、结构层面\n\n**1. 第 11 行是单句开篇，太突兀。** 建议补一段 2–3 句的导语，说明\"谁该读、解决什么问题\"，并给全文一个主线命题（第 86 行那句\"谁拥有这次对话\"其实最适合提前到开篇当钩子）。\n\n**2. 六、七两节的标题在正文里格式不统一。** 第六节标题用反引号打断了引号配对：`\"不是…，而在\"谁拥有这次对话\"**：` —— 引号是全角，加粗星号被吞进了引号内。应改为：\n\n> 三家协议的分歧，本质上不在\"怎么传参数\"，而在**\"谁拥有这次对话\"**。\n\n**3. 表格与正文重复度偏高。** 表格列了 12 个维度，但正文（三、四节）只展开了其中 5 个。剩下 7 个（定位、内建工具、结构化输出、流式、最小单位…）只在表里\"点到即止\"。二选一：要么把表格砍到 8 个维度以内、只留正文会展开的；要么给\"内建工具\"\"结构化输出\"各补一两句正文，否则读者会误以为这几项不重要。\n\n---\n\n## 二、准确性层面（几处断言过满）\n\n| 原文 | 问题 | 建议 |\n|---|---|---|\n| 第 32 行「Anthropic 结构化输出：**只能**靠 `tool_choice` 约束工具」 | Anthropic 已支持原生 structured outputs（`output_format`、json_schema），\"只能\"已不成立 | 改为\"历史上靠 `tool_choice` 约束工具，现已有原生 json_schema 输出；与 OpenAI/Gemini 的差异主要在于是否与工具调用互斥\" |\n| 第 32 行「Chat Completions 推理内容：**不暴露**」 | 部分经 OpenAI 兼容层暴露的模型（DeepSeek-R1 等）会带 `reasoning_content` 字段，这是\"兼容层扩展\"而非协议本身 | 加限定：\"协议本身不暴露（个别厂商在兼容层加了 `reasoning_content` 这类扩展字段，不在规范内）\" |\n| 第 33 行「Anthropic `thinking` 回传需带 signature」 | 漏了要点：带 tool_use 的轮次**必须**回传 thinking block，否则 400，这与第五节第 2 条的\"状态机\"直接相关 | 补一句\"含 tool_use 的轮次必须回传，否则请求被拒\" |\n| 第 40 行「两者不是替代式下线」 | 建议给出时间锚点，避免日后失效 | \"截至 2026 年 10 月，官方给的是迁移指南而非弃用时间表\" |\n| 第 56 行「Gemini 早期版本靠函数名匹配，`id` 是后来才补齐的」 | 表述正确但过于口语 | 可以说是\"靠 `functionCall.name` 关联、并行调用时靠顺序/名称消歧，后续才补 `id`\" |\n\n---\n\n## 三、可读性与表达\n\n1. **第 38 行\"一个端点包打天下\"** 后面紧跟 `count_tokens`、`batches` 是旁路——逻辑通，但\"旁路\"一词略跳。可改为\"`count_tokens`、`batches` 只是同一命名空间下的辅助端点\"。\n\n2. **第 48 行的\"几段 system 常被压成一段\"** 是全篇最有价值的实操观察，但它埋在括号式的段落里。建议独立成一个小标题或加粗提示，并在第五节第 1 条（IR 归一）里回指它，形成\"问题 → 方案\"的闭环。\n\n3. **第 62 行\"三种节奏必须先归一化\"** 是结论，但没说归一到什么。可补半句：\"建议以 block 为统一最小粒度，delta 累积与 part 增量都降到 block 事件流再渲染。\"\n\n4. **第五节 5 条建议里，只有第 1 条给了明确技术选型**（\"选 block 模型表达力最强\"），其余是方向性的。第 3、4 条其实也能给选型：reasoning 在 IR 里用 `reasoning` block + `opaque_payload` 字段承载厂商加密串；缓存建模成 `cache_binding` 元数据结构，而非布尔开关。\n\n5. **结尾第 92 行很好，但停在\"选哪一边\"**。建议再加一句可操作的判据，比如：\"若你的产品需要换厂商，客户端持有；若你的产品卖的就是省心与长上下文，服务端持有；两者都要，就把服务端状态当作**可丢弃的加速层**，客户端始终保有全量真相。\" 这句话能把全文从\"综述\"抬到\"设计原则\"。\n\n6. **术语一致性**：body 中 `block` / `item` / `part` / `message` 四种最小单位反复出现，建议在第一节表格后加一行定义性说明（\"下文统一用 IR 中的 block 指代最小可寻址单元，具体到各厂商时再写回原名\"），否则第二节到第三节之间读者容易混淆。\n\n---\n\n## 四、一处值得考虑的内容增补\n\n第五节第 2 条说\"Anthropic 缺 `tool_result` 时的补救\"。但这有个坑没写：**补救不等于拼接伪造结果**——如果 `tool_use` 已经产生副作用（例如写了一行数据），补一个\"假装成功\"的 `tool_result` 会让模型基于错误世界状态继续推理。建议补一句：\"补救策略应为插入明确的失败/取消 `tool_result`（并标记为 error），而非伪造成功，否则模型会在错误前提上继续决策。\"\n\n---\n\n## 五、可直接套用的小样例（可选增补）\n\n如果想让文章对工程师更友好，可在\"三、2 工具结果归属\"后加一张三行小对照（同一次工具调用在三种协议里的形状）：\n\n- Chat Completions：`assistant{tool_calls:[{id:\"c1\",…}]}` → `tool{tool_call_id:\"c1\",content:\"…\"}`\n- Anthropic：`assistant{[text, tool_use{id:\"u1\"}]}` → `user{[tool_result{tool_use_id:\"u1\"}]}`\n- Gemini：`model{[functionCall{name,args}]}` → `user{[functionResponse{name,response}]}`\n\n这三行会立刻让\"状态机对齐而非字段映射\"这句话落地。\n\n---\n\n## 六、优先级排序\n\n| 优先级 | 改动 |\n|---|---|\n| P0 | 修第六节引号/加粗错误；表格\"Anthropic 结构化输出：只能\"这条事实性过时 |\n| P1 | 补开篇导语；结尾补可操作判据；tool_use/thinking 回传强约束说明 |\n| P2 | 表格砍维度 or 正文补\"内建工具/结构化输出\"；最小单位术语统一说明 |\n| P3 | 三行协议形状对照；错误补救\"不伪造成功\"的警告 |\n\n如果你要，我可以直接按这个顺序改一版（Ask 模式下我可以给出 `<yolo_block>` 补丁，Agent 模式下能直接落盘）。你希望先改 P0 还是整体重排？",
+      "id": "e81b890d-461e-4a14-b904-20de51061bd7",
+      "metadata": {
+        "model": {
+          "providerId": "magpie",
+          "id": "auto/deepseek-v4.1-flash",
+          "model": "auto/deepseek-v4.1-flash",
+          "name": "auto/deepseek-v4.1-flash",
+          "reasoningType": "openai",
+          "maxContextTokens": 1048576,
+          "modalities": [
+            "text",
+            "vision"
+          ]
+        },
+        "usage": {
+          "prompt_tokens": 6355,
+          "completion_tokens": 1718,
+          "total_tokens": 8073,
+          "cache_read_input_tokens": 6016
+        },
+        "durationMs": 13074,
+        "generationState": "completed",
+        "branchConversationId": "6121c838-9a5b-4d9b-a800-a78cea9d861e",
+        "branchModelId": "auto/deepseek-v4.1-flash",
+        "branchLabel": "auto/deepseek-v4.1-flash"
+      }
+    },
+    {
+      "role": "user",
+      "content": {
+        "root": {
+          "children": [
+            {
+              "children": [
+                {
+                  "detail": 0,
+                  "format": 0,
+                  "mode": "normal",
+                  "style": "",
+                  "text": "重排",
+                  "type": "text",
+                  "version": 1
+                }
+              ],
+              "direction": "ltr",
+              "format": "",
+              "indent": 0,
+              "type": "paragraph",
+              "version": 1,
+              "textFormat": 0,
+              "textStyle": ""
+            }
+          ],
+          "direction": "ltr",
+          "format": "",
+          "indent": 0,
+          "type": "root",
+          "version": 1
+        }
+      },
+      "promptContent": null,
+      "id": "7aeae853-2fdf-4b2c-afcb-ffd2a7eeb889",
+      "mentionables": [],
+      "selectedSkills": [],
+      "selectedModelIds": [],
+      "reasoningLevel": "auto",
+      "timeContext": "2026-10-25 21:54 (Sunday)",
+      "injectedContext": [
+        {
+          "type": "text",
+          "text": "# Current Context (auto-attached, content NOT included)\nThe user is currently viewing this file. Use an available file-reading tool if you need its content.\n\nFile: 02AI是天坑/Agent&Harness/261025协议区别.md\nTotal: 93 lines\nVisible: lines 60-93\nCursor: line 93\n\n"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "toolCallRequests": [
+        {
+          "id": "call_00_Dkb9O6jZdYkd9ePm2Z6E4010",
+          "name": "yolo_local__fs_write",
+          "arguments": {
+            "kind": "complete",
+            "value": {
+              "path": "02AI是天坑/Agent&Harness/261025协议区别.md",
+              "content": "---\ntitle: 261025协议区别\npublished: 2026/10/25\ndescription: 261025协议区别\ntags:\n  - AI\n  - LLM\ncategory:\ndraft: true\n---\n\n目前主流的 Anthropic、OpenAI、Gemini 三家各有自己的对话协议：\n\n- Anthropic：`/v1/messages`\n- OpenAI：`/v1/chat/completions`、`/v1/responses`\n- Gemini：`/v1beta/models/{m}:generateContent`\n\n它们的分歧不在于\"怎么传参数\"，而在于**\"谁拥有这次对话\"**。这个判断决定了 harness 的架构复杂度、可移植性，以及你会不会被单一厂商锁定。全文围绕这条主线展开：先横向对照，再看受\"状态归属\"影响的请求体组织，最后落到适配层的工程做法。\n\n> 术语约定：下文统一用 **block** 指代\"最小可寻址单元\"（IR 视角），具体到各厂商时再写回原名 `message` / `item` / `part`。\n\n## 一、三家横向对照\n\n| 维度        | Anthropic `/v1/messages`                     | OpenAI `/v1/chat/completions`       | OpenAI `/v1/responses`                                       | Gemini `/v1beta/models/{m}:generateContent`    |\n| --------- | -------------------------------------------- | ----------------------------------- | ------------------------------------------------------------ | ---------------------------------------------- |\n| 定位        | 面向 Agent 的原生接口                               | 事实标准，兼容面最广                          | Chat Completions 的继任者                                        | 长期 beta，靠厂商自行演进                                |\n| 会话状态      | 无状态，全量重传                                     | 无状态，全量重传                            | 有 `previous_response_id` / Conversations                     | 无状态，但缓存是可 CRUD 的资源                             |\n| 最小单位      | content **block** 数组                         | **message**（content 内再分 part）       | **item** 数组（消息与工具调用平级）                                       | **part** 数组                                    |\n| 工具结果归属    | `tool_result` block 放进 **user 消息**           | 独立的 `role: \"tool\"` + `tool_call_id` | `function_call_output` 作为独立 item                             | **user 角色**的 `functionResponse` part           |\n| 流式        | 细粒度事件（`message_start`/`content_block_delta`） | delta 式追加字段                         | 语义事件（`response.output_item.added`）                           | part 粒度增量                                      |\n| 推理内容      | `thinking` block，必须回传且带 signature            | 协议不暴露                               | `reasoning` item + `reasoning.effort`                        | `thought` part + `thinkingBudget`              |\n| 结构化输出     | `output_format` json_schema（早期靠 `tool_choice` 约束） | `response_format` + json_schema     | `text.format` json_schema                                    | `responseSchema` + `responseMimeType`          |\n| 内建工具      | 无                                            | 无                                   | 有：web_search / file_search / code_interpreter / computer_use | 有：google_search / code_execution / url_context |\n| 缓存哲学      | 请求体内 `cache_control` 断点                      | 自动前缀缓存                              | 自动前缀缓存                                                       | 独立资源 `cachedContents`                          |\n\n两处需要补充：\n\n- **system 的位置**不单列一行，因为它是\"最小单位\"的直接推论：Anthropic 顶层 `system` 字段、OpenAI 消息里的 `role:\"system\"`、Responses 顶层 `instructions`、Gemini 顶层 `systemInstruction`。真正的坑在\"多段 system\"（见三、1）。\n- **内建工具与结构化输出**是两家\"托管能力型\"厂商（OpenAI Responses、Gemini）与 Anthropic 的分野，但这两项都属于\"服务端替你做了一部分事\"，与全文的\"状态归属\"主线同源，后面会回到它。\n\n## 二、URI / 版本层面\n\n**Anthropic 是\"一个端点包打天下\"。** `/v1/messages` 承担全部推理流量，`count_tokens`、`batches` 只是同一命名空间下的辅助端点。版本号不写在路径里，靠请求头 `anthropic-version` 加一组 `anthropic-beta` 开关做增量演进而非版本冻结——所以 v1 是一个长期演进的运行时，不是一份快照。\n\n**OpenAI 有两条并行路线。** `/v1/chat/completions` 兼容面最广，几乎每个第三方模型、每个网关都先实现它；`/v1/responses` 是官方主推的新一代，语义更接近\"一次 Agent turn 的完整输入输出\"，把消息与工具调用平级成 item。截至 2026 年 10 月，官方给的是迁移指南而非弃用时间表，所以基础设施项目要同时维护两套适配器。\n\n**Gemini 把版本写进路径**（`/v1beta`），方法名用 `:generateContent`、`:streamGenerateContent`、`:countTokens` 这类 Google AIP 风格的冒号方法，而非 RESTful 子资源。`v1beta` 意味着 surface 会增删改，工程上必须由适配层隔离——这层隔离不是可选项，是使用 `v1beta` 的前提。\n\n## 三、请求体组织的差异（真正的痛点）\n\n### 1. system 到底算不算一条消息\n\n这是适配层最容易踩的地方。Anthropic 和 Gemini 把 system 提到顶层，OpenAI 用消息表示。看似只是搬家，影响却在**多段 system**：Anthropic 的 `system` 可以是 block 数组并挂 `cache_control` 断点，OpenAI 可以给多条 `role: \"system\"`，Gemini 的 `systemInstruction` 也能多 part。一旦跨层翻译，**\"几段 system\"常被压成一段，缓存断点也跟着丢**。\n\n这条是后文第五节\"IR 归一\"最直接的论据：IR 里必须把 system 建模为**有序 block 列表**而非字符串，否则任何一次翻译都是单向损失。\n\n### 2. 工具调用结果的归属\n\n三家差异最大、最容易写错的一处：\n\n- **Chat Completions**：assistant 带 `tool_calls` → 下一条 `role: \"tool\"` + `tool_call_id`，结果是独立消息。\n- **Anthropic**：`tool_use` 是 assistant 消息里的一个 block → 结果以 `tool_result` block 放在下一条 **user** 消息里，靠 `tool_use_id` 关联，且 `tool_use` 后必须紧跟对应 `tool_result`，不配对直接 400。\n- **Gemini**：`functionCall` 是 model 返回 parts 里的一个 part → 结果用 **user 角色**的 `functionResponse` part 回传。早期版本靠 `functionCall.name` 关联（并行调用时靠名称与顺序消歧），`id` 是后来才补齐的。\n\n同一次工具调用，三种协议里的形状：\n\n```\nChat Completions:  assistant{tool_calls:[{id:\"c1\",…}]}  →  tool{tool_call_id:\"c1\", content:\"…\"}\nAnthropic:         assistant{[text, tool_use{id:\"u1\"}]} →  user{[tool_result{tool_use_id:\"u1\"}]}\nGemini:            model{[functionCall{name,args}]}     →  user{[functionResponse{name,response}]}\n```\n\n同一个 workflow 在三种协议里落地成三种不同的消息图谱。\"OpenAI 兼容层\"看着简单，真要端到端支持工具循环，做的是**状态机对齐**而不是字段映射。\n\n### 3. 流式增量怎么切\n\n因为最小单位不同（message / block / part），流式增量的切分维度也就不同。Anthropic 要处理\"一个 content block 开始 / 若干 delta / block 结束\"，Gemini 按 part 推增量，Chat Completions 则是在平坦的 delta 字段上做累积。\n\n写统一渲染器时的做法：**以 block 为统一最小粒度**，把 part 增量与 delta 累积都先归一成 block 事件流（`block_start` / `block_delta` / `block_stop`），再交给渲染层。三种节奏在归一之后才会变成同一种。\n\n### 4. 推理内容能不能回传\n\nAnthropic 的 `thinking` block 在下一轮必须原样带回（含 signature），且**含 `tool_use` 的轮次强制要求回传**，否则请求被拒；Gemini 的 `thought` 类似。Chat Completions 协议本身没有这一层概念——个别厂商在兼容层加了 `reasoning_content` 这类扩展字段，但不在规范内。所以**任何经过 Chat Completions 格式中转的链路都会丢推理上下文**，这是不少自建网关的通病。Responses 则用 `encrypted_content` 显式支持回传。\n\n## 四、会话状态归属：这是分水岭\n\nChat Completions 和 Messages 都是**无状态**协议：每轮重传完整历史，服务端不认\"你在继续聊\"。上下文管理完全落在客户端——截断、摘要、压缩、检索召回都是 harness 自己干的事。\n\nResponses 把一部分状态搬到服务端（`previous_response_id`、Conversations、`store`），甚至能在服务端托管工具执行与文件。好处是省带宽、可复用 reasoning item、内建工具即开即用；成本是状态绑在厂商侧，成本与隐私的黑盒变深，且迁移时要为\"服务端那部分历史\"另做导出。\n\nGemini 走中间路线：主体无状态，但把 `cachedContents` 做成可 CRUD 的一等资源，缓存不再藏在请求体的标记位里。\n\n## 五、对 Agent / Harness 的落地影响\n\n1. **适配层要做语义转换，不是字段重命名。** 内部定义一套 IR，把 message / block / item 三种模型先归一（选 block 模型，表达力最强），再分发到各 provider。system 在 IR 里必须是有序 block 列表，工具调用必须有独立的状态机节点。\n2. **工具循环必须写成状态机。** 每个 provider 对\"`tool_use` 之后必须出现什么\"的约束不同，出错要能识别并修正，而不是盲目重试。补救时**插一个明确的失败/取消 `tool_result`（标记 error），不要伪造成功**——如果工具已产生副作用，伪造成功会让模型基于错误的世界状态继续推理。\n3. **推理内容单独建通道。** 在 IR 里保留 reasoning block，并用一个 opaque 字段承载厂商加密串；对不支持的目标显式降级，而不是静默丢弃。\n4. **缓存按 provider 分别建模。** 断点式、自动前缀式、资源式三种策略，一个\"打开缓存\"开关糊不过去，否则命中率会静默归零。建议在 IR 里用 `cache_binding` 这类结构性描述（锚点位置 / TTL / 资源 id），而非布尔位。\n5. **错误语义要收敛。** 各家错误体结构、错误码、幂等性、`request_id` 追踪都不同，得在适配器里统一成错误分类，上层才能做正确的退避。\n\n## 六、一个观察\n\n三家协议的分歧，本质上是**\"谁拥有这次对话\"**：\n\n- **Anthropic** 明确表态对话归客户端，服务端只做无状态推理，所以把表达力做得很足（block、cache 断点、thinking 全回传）。\n- **OpenAI** 在 Chat Completions 上继承了同样姿态，但用 Responses 开始往服务端收——托管工具、会话指针、可复用 reasoning item 都是\"收\"的迹象。\n- **Gemini** 是 Google 一贯的\"资源 + 方法\"世界观，缓存、文件、批量都做成一等资源。\n\n所以写 harness 时最先该定的不是\"支持哪几家\"，而是\"状态归属选哪一边\"。给一个可操作的判据：\n\n- **要换厂商、要可控** → 客户端持有。适配层复杂，但真相始终在本地。\n- **卖的是省心与长上下文** → 服务端持有。短期最省事，但要接受厂商锁定。\n- **两者都要** → 把服务端状态当作**可丢弃的加速层**：客户端始终保有全量真相，服务端丢了也不影响正确性。\n\n前两条是架构选型，第三条是大多数产品真正该走的路。\n"
+            },
+            "rawText": "{\"path\": \"02AI是天坑/Agent&Harness/261025协议区别.md\", \"content\": \"---\\ntitle: 261025协议区别\\npublished: 2026/10/25\\ndescription: 261025协议区别\\ntags:\\n  - AI\\n  - LLM\\ncategory:\\ndraft: true\\n---\\n\\n目前主流的 Anthropic、OpenAI、Gemini 三家各有自己的对话协议：\\n\\n- Anthropic：`/v1/messages`\\n- OpenAI：`/v1/chat/completions`、`/v1/responses`\\n- Gemini：`/v1beta/models/{m}:generateContent`\\n\\n它们的分歧不在于\\\"怎么传参数\\\"，而在于**\\\"谁拥有这次对话\\\"**。这个判断决定了 harness 的架构复杂度、可移植性，以及你会不会被单一厂商锁定。全文围绕这条主线展开：先横向对照，再看受\\\"状态归属\\\"影响的请求体组织，最后落到适配层的工程做法。\\n\\n> 术语约定：下文统一用 **block** 指代\\\"最小可寻址单元\\\"（IR 视角），具体到各厂商时再写回原名 `message` / `item` / `part`。\\n\\n## 一、三家横向对照\\n\\n| 维度        | Anthropic `/v1/messages`                     | OpenAI `/v1/chat/completions`       | OpenAI `/v1/responses`                                       | Gemini `/v1beta/models/{m}:generateContent`    |\\n| --------- | -------------------------------------------- | ----------------------------------- | ------------------------------------------------------------ | ---------------------------------------------- |\\n| 定位        | 面向 Agent 的原生接口                               | 事实标准，兼容面最广                          | Chat Completions 的继任者                                        | 长期 beta，靠厂商自行演进                                |\\n| 会话状态      | 无状态，全量重传                                     | 无状态，全量重传                            | 有 `previous_response_id` / Conversations                     | 无状态，但缓存是可 CRUD 的资源                             |\\n| 最小单位      | content **block** 数组                         | **message**（content 内再分 part）       | **item** 数组（消息与工具调用平级）                                       | **part** 数组                                    |\\n| 工具结果归属    | `tool_result` block 放进 **user 消息**           | 独立的 `role: \\\"tool\\\"` + `tool_call_id` | `function_call_output` 作为独立 item                             | **user 角色**的 `functionResponse` part           |\\n| 流式        | 细粒度事件（`message_start`/`content_block_delta`） | delta 式追加字段                         | 语义事件（`response.output_item.added`）                           | part 粒度增量                                      |\\n| 推理内容      | `thinking` block，必须回传且带 signature            | 协议不暴露                               | `reasoning` item + `reasoning.effort`                        | `thought` part + `thinkingBudget`              |\\n| 结构化输出     | `output_format` json_schema（早期靠 `tool_choice` 约束） | `response_format` + json_schema     | `text.format` json_schema                                    | `responseSchema` + `responseMimeType`          |\\n| 内建工具      | 无                                            | 无                                   | 有：web_search / file_search / code_interpreter / computer_use | 有：google_search / code_execution / url_context |\\n| 缓存哲学      | 请求体内 `cache_control` 断点                      | 自动前缀缓存                              | 自动前缀缓存                                                       | 独立资源 `cachedContents`                          |\\n\\n两处需要补充：\\n\\n- **system 的位置**不单列一行，因为它是\\\"最小单位\\\"的直接推论：Anthropic 顶层 `system` 字段、OpenAI 消息里的 `role:\\\"system\\\"`、Responses 顶层 `instructions`、Gemini 顶层 `systemInstruction`。真正的坑在\\\"多段 system\\\"（见三、1）。\\n- **内建工具与结构化输出**是两家\\\"托管能力型\\\"厂商（OpenAI Responses、Gemini）与 Anthropic 的分野，但这两项都属于\\\"服务端替你做了一部分事\\\"，与全文的\\\"状态归属\\\"主线同源，后面会回到它。\\n\\n## 二、URI / 版本层面\\n\\n**Anthropic 是\\\"一个端点包打天下\\\"。** `/v1/messages` 承担全部推理流量，`count_tokens`、`batches` 只是同一命名空间下的辅助端点。版本号不写在路径里，靠请求头 `anthropic-version` 加一组 `anthropic-beta` 开关做增量演进而非版本冻结——所以 v1 是一个长期演进的运行时，不是一份快照。\\n\\n**OpenAI 有两条并行路线。** `/v1/chat/completions` 兼容面最广，几乎每个第三方模型、每个网关都先实现它；`/v1/responses` 是官方主推的新一代，语义更接近\\\"一次 Agent turn 的完整输入输出\\\"，把消息与工具调用平级成 item。截至 2026 年 10 月，官方给的是迁移指南而非弃用时间表，所以基础设施项目要同时维护两套适配器。\\n\\n**Gemini 把版本写进路径**（`/v1beta`），方法名用 `:generateContent`、`:streamGenerateContent`、`:countTokens` 这类 Google AIP 风格的冒号方法，而非 RESTful 子资源。`v1beta` 意味着 surface 会增删改，工程上必须由适配层隔离——这层隔离不是可选项，是使用 `v1beta` 的前提。\\n\\n## 三、请求体组织的差异（真正的痛点）\\n\\n### 1. system 到底算不算一条消息\\n\\n这是适配层最容易踩的地方。Anthropic 和 Gemini 把 system 提到顶层，OpenAI 用消息表示。看似只是搬家，影响却在**多段 system**：Anthropic 的 `system` 可以是 block 数组并挂 `cache_control` 断点，OpenAI 可以给多条 `role: \\\"system\\\"`，Gemini 的 `systemInstruction` 也能多 part。一旦跨层翻译，**\\\"几段 system\\\"常被压成一段，缓存断点也跟着丢**。\\n\\n这条是后文第五节\\\"IR 归一\\\"最直接的论据：IR 里必须把 system 建模为**有序 block 列表**而非字符串，否则任何一次翻译都是单向损失。\\n\\n### 2. 工具调用结果的归属\\n\\n三家差异最大、最容易写错的一处：\\n\\n- **Chat Completions**：assistant 带 `tool_calls` → 下一条 `role: \\\"tool\\\"` + `tool_call_id`，结果是独立消息。\\n- **Anthropic**：`tool_use` 是 assistant 消息里的一个 block → 结果以 `tool_result` block 放在下一条 **user** 消息里，靠 `tool_use_id` 关联，且 `tool_use` 后必须紧跟对应 `tool_result`，不配对直接 400。\\n- **Gemini**：`functionCall` 是 model 返回 parts 里的一个 part → 结果用 **user 角色**的 `functionResponse` part 回传。早期版本靠 `functionCall.name` 关联（并行调用时靠名称与顺序消歧），`id` 是后来才补齐的。\\n\\n同一次工具调用，三种协议里的形状：\\n\\n```\\nChat Completions:  assistant{tool_calls:[{id:\\\"c1\\\",…}]}  →  tool{tool_call_id:\\\"c1\\\", content:\\\"…\\\"}\\nAnthropic:         assistant{[text, tool_use{id:\\\"u1\\\"}]} →  user{[tool_result{tool_use_id:\\\"u1\\\"}]}\\nGemini:            model{[functionCall{name,args}]}     →  user{[functionResponse{name,response}]}\\n```\\n\\n同一个 workflow 在三种协议里落地成三种不同的消息图谱。\\\"OpenAI 兼容层\\\"看着简单，真要端到端支持工具循环，做的是**状态机对齐**而不是字段映射。\\n\\n### 3. 流式增量怎么切\\n\\n因为最小单位不同（message / block / part），流式增量的切分维度也就不同。Anthropic 要处理\\\"一个 content block 开始 / 若干 delta / block 结束\\\"，Gemini 按 part 推增量，Chat Completions 则是在平坦的 delta 字段上做累积。\\n\\n写统一渲染器时的做法：**以 block 为统一最小粒度**，把 part 增量与 delta 累积都先归一成 block 事件流（`block_start` / `block_delta` / `block_stop`），再交给渲染层。三种节奏在归一之后才会变成同一种。\\n\\n### 4. 推理内容能不能回传\\n\\nAnthropic 的 `thinking` block 在下一轮必须原样带回（含 signature），且**含 `tool_use` 的轮次强制要求回传**，否则请求被拒；Gemini 的 `thought` 类似。Chat Completions 协议本身没有这一层概念——个别厂商在兼容层加了 `reasoning_content` 这类扩展字段，但不在规范内。所以**任何经过 Chat Completions 格式中转的链路都会丢推理上下文**，这是不少自建网关的通病。Responses 则用 `encrypted_content` 显式支持回传。\\n\\n## 四、会话状态归属：这是分水岭\\n\\nChat Completions 和 Messages 都是**无状态**协议：每轮重传完整历史，服务端不认\\\"你在继续聊\\\"。上下文管理完全落在客户端——截断、摘要、压缩、检索召回都是 harness 自己干的事。\\n\\nResponses 把一部分状态搬到服务端（`previous_response_id`、Conversations、`store`），甚至能在服务端托管工具执行与文件。好处是省带宽、可复用 reasoning item、内建工具即开即用；成本是状态绑在厂商侧，成本与隐私的黑盒变深，且迁移时要为\\\"服务端那部分历史\\\"另做导出。\\n\\nGemini 走中间路线：主体无状态，但把 `cachedContents` 做成可 CRUD 的一等资源，缓存不再藏在请求体的标记位里。\\n\\n## 五、对 Agent / Harness 的落地影响\\n\\n1. **适配层要做语义转换，不是字段重命名。** 内部定义一套 IR，把 message / block / item 三种模型先归一（选 block 模型，表达力最强），再分发到各 provider。system 在 IR 里必须是有序 block 列表，工具调用必须有独立的状态机节点。\\n2. **工具循环必须写成状态机。** 每个 provider 对\\\"`tool_use` 之后必须出现什么\\\"的约束不同，出错要能识别并修正，而不是盲目重试。补救时**插一个明确的失败/取消 `tool_result`（标记 error），不要伪造成功**——如果工具已产生副作用，伪造成功会让模型基于错误的世界状态继续推理。\\n3. **推理内容单独建通道。** 在 IR 里保留 reasoning block，并用一个 opaque 字段承载厂商加密串；对不支持的目标显式降级，而不是静默丢弃。\\n4. **缓存按 provider 分别建模。** 断点式、自动前缀式、资源式三种策略，一个\\\"打开缓存\\\"开关糊不过去，否则命中率会静默归零。建议在 IR 里用 `cache_binding` 这类结构性描述（锚点位置 / TTL / 资源 id），而非布尔位。\\n5. **错误语义要收敛。** 各家错误体结构、错误码、幂等性、`request_id` 追踪都不同，得在适配器里统一成错误分类，上层才能做正确的退避。\\n\\n## 六、一个观察\\n\\n三家协议的分歧，本质上是**\\\"谁拥有这次对话\\\"**：\\n\\n- **Anthropic** 明确表态对话归客户端，服务端只做无状态推理，所以把表达力做得很足（block、cache 断点、thinking 全回传）。\\n- **OpenAI** 在 Chat Completions 上继承了同样姿态，但用 Responses 开始往服务端收——托管工具、会话指针、可复用 reasoning item 都是\\\"收\\\"的迹象。\\n- **Gemini** 是 Google 一贯的\\\"资源 + 方法\\\"世界观，缓存、文件、批量都做成一等资源。\\n\\n所以写 harness 时最先该定的不是\\\"支持哪几家\\\"，而是\\\"状态归属选哪一边\\\"。给一个可操作的判据：\\n\\n- **要换厂商、要可控** → 客户端持有。适配层复杂，但真相始终在本地。\\n- **卖的是省心与长上下文** → 服务端持有。短期最省事，但要接受厂商锁定。\\n- **两者都要** → 把服务端状态当作**可丢弃的加速层**：客户端始终保有全量真相，服务端丢了也不影响正确性。\\n\\n前两条是架构选型，第三条是大多数产品真正该走的路。\\n\"}"
+          }
+        }
+      ],
+      "id": "5846fa82-8afd-4114-b062-2684fb0ad493",
+      "metadata": {
+        "model": {
+          "providerId": "magpie",
+          "id": "auto/deepseek-v4.1-flash",
+          "model": "auto/deepseek-v4.1-flash",
+          "name": "auto/deepseek-v4.1-flash",
+          "reasoningType": "openai",
+          "maxContextTokens": 1048576,
+          "modalities": [
+            "text",
+            "vision"
+          ]
+        },
+        "usage": {
+          "prompt_tokens": 8882,
+          "completion_tokens": 2869,
+          "total_tokens": 11751,
+          "cache_read_input_tokens": 1280
+        },
+        "durationMs": 13258,
+        "generationState": "completed",
+        "branchConversationId": "6121c838-9a5b-4d9b-a800-a78cea9d861e",
+        "branchModelId": "auto/deepseek-v4.1-flash",
+        "branchLabel": "auto/deepseek-v4.1-flash"
+      }
+    },
+    {
+      "role": "tool",
+      "toolCalls": [
+        {
+          "request": {
+            "id": "call_00_Dkb9O6jZdYkd9ePm2Z6E4010",
+            "name": "yolo_local__fs_write",
+            "arguments": {
+              "kind": "complete",
+              "value": {
+                "path": "02AI是天坑/Agent&Harness/261025协议区别.md",
+                "content": "---\ntitle: 261025协议区别\npublished: 2026/10/25\ndescription: 261025协议区别\ntags:\n  - AI\n  - LLM\ncategory:\ndraft: true\n---\n\n目前主流的 Anthropic、OpenAI、Gemini 三家各有自己的对话协议：\n\n- Anthropic：`/v1/messages`\n- OpenAI：`/v1/chat/completions`、`/v1/responses`\n- Gemini：`/v1beta/models/{m}:generateContent`\n\n它们的分歧不在于\"怎么传参数\"，而在于**\"谁拥有这次对话\"**。这个判断决定了 harness 的架构复杂度、可移植性，以及你会不会被单一厂商锁定。全文围绕这条主线展开：先横向对照，再看受\"状态归属\"影响的请求体组织，最后落到适配层的工程做法。\n\n> 术语约定：下文统一用 **block** 指代\"最小可寻址单元\"（IR 视角），具体到各厂商时再写回原名 `message` / `item` / `part`。\n\n## 一、三家横向对照\n\n| 维度        | Anthropic `/v1/messages`                     | OpenAI `/v1/chat/completions`       | OpenAI `/v1/responses`                                       | Gemini `/v1beta/models/{m}:generateContent`    |\n| --------- | -------------------------------------------- | ----------------------------------- | ------------------------------------------------------------ | ---------------------------------------------- |\n| 定位        | 面向 Agent 的原生接口                               | 事实标准，兼容面最广                          | Chat Completions 的继任者                                        | 长期 beta，靠厂商自行演进                                |\n| 会话状态      | 无状态，全量重传                                     | 无状态，全量重传                            | 有 `previous_response_id` / Conversations                     | 无状态，但缓存是可 CRUD 的资源                             |\n| 最小单位      | content **block** 数组                         | **message**（content 内再分 part）       | **item** 数组（消息与工具调用平级）                                       | **part** 数组                                    |\n| 工具结果归属    | `tool_result` block 放进 **user 消息**           | 独立的 `role: \"tool\"` + `tool_call_id` | `function_call_output` 作为独立 item                             | **user 角色**的 `functionResponse` part           |\n| 流式        | 细粒度事件（`message_start`/`content_block_delta`） | delta 式追加字段                         | 语义事件（`response.output_item.added`）                           | part 粒度增量                                      |\n| 推理内容      | `thinking` block，必须回传且带 signature            | 协议不暴露                               | `reasoning` item + `reasoning.effort`                        | `thought` part + `thinkingBudget`              |\n| 结构化输出     | `output_format` json_schema（早期靠 `tool_choice` 约束） | `response_format` + json_schema     | `text.format` json_schema                                    | `responseSchema` + `responseMimeType`          |\n| 内建工具      | 无                                            | 无                                   | 有：web_search / file_search / code_interpreter / computer_use | 有：google_search / code_execution / url_context |\n| 缓存哲学      | 请求体内 `cache_control` 断点                      | 自动前缀缓存                              | 自动前缀缓存                                                       | 独立资源 `cachedContents`                          |\n\n两处需要补充：\n\n- **system 的位置**不单列一行，因为它是\"最小单位\"的直接推论：Anthropic 顶层 `system` 字段、OpenAI 消息里的 `role:\"system\"`、Responses 顶层 `instructions`、Gemini 顶层 `systemInstruction`。真正的坑在\"多段 system\"（见三、1）。\n- **内建工具与结构化输出**是两家\"托管能力型\"厂商（OpenAI Responses、Gemini）与 Anthropic 的分野，但这两项都属于\"服务端替你做了一部分事\"，与全文的\"状态归属\"主线同源，后面会回到它。\n\n## 二、URI / 版本层面\n\n**Anthropic 是\"一个端点包打天下\"。** `/v1/messages` 承担全部推理流量，`count_tokens`、`batches` 只是同一命名空间下的辅助端点。版本号不写在路径里，靠请求头 `anthropic-version` 加一组 `anthropic-beta` 开关做增量演进而非版本冻结——所以 v1 是一个长期演进的运行时，不是一份快照。\n\n**OpenAI 有两条并行路线。** `/v1/chat/completions` 兼容面最广，几乎每个第三方模型、每个网关都先实现它；`/v1/responses` 是官方主推的新一代，语义更接近\"一次 Agent turn 的完整输入输出\"，把消息与工具调用平级成 item。截至 2026 年 10 月，官方给的是迁移指南而非弃用时间表，所以基础设施项目要同时维护两套适配器。\n\n**Gemini 把版本写进路径**（`/v1beta`），方法名用 `:generateContent`、`:streamGenerateContent`、`:countTokens` 这类 Google AIP 风格的冒号方法，而非 RESTful 子资源。`v1beta` 意味着 surface 会增删改，工程上必须由适配层隔离——这层隔离不是可选项，是使用 `v1beta` 的前提。\n\n## 三、请求体组织的差异（真正的痛点）\n\n### 1. system 到底算不算一条消息\n\n这是适配层最容易踩的地方。Anthropic 和 Gemini 把 system 提到顶层，OpenAI 用消息表示。看似只是搬家，影响却在**多段 system**：Anthropic 的 `system` 可以是 block 数组并挂 `cache_control` 断点，OpenAI 可以给多条 `role: \"system\"`，Gemini 的 `systemInstruction` 也能多 part。一旦跨层翻译，**\"几段 system\"常被压成一段，缓存断点也跟着丢**。\n\n这条是后文第五节\"IR 归一\"最直接的论据：IR 里必须把 system 建模为**有序 block 列表**而非字符串，否则任何一次翻译都是单向损失。\n\n### 2. 工具调用结果的归属\n\n三家差异最大、最容易写错的一处：\n\n- **Chat Completions**：assistant 带 `tool_calls` → 下一条 `role: \"tool\"` + `tool_call_id`，结果是独立消息。\n- **Anthropic**：`tool_use` 是 assistant 消息里的一个 block → 结果以 `tool_result` block 放在下一条 **user** 消息里，靠 `tool_use_id` 关联，且 `tool_use` 后必须紧跟对应 `tool_result`，不配对直接 400。\n- **Gemini**：`functionCall` 是 model 返回 parts 里的一个 part → 结果用 **user 角色**的 `functionResponse` part 回传。早期版本靠 `functionCall.name` 关联（并行调用时靠名称与顺序消歧），`id` 是后来才补齐的。\n\n同一次工具调用，三种协议里的形状：\n\n```\nChat Completions:  assistant{tool_calls:[{id:\"c1\",…}]}  →  tool{tool_call_id:\"c1\", content:\"…\"}\nAnthropic:         assistant{[text, tool_use{id:\"u1\"}]} →  user{[tool_result{tool_use_id:\"u1\"}]}\nGemini:            model{[functionCall{name,args}]}     →  user{[functionResponse{name,response}]}\n```\n\n同一个 workflow 在三种协议里落地成三种不同的消息图谱。\"OpenAI 兼容层\"看着简单，真要端到端支持工具循环，做的是**状态机对齐**而不是字段映射。\n\n### 3. 流式增量怎么切\n\n因为最小单位不同（message / block / part），流式增量的切分维度也就不同。Anthropic 要处理\"一个 content block 开始 / 若干 delta / block 结束\"，Gemini 按 part 推增量，Chat Completions 则是在平坦的 delta 字段上做累积。\n\n写统一渲染器时的做法：**以 block 为统一最小粒度**，把 part 增量与 delta 累积都先归一成 block 事件流（`block_start` / `block_delta` / `block_stop`），再交给渲染层。三种节奏在归一之后才会变成同一种。\n\n### 4. 推理内容能不能回传\n\nAnthropic 的 `thinking` block 在下一轮必须原样带回（含 signature），且**含 `tool_use` 的轮次强制要求回传**，否则请求被拒；Gemini 的 `thought` 类似。Chat Completions 协议本身没有这一层概念——个别厂商在兼容层加了 `reasoning_content` 这类扩展字段，但不在规范内。所以**任何经过 Chat Completions 格式中转的链路都会丢推理上下文**，这是不少自建网关的通病。Responses 则用 `encrypted_content` 显式支持回传。\n\n## 四、会话状态归属：这是分水岭\n\nChat Completions 和 Messages 都是**无状态**协议：每轮重传完整历史，服务端不认\"你在继续聊\"。上下文管理完全落在客户端——截断、摘要、压缩、检索召回都是 harness 自己干的事。\n\nResponses 把一部分状态搬到服务端（`previous_response_id`、Conversations、`store`），甚至能在服务端托管工具执行与文件。好处是省带宽、可复用 reasoning item、内建工具即开即用；成本是状态绑在厂商侧，成本与隐私的黑盒变深，且迁移时要为\"服务端那部分历史\"另做导出。\n\nGemini 走中间路线：主体无状态，但把 `cachedContents` 做成可 CRUD 的一等资源，缓存不再藏在请求体的标记位里。\n\n## 五、对 Agent / Harness 的落地影响\n\n1. **适配层要做语义转换，不是字段重命名。** 内部定义一套 IR，把 message / block / item 三种模型先归一（选 block 模型，表达力最强），再分发到各 provider。system 在 IR 里必须是有序 block 列表，工具调用必须有独立的状态机节点。\n2. **工具循环必须写成状态机。** 每个 provider 对\"`tool_use` 之后必须出现什么\"的约束不同，出错要能识别并修正，而不是盲目重试。补救时**插一个明确的失败/取消 `tool_result`（标记 error），不要伪造成功**——如果工具已产生副作用，伪造成功会让模型基于错误的世界状态继续推理。\n3. **推理内容单独建通道。** 在 IR 里保留 reasoning block，并用一个 opaque 字段承载厂商加密串；对不支持的目标显式降级，而不是静默丢弃。\n4. **缓存按 provider 分别建模。** 断点式、自动前缀式、资源式三种策略，一个\"打开缓存\"开关糊不过去，否则命中率会静默归零。建议在 IR 里用 `cache_binding` 这类结构性描述（锚点位置 / TTL / 资源 id），而非布尔位。\n5. **错误语义要收敛。** 各家错误体结构、错误码、幂等性、`request_id` 追踪都不同，得在适配器里统一成错误分类，上层才能做正确的退避。\n\n## 六、一个观察\n\n三家协议的分歧，本质上是**\"谁拥有这次对话\"**：\n\n- **Anthropic** 明确表态对话归客户端，服务端只做无状态推理，所以把表达力做得很足（block、cache 断点、thinking 全回传）。\n- **OpenAI** 在 Chat Completions 上继承了同样姿态，但用 Responses 开始往服务端收——托管工具、会话指针、可复用 reasoning item 都是\"收\"的迹象。\n- **Gemini** 是 Google 一贯的\"资源 + 方法\"世界观，缓存、文件、批量都做成一等资源。\n\n所以写 harness 时最先该定的不是\"支持哪几家\"，而是\"状态归属选哪一边\"。给一个可操作的判据：\n\n- **要换厂商、要可控** → 客户端持有。适配层复杂，但真相始终在本地。\n- **卖的是省心与长上下文** → 服务端持有。短期最省事，但要接受厂商锁定。\n- **两者都要** → 把服务端状态当作**可丢弃的加速层**：客户端始终保有全量真相，服务端丢了也不影响正确性。\n\n前两条是架构选型，第三条是大多数产品真正该走的路。\n"
+              },
+              "rawText": "{\"path\": \"02AI是天坑/Agent&Harness/261025协议区别.md\", \"content\": \"---\\ntitle: 261025协议区别\\npublished: 2026/10/25\\ndescription: 261025协议区别\\ntags:\\n  - AI\\n  - LLM\\ncategory:\\ndraft: true\\n---\\n\\n目前主流的 Anthropic、OpenAI、Gemini 三家各有自己的对话协议：\\n\\n- Anthropic：`/v1/messages`\\n- OpenAI：`/v1/chat/completions`、`/v1/responses`\\n- Gemini：`/v1beta/models/{m}:generateContent`\\n\\n它们的分歧不在于\\\"怎么传参数\\\"，而在于**\\\"谁拥有这次对话\\\"**。这个判断决定了 harness 的架构复杂度、可移植性，以及你会不会被单一厂商锁定。全文围绕这条主线展开：先横向对照，再看受\\\"状态归属\\\"影响的请求体组织，最后落到适配层的工程做法。\\n\\n> 术语约定：下文统一用 **block** 指代\\\"最小可寻址单元\\\"（IR 视角），具体到各厂商时再写回原名 `message` / `item` / `part`。\\n\\n## 一、三家横向对照\\n\\n| 维度        | Anthropic `/v1/messages`                     | OpenAI `/v1/chat/completions`       | OpenAI `/v1/responses`                                       | Gemini `/v1beta/models/{m}:generateContent`    |\\n| --------- | -------------------------------------------- | ----------------------------------- | ------------------------------------------------------------ | ---------------------------------------------- |\\n| 定位        | 面向 Agent 的原生接口                               | 事实标准，兼容面最广                          | Chat Completions 的继任者                                        | 长期 beta，靠厂商自行演进                                |\\n| 会话状态      | 无状态，全量重传                                     | 无状态，全量重传                            | 有 `previous_response_id` / Conversations                     | 无状态，但缓存是可 CRUD 的资源                             |\\n| 最小单位      | content **block** 数组                         | **message**（content 内再分 part）       | **item** 数组（消息与工具调用平级）                                       | **part** 数组                                    |\\n| 工具结果归属    | `tool_result` block 放进 **user 消息**           | 独立的 `role: \\\"tool\\\"` + `tool_call_id` | `function_call_output` 作为独立 item                             | **user 角色**的 `functionResponse` part           |\\n| 流式        | 细粒度事件（`message_start`/`content_block_delta`） | delta 式追加字段                         | 语义事件（`response.output_item.added`）                           | part 粒度增量                                      |\\n| 推理内容      | `thinking` block，必须回传且带 signature            | 协议不暴露                               | `reasoning` item + `reasoning.effort`                        | `thought` part + `thinkingBudget`              |\\n| 结构化输出     | `output_format` json_schema（早期靠 `tool_choice` 约束） | `response_format` + json_schema     | `text.format` json_schema                                    | `responseSchema` + `responseMimeType`          |\\n| 内建工具      | 无                                            | 无                                   | 有：web_search / file_search / code_interpreter / computer_use | 有：google_search / code_execution / url_context |\\n| 缓存哲学      | 请求体内 `cache_control` 断点                      | 自动前缀缓存                              | 自动前缀缓存                                                       | 独立资源 `cachedContents`                          |\\n\\n两处需要补充：\\n\\n- **system 的位置**不单列一行，因为它是\\\"最小单位\\\"的直接推论：Anthropic 顶层 `system` 字段、OpenAI 消息里的 `role:\\\"system\\\"`、Responses 顶层 `instructions`、Gemini 顶层 `systemInstruction`。真正的坑在\\\"多段 system\\\"（见三、1）。\\n- **内建工具与结构化输出**是两家\\\"托管能力型\\\"厂商（OpenAI Responses、Gemini）与 Anthropic 的分野，但这两项都属于\\\"服务端替你做了一部分事\\\"，与全文的\\\"状态归属\\\"主线同源，后面会回到它。\\n\\n## 二、URI / 版本层面\\n\\n**Anthropic 是\\\"一个端点包打天下\\\"。** `/v1/messages` 承担全部推理流量，`count_tokens`、`batches` 只是同一命名空间下的辅助端点。版本号不写在路径里，靠请求头 `anthropic-version` 加一组 `anthropic-beta` 开关做增量演进而非版本冻结——所以 v1 是一个长期演进的运行时，不是一份快照。\\n\\n**OpenAI 有两条并行路线。** `/v1/chat/completions` 兼容面最广，几乎每个第三方模型、每个网关都先实现它；`/v1/responses` 是官方主推的新一代，语义更接近\\\"一次 Agent turn 的完整输入输出\\\"，把消息与工具调用平级成 item。截至 2026 年 10 月，官方给的是迁移指南而非弃用时间表，所以基础设施项目要同时维护两套适配器。\\n\\n**Gemini 把版本写进路径**（`/v1beta`），方法名用 `:generateContent`、`:streamGenerateContent`、`:countTokens` 这类 Google AIP 风格的冒号方法，而非 RESTful 子资源。`v1beta` 意味着 surface 会增删改，工程上必须由适配层隔离——这层隔离不是可选项，是使用 `v1beta` 的前提。\\n\\n## 三、请求体组织的差异（真正的痛点）\\n\\n### 1. system 到底算不算一条消息\\n\\n这是适配层最容易踩的地方。Anthropic 和 Gemini 把 system 提到顶层，OpenAI 用消息表示。看似只是搬家，影响却在**多段 system**：Anthropic 的 `system` 可以是 block 数组并挂 `cache_control` 断点，OpenAI 可以给多条 `role: \\\"system\\\"`，Gemini 的 `systemInstruction` 也能多 part。一旦跨层翻译，**\\\"几段 system\\\"常被压成一段，缓存断点也跟着丢**。\\n\\n这条是后文第五节\\\"IR 归一\\\"最直接的论据：IR 里必须把 system 建模为**有序 block 列表**而非字符串，否则任何一次翻译都是单向损失。\\n\\n### 2. 工具调用结果的归属\\n\\n三家差异最大、最容易写错的一处：\\n\\n- **Chat Completions**：assistant 带 `tool_calls` → 下一条 `role: \\\"tool\\\"` + `tool_call_id`，结果是独立消息。\\n- **Anthropic**：`tool_use` 是 assistant 消息里的一个 block → 结果以 `tool_result` block 放在下一条 **user** 消息里，靠 `tool_use_id` 关联，且 `tool_use` 后必须紧跟对应 `tool_result`，不配对直接 400。\\n- **Gemini**：`functionCall` 是 model 返回 parts 里的一个 part → 结果用 **user 角色**的 `functionResponse` part 回传。早期版本靠 `functionCall.name` 关联（并行调用时靠名称与顺序消歧），`id` 是后来才补齐的。\\n\\n同一次工具调用，三种协议里的形状：\\n\\n```\\nChat Completions:  assistant{tool_calls:[{id:\\\"c1\\\",…}]}  →  tool{tool_call_id:\\\"c1\\\", content:\\\"…\\\"}\\nAnthropic:         assistant{[text, tool_use{id:\\\"u1\\\"}]} →  user{[tool_result{tool_use_id:\\\"u1\\\"}]}\\nGemini:            model{[functionCall{name,args}]}     →  user{[functionResponse{name,response}]}\\n```\\n\\n同一个 workflow 在三种协议里落地成三种不同的消息图谱。\\\"OpenAI 兼容层\\\"看着简单，真要端到端支持工具循环，做的是**状态机对齐**而不是字段映射。\\n\\n### 3. 流式增量怎么切\\n\\n因为最小单位不同（message / block / part），流式增量的切分维度也就不同。Anthropic 要处理\\\"一个 content block 开始 / 若干 delta / block 结束\\\"，Gemini 按 part 推增量，Chat Completions 则是在平坦的 delta 字段上做累积。\\n\\n写统一渲染器时的做法：**以 block 为统一最小粒度**，把 part 增量与 delta 累积都先归一成 block 事件流（`block_start` / `block_delta` / `block_stop`），再交给渲染层。三种节奏在归一之后才会变成同一种。\\n\\n### 4. 推理内容能不能回传\\n\\nAnthropic 的 `thinking` block 在下一轮必须原样带回（含 signature），且**含 `tool_use` 的轮次强制要求回传**，否则请求被拒；Gemini 的 `thought` 类似。Chat Completions 协议本身没有这一层概念——个别厂商在兼容层加了 `reasoning_content` 这类扩展字段，但不在规范内。所以**任何经过 Chat Completions 格式中转的链路都会丢推理上下文**，这是不少自建网关的通病。Responses 则用 `encrypted_content` 显式支持回传。\\n\\n## 四、会话状态归属：这是分水岭\\n\\nChat Completions 和 Messages 都是**无状态**协议：每轮重传完整历史，服务端不认\\\"你在继续聊\\\"。上下文管理完全落在客户端——截断、摘要、压缩、检索召回都是 harness 自己干的事。\\n\\nResponses 把一部分状态搬到服务端（`previous_response_id`、Conversations、`store`），甚至能在服务端托管工具执行与文件。好处是省带宽、可复用 reasoning item、内建工具即开即用；成本是状态绑在厂商侧，成本与隐私的黑盒变深，且迁移时要为\\\"服务端那部分历史\\\"另做导出。\\n\\nGemini 走中间路线：主体无状态，但把 `cachedContents` 做成可 CRUD 的一等资源，缓存不再藏在请求体的标记位里。\\n\\n## 五、对 Agent / Harness 的落地影响\\n\\n1. **适配层要做语义转换，不是字段重命名。** 内部定义一套 IR，把 message / block / item 三种模型先归一（选 block 模型，表达力最强），再分发到各 provider。system 在 IR 里必须是有序 block 列表，工具调用必须有独立的状态机节点。\\n2. **工具循环必须写成状态机。** 每个 provider 对\\\"`tool_use` 之后必须出现什么\\\"的约束不同，出错要能识别并修正，而不是盲目重试。补救时**插一个明确的失败/取消 `tool_result`（标记 error），不要伪造成功**——如果工具已产生副作用，伪造成功会让模型基于错误的世界状态继续推理。\\n3. **推理内容单独建通道。** 在 IR 里保留 reasoning block，并用一个 opaque 字段承载厂商加密串；对不支持的目标显式降级，而不是静默丢弃。\\n4. **缓存按 provider 分别建模。** 断点式、自动前缀式、资源式三种策略，一个\\\"打开缓存\\\"开关糊不过去，否则命中率会静默归零。建议在 IR 里用 `cache_binding` 这类结构性描述（锚点位置 / TTL / 资源 id），而非布尔位。\\n5. **错误语义要收敛。** 各家错误体结构、错误码、幂等性、`request_id` 追踪都不同，得在适配器里统一成错误分类，上层才能做正确的退避。\\n\\n## 六、一个观察\\n\\n三家协议的分歧，本质上是**\\\"谁拥有这次对话\\\"**：\\n\\n- **Anthropic** 明确表态对话归客户端，服务端只做无状态推理，所以把表达力做得很足（block、cache 断点、thinking 全回传）。\\n- **OpenAI** 在 Chat Completions 上继承了同样姿态，但用 Responses 开始往服务端收——托管工具、会话指针、可复用 reasoning item 都是\\\"收\\\"的迹象。\\n- **Gemini** 是 Google 一贯的\\\"资源 + 方法\\\"世界观，缓存、文件、批量都做成一等资源。\\n\\n所以写 harness 时最先该定的不是\\\"支持哪几家\\\"，而是\\\"状态归属选哪一边\\\"。给一个可操作的判据：\\n\\n- **要换厂商、要可控** → 客户端持有。适配层复杂，但真相始终在本地。\\n- **卖的是省心与长上下文** → 服务端持有。短期最省事，但要接受厂商锁定。\\n- **两者都要** → 把服务端状态当作**可丢弃的加速层**：客户端始终保有全量真相，服务端丢了也不影响正确性。\\n\\n前两条是架构选型，第三条是大多数产品真正该走的路。\\n\"}"
+            }
+          },
+          "response": {
+            "status": "success",
+            "data": {
+              "type": "text",
+              "text": "{\n  \"tool\": \"fs_write\",\n  \"action\": \"write\",\n  \"results\": [\n    {\n      \"ok\": true,\n      \"action\": \"write\",\n      \"target\": \"02AI是天坑/Agent&Harness/261025协议区别.md\",\n      \"message\": \"Overwrote file.\"\n    }\n  ]\n}",
+              "metadata": {
+                "editSummary": {
+                  "files": [
+                    {
+                      "path": "02AI是天坑/Agent&Harness/261025协议区别.md",
+                      "addedLines": 51,
+                      "removedLines": 28,
+                      "lineStatsAvailable": true,
+                      "operation": "edit",
+                      "undoStatus": "available",
+                      "reviewRoundId": "5dfe14fe-4ca9-4cf0-bd56-475452ea69f8"
+                    }
+                  ],
+                  "totalFiles": 1,
+                  "totalAddedLines": 51,
+                  "totalRemovedLines": 28,
+                  "undoStatus": "available"
+                },
+                "appliedAt": 1792936510237
+              }
+            }
+          }
+        }
+      ],
+      "id": "5dfe14fe-4ca9-4cf0-bd56-475452ea69f8",
+      "metadata": {
+        "branchConversationId": "6121c838-9a5b-4d9b-a800-a78cea9d861e",
+        "branchModelId": "auto/deepseek-v4.1-flash",
+        "branchLabel": "auto/deepseek-v4.1-flash"
+      }
+    },
+    {
+      "role": "assistant",
+      "content": "已重排并写入原文件（仍为 93 行左右，frontmatter 未动）。\n\n## 本次改动\n\n**结构层面**\n- 开篇加了导语：三家协议列表 + 主线命题（\"谁拥有这次对话\"）提前当钩子 + 全文路线图。\n- 加了术语约定块，统一 block 作为最小寻址单元的说法。\n- 表格从 12 维压到 9 维：删掉\"system 位置\"（改成正文里的推论说明，因为它真正的问题在多段 system，见三、1）、\"定位\"并入第二节、把\"推理内容\"提到工具结果之后紧邻（两者都涉及回传约束）。表后补了两条说明，解释被删维度和保留维度的理由。\n\n**准确性修正（P0）**\n- Anthropic 结构化输出：改为 `output_format` json_schema（早期靠 tool_choice 约束）。\n- Chat Completions 推理内容：\"协议不暴露\"，并注明 `reasoning_content` 属兼容层扩展。\n- thinking 回传：补\"含 tool_use 的轮次强制回传，否则被拒\"。\n- Responses 迁移：加\"截至 2026 年 10 月\"时间锚点。\n- Gemini 工具关联：补\"并行调用靠名称与顺序消歧\"。\n\n**可读性与闭环**\n- 修了第六节引号吞加粗的问题，并把三家的\"谁拥有对话\"拆成三条独立短句。\n- 三、1 段末回指第五节第 1 条，三、3 段末补\"归一到 block 事件流\"的具体做法。\n- 三、2 后加了三行协议形状对照代码块，让\"状态机而非字段映射\"落地。\n- 第五节：4 条建议从方向性变成带字段名的选型（`opaque` 加密串、`cache_binding` 结构）；第 2 条补了\"补救要插 error 结果、别伪造成功\"的警告。\n- 结尾从\"选哪一边\"升级为三条判据，并把\"服务端状态作可丢弃加速层\"定位为多数产品的实际答案，作为全文收束。\n\n**保留未动**\n- frontmatter、`draft: true`、全部原文事实性内容与作者语气。\n\n如果你想再进一步，我建议下一步动的是**表格**：现在 9 行仍偏密，若你想让它更像\"速查卡\"可以再删 2 行；若想让它自成体系，则给\"内建工具\"补 2–3 句正文。要改的话告诉我倾向哪边。",
+      "id": "697df756-a2e0-4ba4-be21-aa5fc2decdc4",
+      "metadata": {
+        "model": {
+          "providerId": "magpie",
+          "id": "auto/deepseek-v4.1-flash",
+          "model": "auto/deepseek-v4.1-flash",
+          "name": "auto/deepseek-v4.1-flash",
+          "reasoningType": "openai",
+          "maxContextTokens": 1048576,
+          "modalities": [
+            "text",
+            "vision"
+          ]
+        },
+        "usage": {
+          "prompt_tokens": 11834,
+          "completion_tokens": 572,
+          "total_tokens": 12406,
+          "cache_read_input_tokens": 11648
+        },
+        "durationMs": 5443,
+        "generationState": "completed",
+        "branchConversationId": "6121c838-9a5b-4d9b-a800-a78cea9d861e",
+        "branchModelId": "auto/deepseek-v4.1-flash",
+        "branchLabel": "auto/deepseek-v4.1-flash"
+      }
+    }
+  ],
+  "createdAt": 1792936444264,
+  "updatedAt": 1792936515982,
+  "schemaVersion": 1,
+  "compaction": [],
+  "origin": "user",
+  "overrides": {
+    "chatMode": "agent",
+    "agentYoloEnabled": false
+  },
+  "conversationModelId": "auto/deepseek-v4.1-flash",
+  "messageModelMap": {
+    "ea2c26d1-7d06-4a1d-beb2-b31b796ab780": "auto/deepseek-v4.1-flash",
+    "7aeae853-2fdf-4b2c-afcb-ffd2a7eeb889": "auto/deepseek-v4.1-flash"
+  },
+  "assistantGroupBoundaryMessageIds": [],
+  "reasoningLevel": "auto"
+}

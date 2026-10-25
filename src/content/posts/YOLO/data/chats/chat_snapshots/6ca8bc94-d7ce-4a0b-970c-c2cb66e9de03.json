@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "entries": {
+    "6395ae12": {
+      "hash": "6395ae12",
+      "content": [
+        {
+          "type": "text",
+          "text": "<user_selected_content path=\"丫丫学语/爪哇/SpringBoot/261025SpringBoot的泪.md\" startLine=\"113\" endLine=\"124\">\n```丫丫学语/爪哇/SpringBoot/261025SpringBoot的泪.md\n113|**`@Autowired`**\n114|\n115|- Spring 原生注解\n116|- 默认按照类型byType可以搭配 `@Qualifier(\"beanName\")` 按名称指定\n117|\n118|**`@Resource`**\n119|\n120|\n121|`@Inject`\n122|\n123|\n124|`RequireArgs`\n```\n</user_selected_content>\n\n\n261025SpringBoot的泪.md (27 词/字) 补充\n\n"
+        }
+      ],
+      "createdAt": 1792935077061,
+      "updatedAt": 1792935077061
+    }
+  }
+}

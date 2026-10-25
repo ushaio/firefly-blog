@@ -1,0 +1,943 @@
+{
+  "id": "4d208c28-fdd4-4bef-b91b-533ec946d461",
+  "title": "Agent记忆层级优化",
+  "messages": [
+    {
+      "role": "user",
+      "content": {
+        "root": {
+          "children": [
+            {
+              "children": [
+                {
+                  "detail": 0,
+                  "format": 0,
+                  "mode": "normal",
+                  "style": "",
+                  "text": "优化 ",
+                  "type": "text",
+                  "version": 1
+                },
+                {
+                  "detail": 1,
+                  "format": 0,
+                  "mode": "token",
+                  "style": "",
+                  "text": "261025记忆.md (507 词/字)",
+                  "type": "mention",
+                  "version": 1,
+                  "mentionName": "261025记忆.md (507 词/字)",
+                  "mentionable": {
+                    "type": "block",
+                    "file": "02AI是天坑/Agent&Harness/261025记忆.md",
+                    "startLine": 12,
+                    "endLine": 24,
+                    "source": "selection-sync",
+                    "contentHash": "c0c2d816",
+                    "contentCount": 507,
+                    "contentUnit": "wordsCharacters"
+                  }
+                },
+                {
+                  "detail": 0,
+                  "format": 0,
+                  "mode": "normal",
+                  "style": "",
+                  "text": " ",
+                  "type": "text",
+                  "version": 1
+                }
+              ],
+              "direction": "ltr",
+              "format": "",
+              "indent": 0,
+              "type": "paragraph",
+              "version": 1,
+              "textFormat": 0,
+              "textStyle": ""
+            }
+          ],
+          "direction": "ltr",
+          "format": "",
+          "indent": 0,
+          "type": "root",
+          "version": 1
+        }
+      },
+      "promptContent": null,
+      "snapshotRef": {
+        "hash": "dd6499a3"
+      },
+      "id": "e3a6c71b-639d-4e7d-ba96-533c18e4e0be",
+      "mentionables": [
+        {
+          "type": "block",
+          "content": "1.感知记忆\n感知记忆是存续时间最短的一层，只会留存本轮对话中用户发给大模型 的内容，比如一段文字，一张图片或者一个文档等其他信息，且这些内容只有一次调用的有效期，不会自动保留\n\n2.短期记忆\n短期记忆就是context window中的message列表，主要存储用户发送的内容，大模型每一轮对话的输出，大模型调用了哪一些工具，一些任务的中间状态，只要任务没完成，这些内容会都会保存在上下文中，作为大模型进行下一轮推论的依据\n\n任务持续期间，短期记忆中的内容会一直存在，持续作为大模型进行下一轮任务推理 的依据，此时有两种回收策略：如果是任务已经被完成了，此时任务对应的短期记忆的内容就会被清空，如果此时对话的上下文超出上限，此时就会触发截断机制，会主动将最早一批的上下文信息删除掉，腾出空间容纳新的交换内容\n\n3.长期记忆\n长期记忆一般是用来保存跨任务，跨对话的内容，一般存储在第三方介质中，比如一些向量数据库，关系型数据库或者一些非关系性数据库中，这一层的记忆内容会长期存储，方便大模型下次进行同类任务时，可以对该部分的记忆进行检索召回，形成复用\n\n4.实体记忆\n实体记忆是经过信息精炼的记忆层级，，这一层存储的不是原文内容，而是从用户的输入中提取一些关键信息，比如一些用户的偏好信息，用户的预算信息等等，这些关键信息就会被转换成一些结构化的数据存储",
+          "file": "02AI是天坑/Agent&Harness/261025记忆.md",
+          "startLine": 12,
+          "endLine": 24,
+          "source": "selection-sync",
+          "contentHash": "c0c2d816",
+          "contentCount": 507,
+          "contentUnit": "wordsCharacters"
+        }
+      ],
+      "selectedSkills": [],
+      "selectedModelIds": [],
+      "reasoningLevel": "high",
+      "timeContext": "2026-10-25 21:56 (Sunday)",
+      "injectedContext": [
+        {
+          "type": "text",
+          "text": "# Current Context (auto-attached, content NOT included)\nThe user is currently viewing this file. Use an available file-reading tool if you need its content.\n\nFile: 02AI是天坑/Agent&Harness/261025记忆.md\nTotal: 24 lines\nVisible: lines 11-24\nCursor: line 24\n\n"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "toolCallRequests": [
+        {
+          "id": "fs_read-1792936754631479196-24305",
+          "name": "yolo_local__fs_read",
+          "arguments": {
+            "kind": "complete",
+            "value": {
+              "paths": [
+                "02AI是天坑/Agent&Harness/261025记忆.md"
+              ]
+            },
+            "rawText": "{\"paths\": [\"02AI是天坑/Agent&Harness/261025记忆.md\"]}"
+          }
+        }
+      ],
+      "id": "23251136-08a5-4ddc-9ab7-fcf3a7cfa3b3",
+      "metadata": {
+        "model": {
+          "providerId": "magpie",
+          "id": "auto/gemini-3.8-flash",
+          "model": "auto/gemini-3.8-flash",
+          "name": "auto/gemini-3.8-flash",
+          "reasoningType": "gemini",
+          "maxContextTokens": 1048576,
+          "modalities": [
+            "text",
+            "vision"
+          ]
+        },
+        "usage": {
+          "prompt_tokens": 5483,
+          "completion_tokens": 150,
+          "total_tokens": 5633,
+          "cache_read_input_tokens": 2723
+        },
+        "durationMs": 4110,
+        "generationState": "completed",
+        "branchConversationId": "4d208c28-fdd4-4bef-b91b-533ec946d461",
+        "branchModelId": "auto/gemini-3.8-flash",
+        "branchLabel": "auto/gemini-3.8-flash"
+      }
+    },
+    {
+      "role": "tool",
+      "toolCalls": [
+        {
+          "request": {
+            "id": "fs_read-1792936754631479196-24305",
+            "name": "yolo_local__fs_read",
+            "arguments": {
+              "kind": "complete",
+              "value": {
+                "paths": [
+                  "02AI是天坑/Agent&Harness/261025记忆.md"
+                ]
+              },
+              "rawText": "{\"paths\": [\"02AI是天坑/Agent&Harness/261025记忆.md\"]}"
+            }
+          },
+          "response": {
+            "status": "success",
+            "data": {
+              "type": "text",
+              "text": "{\n  \"toolCallId\": \"fs_read-1792936754631479196-24305\",\n  \"requestedOperation\": {\n    \"type\": \"full\"\n  },\n  \"results\": [\n    {\n      \"path\": \"02AI是天坑/Agent&Harness/261025记忆.md\",\n      \"ok\": true,\n      \"totalLines\": 24,\n      \"hasMoreBelow\": false,\n      \"nextStartLine\": null,\n      \"content\": \"1|---\\n2|title: 未命名\\n3|published: 2026/10/25\\n4|description: 未命名\\n5|tags:\\n6|  - AI\\n7|  - agent\\n8|  - Harness\\n9|category:\\n10|draft: true\\n11|---\\n12|1.感知记忆\\n13|感知记忆是存续时间最短的一层，只会留存本轮对话中用户发给大模型 的内容，比如一段文字，一张图片或者一个文档等其他信息，且这些内容只有一次调用的有效期，不会自动保留\\n14|\\n15|2.短期记忆\\n16|短期记忆就是context window中的message列表，主要存储用户发送的内容，大模型每一轮对话的输出，大模型调用了哪一些工具，一些任务的中间状态，只要任务没完成，这些内容会都会保存在上下文中，作为大模型进行下一轮推论的依据\\n17|\\n18|任务持续期间，短期记忆中的内容会一直存在，持续作为大模型进行下一轮任务推理 的依据，此时有两种回收策略：如果是任务已经被完成了，此时任务对应的短期记忆的内容就会被清空，如果此时对话的上下文超出上限，此时就会触发截断机制，会主动将最早一批的上下文信息删除掉，腾出空间容纳新的交换内容\\n19|\\n20|3.长期记忆\\n21|长期记忆一般是用来保存跨任务，跨对话的内容，一般存储在第三方介质中，比如一些向量数据库，关系型数据库或者一些非关系性数据库中，这一层的记忆内容会长期存储，方便大模型下次进行同类任务时，可以对该部分的记忆进行检索召回，形成复用\\n22|\\n23|4.实体记忆\\n24|实体记忆是经过信息精炼的记忆层级，，这一层存储的不是原文内容，而是从用户的输入中提取一些关键信息，比如一些用户的偏好信息，用户的预算信息等等，这些关键信息就会被转换成一些结构化的数据存储\"\n    }\n  ]\n}",
+              "metadata": {
+                "fsReadOperation": {
+                  "type": "full",
+                  "isPdf": false
+                }
+              }
+            }
+          }
+        }
+      ],
+      "id": "c1aadc23-77ea-4457-980f-a6f7bcd3b2e8",
+      "metadata": {
+        "branchConversationId": "4d208c28-fdd4-4bef-b91b-533ec946d461",
+        "branchModelId": "auto/gemini-3.8-flash",
+        "branchLabel": "auto/gemini-3.8-flash"
+      }
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "toolCallRequests": [
+        {
+          "id": "fs_write-1792936793762681165-24306",
+          "name": "yolo_local__fs_write",
+          "arguments": {
+            "kind": "complete",
+            "value": {
+              "path": "02AI是天坑/Agent&Harness/261025记忆.md",
+              "content": "---\ntitle: AI Agent 记忆机制详解：感知、短期、长期与实体记忆\npublished: 2026/10/25\ndescription: 梳理 AI Agent 的四层记忆架构（感知记忆、短期记忆、长期记忆与实体记忆）的核心定义、存储载体与回收流转机制。\ntags:\n  - AI\n  - agent\n  - Harness\ncategory: AI Agent\ndraft: false\n---\n\n# AI Agent 记忆机制详解\n\n在构建智能体（AI Agent）时，记忆机制是其具备任务连续性、上下文感知和长程规划能力的核心基石。参考认知心理学模型与现代 Agent 架构设计，记忆系统通常划分为以下四层：\n\n---\n\n## 1. 感知记忆 (Sensory Memory)\n\n- **核心定位**：存续时间最短的记忆层，对应 Agent 对瞬时外界刺激的直接感知。\n- **主要内容**：单轮对话中用户输入的即时原始信息（Prompt、上传的单张图片、临时附件文档、语音切片等）。\n- **生命周期与回收**：\n  - **单次生效（Ephemeral）**：仅在当前推理调用（Inference Call）中有效。\n  - **用完即弃**：一旦本轮推理完成，原始感知输入便不会自动保留，除非被显式写入上下文或持久化存储。\n\n---\n\n## 2. 短期记忆 / 工作记忆 (Short-Term / Working Memory)\n\n- **核心定位**：Agent 执行具体任务过程中的“工作台”，即大语言模型的**上下文窗口（Context Window）**。\n- **主要内容**：\n  - 会话历史消息（`messages` 列表，包含 `system`、`user`、`assistant`、`tool`）。\n  - 工具调用的入参、执行结果及任务中间状态。\n  - Agent 自我反思（ReAct/Chain-of-Thought）过程中的思考推论链路。\n- **管理与回收策略**：\n  - **任务闭环清空**：当前任务完全达成后，清空对应的临时会话状态与中间推理，重置上下文。\n  - **滑动窗口截断（Sliding Window Truncation）**：当上下文长度逼近模型 Token 上限时，主动裁剪或丢弃最早的历史消息，腾出空间容纳新内容。\n  - **会话压缩 / 滚动总结（Summarization）**：对较早的多轮交互进行摘要提炼，以紧凑的摘要替代冗长的原始对话，兼顾长程上下文与 Token 消耗。\n\n---\n\n## 3. 长期记忆 (Long-Term Memory)\n\n- **核心定位**：支持**跨会话、跨任务**的经验与知识沉淀，实现历史经验的复用与自我进化。\n- **存储载体**：外部持久化存储介质，主要包括：\n  - **向量数据库**（如 Milvus, Qdrant, Chroma 等）：用于语义搜索与多模态匹配。\n  - **关系型与文档型数据库**（如 PostgreSQL/pgvector, MongoDB）：存储完整的历史交互归档与元数据。\n- **机制与应用**：\n  - 通过 **RAG（检索增强生成）** 或混合检索（Hybrid Search: 向量语义检索 + BM25 关键词匹配）技术，在 Agent 处理新任务时按需召回相关历史，避免无限堆积到上下文窗口中。\n\n---\n\n## 4. 实体记忆 (Entity / Semantic Memory)\n\n- **核心定位**：从原始交互中提炼出高价值事实与认知资产的精炼层。\n- **主要内容**：\n  - **用户画像与个性化偏好**：如用户技术栈、交互风格倾向、预算限制等。\n  - **实体事实与关系网**：从自由文本中抽取的客体、属性及其关联（如“项目A的负责人是张三”）。\n- **技术实现**：\n  - 通过实体识别（NER）或 LLM 结构化提取（Function Calling / Structured Outputs）清洗非结构化文本。\n  - 转换为键值对（Key-Value Store）、图数据库（Knowledge Graph）或轻量配置存储。\n- **特点与优势**：\n  - **信息密度极高**：去除了自然语言的口语与冗余表达。\n  - **即时注入**：可作为长期偏好，轻量注入到 System Prompt 或作为检索过滤器使用。\n\n---\n\n## 记忆分层对比总结\n\n| 记忆类型 | 认知类比 | 物理载体 | 留存周期 | 典型内容 | 回收/驱逐策略 |\n| :--- | :--- | :--- | :--- | :--- | :--- |\n| **感知记忆** | 瞬时感官知觉 | 本轮请求 Buffer | 单次请求 | 原始图片、单次语音、临时文档 | 推理结束后自动释放 |\n| **短期记忆** | 工作记忆 / 短期暂存 | 模型 Context Window | 当前任务/单会话内 | 消息历史、工具返回、推理中间态 | 任务完成重置 / 截断 / 滚动总结 |\n| **长期记忆** | 场景记忆 / 经验库 | 向量库、SQL、NoSQL | 长期/跨会话 | 历史问答归档、任务案例库、外部文档 | 定期清理、基于访问频次/热度衰减 |\n| **实体记忆** | 语义记忆 / 认知模型 | 键值库、图数据库、Profile | 长期持久化 | 用户画像、核心偏好、结构化属性 | 用户手动更新、版本合并与冲突覆盖 |\n"
+            },
+            "rawText": "{\"path\": \"02AI是天坑/Agent&Harness/261025记忆.md\",\"content\": \"---\\ntitle: AI Agent 记忆机制详解：感知、短期、长期与实体记忆\\npublished: 2026/10/25\\ndescription: 梳理 AI Agent 的四层记忆架构（感知记忆、短期记忆、长期记忆与实体记忆）的核心定义、存储载体与回收流转机制。\\ntags:\\n  - AI\\n  - agent\\n  - Harness\\ncategory: AI Agent\\ndraft: false\\n---\\n\\n# AI Agent 记忆机制详解\\n\\n在构建智能体（AI Agent）时，记忆机制是其具备任务连续性、上下文感知和长程规划能力的核心基石。参考认知心理学模型与现代 Agent 架构设计，记忆系统通常划分为以下四层：\\n\\n---\\n\\n## 1. 感知记忆 (Sensory Memory)\\n\\n- **核心定位**：存续时间最短的记忆层，对应 Agent 对瞬时外界刺激的直接感知。\\n- **主要内容**：单轮对话中用户输入的即时原始信息（Prompt、上传的单张图片、临时附件文档、语音切片等）。\\n- **生命周期与回收**：\\n  - **单次生效（Ephemeral）**：仅在当前推理调用（Inference Call）中有效。\\n  - **用完即弃**：一旦本轮推理完成，原始感知输入便不会自动保留，除非被显式写入上下文或持久化存储。\\n\\n---\\n\\n## 2. 短期记忆 / 工作记忆 (Short-Term / Working Memory)\\n\\n- **核心定位**：Agent 执行具体任务过程中的“工作台”，即大语言模型的**上下文窗口（Context Window）**。\\n- **主要内容**：\\n  - 会话历史消息（`messages` 列表，包含 `system`、`user`、`assistant`、`tool`）。\\n  - 工具调用的入参、执行结果及任务中间状态。\\n  - Agent 自我反思（ReAct/Chain-of-Thought）过程中的思考推论链路。\\n- **管理与回收策略**：\\n  - **任务闭环清空**：当前任务完全达成后，清空对应的临时会话状态与中间推理，重置上下文。\\n  - **滑动窗口截断（Sliding Window Truncation）**：当上下文长度逼近模型 Token 上限时，主动裁剪或丢弃最早的历史消息，腾出空间容纳新内容。\\n  - **会话压缩 / 滚动总结（Summarization）**：对较早的多轮交互进行摘要提炼，以紧凑的摘要替代冗长的原始对话，兼顾长程上下文与 Token 消耗。\\n\\n---\\n\\n## 3. 长期记忆 (Long-Term Memory)\\n\\n- **核心定位**：支持**跨会话、跨任务**的经验与知识沉淀，实现历史经验的复用与自我进化。\\n- **存储载体**：外部持久化存储介质，主要包括：\\n  - **向量数据库**（如 Milvus, Qdrant, Chroma 等）：用于语义搜索与多模态匹配。\\n  - **关系型与文档型数据库**（如 PostgreSQL/pgvector, MongoDB）：存储完整的历史交互归档与元数据。\\n- **机制与应用**：\\n  - 通过 **RAG（检索增强生成）** 或混合检索（Hybrid Search: 向量语义检索 + BM25 关键词匹配）技术，在 Agent 处理新任务时按需召回相关历史，避免无限堆积到上下文窗口中。\\n\\n---\\n\\n## 4. 实体记忆 (Entity / Semantic Memory)\\n\\n- **核心定位**：从原始交互中提炼出高价值事实与认知资产的精炼层。\\n- **主要内容**：\\n  - **用户画像与个性化偏好**：如用户技术栈、交互风格倾向、预算限制等。\\n  - **实体事实与关系网**：从自由文本中抽取的客体、属性及其关联（如“项目A的负责人是张三”）。\\n- **技术实现**：\\n  - 通过实体识别（NER）或 LLM 结构化提取（Function Calling / Structured Outputs）清洗非结构化文本。\\n  - 转换为键值对（Key-Value Store）、图数据库（Knowledge Graph）或轻量配置存储。\\n- **特点与优势**：\\n  - **信息密度极高**：去除了自然语言的口语与冗余表达。\\n  - **即时注入**：可作为长期偏好，轻量注入到 System Prompt 或作为检索过滤器使用。\\n\\n---\\n\\n## 记忆分层对比总结\\n\\n| 记忆类型 | 认知类比 | 物理载体 | 留存周期 | 典型内容 | 回收/驱逐策略 |\\n| :--- | :--- | :--- | :--- | :--- | :--- |\\n| **感知记忆** | 瞬时感官知觉 | 本轮请求 Buffer | 单次请求 | 原始图片、单次语音、临时文档 | 推理结束后自动释放 |\\n| **短期记忆** | 工作记忆 / 短期暂存 | 模型 Context Window | 当前任务/单会话内 | 消息历史、工具返回、推理中间态 | 任务完成重置 / 截断 / 滚动总结 |\\n| **长期记忆** | 场景记忆 / 经验库 | 向量库、SQL、NoSQL | 长期/跨会话 | 历史问答归档、任务案例库、外部文档 | 定期清理、基于访问频次/热度衰减 |\\n| **实体记忆** | 语义记忆 / 认知模型 | 键值库、图数据库、Profile | 长期持久化 | 用户画像、核心偏好、结构化属性 | 用户手动更新、版本合并与冲突覆盖 |\\n\"}"
+          }
+        }
+      ],
+      "id": "d8e942c9-155b-49b9-8af9-58019570af75",
+      "metadata": {
+        "model": {
+          "providerId": "magpie",
+          "id": "auto/gemini-3.8-flash",
+          "model": "auto/gemini-3.8-flash",
+          "name": "auto/gemini-3.8-flash",
+          "reasoningType": "gemini",
+          "maxContextTokens": 1048576,
+          "modalities": [
+            "text",
+            "vision"
+          ]
+        },
+        "usage": {
+          "prompt_tokens": 6300,
+          "completion_tokens": 4181,
+          "total_tokens": 10481
+        },
+        "durationMs": 39561,
+        "generationState": "completed",
+        "branchConversationId": "4d208c28-fdd4-4bef-b91b-533ec946d461",
+        "branchModelId": "auto/gemini-3.8-flash",
+        "branchLabel": "auto/gemini-3.8-flash"
+      }
+    },
+    {
+      "role": "tool",
+      "toolCalls": [
+        {
+          "request": {
+            "id": "fs_write-1792936793762681165-24306",
+            "name": "yolo_local__fs_write",
+            "arguments": {
+              "kind": "complete",
+              "value": {
+                "path": "02AI是天坑/Agent&Harness/261025记忆.md",
+                "content": "---\ntitle: AI Agent 记忆机制详解：感知、短期、长期与实体记忆\npublished: 2026/10/25\ndescription: 梳理 AI Agent 的四层记忆架构（感知记忆、短期记忆、长期记忆与实体记忆）的核心定义、存储载体与回收流转机制。\ntags:\n  - AI\n  - agent\n  - Harness\ncategory: AI Agent\ndraft: false\n---\n\n# AI Agent 记忆机制详解\n\n在构建智能体（AI Agent）时，记忆机制是其具备任务连续性、上下文感知和长程规划能力的核心基石。参考认知心理学模型与现代 Agent 架构设计，记忆系统通常划分为以下四层：\n\n---\n\n## 1. 感知记忆 (Sensory Memory)\n\n- **核心定位**：存续时间最短的记忆层，对应 Agent 对瞬时外界刺激的直接感知。\n- **主要内容**：单轮对话中用户输入的即时原始信息（Prompt、上传的单张图片、临时附件文档、语音切片等）。\n- **生命周期与回收**：\n  - **单次生效（Ephemeral）**：仅在当前推理调用（Inference Call）中有效。\n  - **用完即弃**：一旦本轮推理完成，原始感知输入便不会自动保留，除非被显式写入上下文或持久化存储。\n\n---\n\n## 2. 短期记忆 / 工作记忆 (Short-Term / Working Memory)\n\n- **核心定位**：Agent 执行具体任务过程中的“工作台”，即大语言模型的**上下文窗口（Context Window）**。\n- **主要内容**：\n  - 会话历史消息（`messages` 列表，包含 `system`、`user`、`assistant`、`tool`）。\n  - 工具调用的入参、执行结果及任务中间状态。\n  - Agent 自我反思（ReAct/Chain-of-Thought）过程中的思考推论链路。\n- **管理与回收策略**：\n  - **任务闭环清空**：当前任务完全达成后，清空对应的临时会话状态与中间推理，重置上下文。\n  - **滑动窗口截断（Sliding Window Truncation）**：当上下文长度逼近模型 Token 上限时，主动裁剪或丢弃最早的历史消息，腾出空间容纳新内容。\n  - **会话压缩 / 滚动总结（Summarization）**：对较早的多轮交互进行摘要提炼，以紧凑的摘要替代冗长的原始对话，兼顾长程上下文与 Token 消耗。\n\n---\n\n## 3. 长期记忆 (Long-Term Memory)\n\n- **核心定位**：支持**跨会话、跨任务**的经验与知识沉淀，实现历史经验的复用与自我进化。\n- **存储载体**：外部持久化存储介质，主要包括：\n  - **向量数据库**（如 Milvus, Qdrant, Chroma 等）：用于语义搜索与多模态匹配。\n  - **关系型与文档型数据库**（如 PostgreSQL/pgvector, MongoDB）：存储完整的历史交互归档与元数据。\n- **机制与应用**：\n  - 通过 **RAG（检索增强生成）** 或混合检索（Hybrid Search: 向量语义检索 + BM25 关键词匹配）技术，在 Agent 处理新任务时按需召回相关历史，避免无限堆积到上下文窗口中。\n\n---\n\n## 4. 实体记忆 (Entity / Semantic Memory)\n\n- **核心定位**：从原始交互中提炼出高价值事实与认知资产的精炼层。\n- **主要内容**：\n  - **用户画像与个性化偏好**：如用户技术栈、交互风格倾向、预算限制等。\n  - **实体事实与关系网**：从自由文本中抽取的客体、属性及其关联（如“项目A的负责人是张三”）。\n- **技术实现**：\n  - 通过实体识别（NER）或 LLM 结构化提取（Function Calling / Structured Outputs）清洗非结构化文本。\n  - 转换为键值对（Key-Value Store）、图数据库（Knowledge Graph）或轻量配置存储。\n- **特点与优势**：\n  - **信息密度极高**：去除了自然语言的口语与冗余表达。\n  - **即时注入**：可作为长期偏好，轻量注入到 System Prompt 或作为检索过滤器使用。\n\n---\n\n## 记忆分层对比总结\n\n| 记忆类型 | 认知类比 | 物理载体 | 留存周期 | 典型内容 | 回收/驱逐策略 |\n| :--- | :--- | :--- | :--- | :--- | :--- |\n| **感知记忆** | 瞬时感官知觉 | 本轮请求 Buffer | 单次请求 | 原始图片、单次语音、临时文档 | 推理结束后自动释放 |\n| **短期记忆** | 工作记忆 / 短期暂存 | 模型 Context Window | 当前任务/单会话内 | 消息历史、工具返回、推理中间态 | 任务完成重置 / 截断 / 滚动总结 |\n| **长期记忆** | 场景记忆 / 经验库 | 向量库、SQL、NoSQL | 长期/跨会话 | 历史问答归档、任务案例库、外部文档 | 定期清理、基于访问频次/热度衰减 |\n| **实体记忆** | 语义记忆 / 认知模型 | 键值库、图数据库、Profile | 长期持久化 | 用户画像、核心偏好、结构化属性 | 用户手动更新、版本合并与冲突覆盖 |\n"
+              },
+              "rawText": "{\"path\": \"02AI是天坑/Agent&Harness/261025记忆.md\",\"content\": \"---\\ntitle: AI Agent 记忆机制详解：感知、短期、长期与实体记忆\\npublished: 2026/10/25\\ndescription: 梳理 AI Agent 的四层记忆架构（感知记忆、短期记忆、长期记忆与实体记忆）的核心定义、存储载体与回收流转机制。\\ntags:\\n  - AI\\n  - agent\\n  - Harness\\ncategory: AI Agent\\ndraft: false\\n---\\n\\n# AI Agent 记忆机制详解\\n\\n在构建智能体（AI Agent）时，记忆机制是其具备任务连续性、上下文感知和长程规划能力的核心基石。参考认知心理学模型与现代 Agent 架构设计，记忆系统通常划分为以下四层：\\n\\n---\\n\\n## 1. 感知记忆 (Sensory Memory)\\n\\n- **核心定位**：存续时间最短的记忆层，对应 Agent 对瞬时外界刺激的直接感知。\\n- **主要内容**：单轮对话中用户输入的即时原始信息（Prompt、上传的单张图片、临时附件文档、语音切片等）。\\n- **生命周期与回收**：\\n  - **单次生效（Ephemeral）**：仅在当前推理调用（Inference Call）中有效。\\n  - **用完即弃**：一旦本轮推理完成，原始感知输入便不会自动保留，除非被显式写入上下文或持久化存储。\\n\\n---\\n\\n## 2. 短期记忆 / 工作记忆 (Short-Term / Working Memory)\\n\\n- **核心定位**：Agent 执行具体任务过程中的“工作台”，即大语言模型的**上下文窗口（Context Window）**。\\n- **主要内容**：\\n  - 会话历史消息（`messages` 列表，包含 `system`、`user`、`assistant`、`tool`）。\\n  - 工具调用的入参、执行结果及任务中间状态。\\n  - Agent 自我反思（ReAct/Chain-of-Thought）过程中的思考推论链路。\\n- **管理与回收策略**：\\n  - **任务闭环清空**：当前任务完全达成后，清空对应的临时会话状态与中间推理，重置上下文。\\n  - **滑动窗口截断（Sliding Window Truncation）**：当上下文长度逼近模型 Token 上限时，主动裁剪或丢弃最早的历史消息，腾出空间容纳新内容。\\n  - **会话压缩 / 滚动总结（Summarization）**：对较早的多轮交互进行摘要提炼，以紧凑的摘要替代冗长的原始对话，兼顾长程上下文与 Token 消耗。\\n\\n---\\n\\n## 3. 长期记忆 (Long-Term Memory)\\n\\n- **核心定位**：支持**跨会话、跨任务**的经验与知识沉淀，实现历史经验的复用与自我进化。\\n- **存储载体**：外部持久化存储介质，主要包括：\\n  - **向量数据库**（如 Milvus, Qdrant, Chroma 等）：用于语义搜索与多模态匹配。\\n  - **关系型与文档型数据库**（如 PostgreSQL/pgvector, MongoDB）：存储完整的历史交互归档与元数据。\\n- **机制与应用**：\\n  - 通过 **RAG（检索增强生成）** 或混合检索（Hybrid Search: 向量语义检索 + BM25 关键词匹配）技术，在 Agent 处理新任务时按需召回相关历史，避免无限堆积到上下文窗口中。\\n\\n---\\n\\n## 4. 实体记忆 (Entity / Semantic Memory)\\n\\n- **核心定位**：从原始交互中提炼出高价值事实与认知资产的精炼层。\\n- **主要内容**：\\n  - **用户画像与个性化偏好**：如用户技术栈、交互风格倾向、预算限制等。\\n  - **实体事实与关系网**：从自由文本中抽取的客体、属性及其关联（如“项目A的负责人是张三”）。\\n- **技术实现**：\\n  - 通过实体识别（NER）或 LLM 结构化提取（Function Calling / Structured Outputs）清洗非结构化文本。\\n  - 转换为键值对（Key-Value Store）、图数据库（Knowledge Graph）或轻量配置存储。\\n- **特点与优势**：\\n  - **信息密度极高**：去除了自然语言的口语与冗余表达。\\n  - **即时注入**：可作为长期偏好，轻量注入到 System Prompt 或作为检索过滤器使用。\\n\\n---\\n\\n## 记忆分层对比总结\\n\\n| 记忆类型 | 认知类比 | 物理载体 | 留存周期 | 典型内容 | 回收/驱逐策略 |\\n| :--- | :--- | :--- | :--- | :--- | :--- |\\n| **感知记忆** | 瞬时感官知觉 | 本轮请求 Buffer | 单次请求 | 原始图片、单次语音、临时文档 | 推理结束后自动释放 |\\n| **短期记忆** | 工作记忆 / 短期暂存 | 模型 Context Window | 当前任务/单会话内 | 消息历史、工具返回、推理中间态 | 任务完成重置 / 截断 / 滚动总结 |\\n| **长期记忆** | 场景记忆 / 经验库 | 向量库、SQL、NoSQL | 长期/跨会话 | 历史问答归档、任务案例库、外部文档 | 定期清理、基于访问频次/热度衰减 |\\n| **实体记忆** | 语义记忆 / 认知模型 | 键值库、图数据库、Profile | 长期持久化 | 用户画像、核心偏好、结构化属性 | 用户手动更新、版本合并与冲突覆盖 |\\n\"}"
+            }
+          },
+          "response": {
+            "status": "success",
+            "data": {
+              "type": "text",
+              "text": "{\n  \"tool\": \"fs_write\",\n  \"action\": \"write\",\n  \"results\": [\n    {\n      \"ok\": true,\n      \"action\": \"write\",\n      \"target\": \"02AI是天坑/Agent&Harness/261025记忆.md\",\n      \"message\": \"Overwrote file.\"\n    }\n  ]\n}",
+              "metadata": {
+                "editSummary": {
+                  "files": [
+                    {
+                      "path": "02AI是天坑/Agent&Harness/261025记忆.md",
+                      "addedLines": 71,
+                      "removedLines": 18,
+                      "lineStatsAvailable": true,
+                      "operation": "edit",
+                      "undoStatus": "available",
+                      "reviewRoundId": "9a00e9e2-2858-4a99-9dd0-694c6c049a9f"
+                    }
+                  ],
+                  "totalFiles": 1,
+                  "totalAddedLines": 71,
+                  "totalRemovedLines": 18,
+                  "undoStatus": "available"
+                },
+                "appliedAt": 1792936798540
+              }
+            }
+          }
+        }
+      ],
+      "id": "9a00e9e2-2858-4a99-9dd0-694c6c049a9f",
+      "metadata": {
+        "branchConversationId": "4d208c28-fdd4-4bef-b91b-533ec946d461",
+        "branchModelId": "auto/gemini-3.8-flash",
+        "branchLabel": "auto/gemini-3.8-flash"
+      }
+    },
+    {
+      "role": "assistant",
+      "content": "已对 `02AI是天坑/Agent&Harness/261025记忆.md` 进行了全面优化与重构，主要调整如下：\n\n### 优化要点\n1. **完善 Frontmatter 元数据**：\n   - 补全了文章标题（`AI Agent 记忆机制详解：感知、短期、长期与实体记忆`）与核心摘要。\n   - 补充完善了标签与分类（`category: AI Agent`），状态切换为正式笔记（`draft: false`）。\n\n2. **修正文字与排版语病**：\n   - 修复了双标点（如“层级，，”）、多余空格以及用词统一（统一规范为“推理链路”、“上下文窗口”等行业标准术语）。\n   - 将扁平文本重构为清晰的 Markdown 标题、层级列表与关键点强调。\n\n3. **深化技术概念与机制**：\n   - **感知记忆 (Sensory Memory)**：明确了其作为瞬时输入、单次生效（Ephemeral）、用完即弃的定位。\n   - **短期记忆 / 工作记忆 (Working Memory)**：除了基础截断机制外，补充了工业界常用的**滚动总结（Context Summarization）**与多轮状态追踪。\n   - **长期记忆 (Long-Term Memory)**：补全了向量数据库、RAG 混合检索（语义 + 关键词）与经验召回机制。\n   - **实体记忆 (Entity / Semantic Memory)**：明晰了非结构化提取（NER / Structured Outputs）到结构化画像（KV / 知识图谱）的转化逻辑。\n\n4. **新增横向对比表格**：\n   - 增设了包含认知类比、物理载体、留存周期、典型内容与回收策略的速查对比表，方便日常查阅复习。",
+      "id": "0205a2b7-df8f-4147-a1ec-a020e49dc7c4",
+      "metadata": {
+        "model": {
+          "providerId": "magpie",
+          "id": "auto/gemini-3.8-flash",
+          "model": "auto/gemini-3.8-flash",
+          "name": "auto/gemini-3.8-flash",
+          "reasoningType": "gemini",
+          "maxContextTokens": 1048576,
+          "modalities": [
+            "text",
+            "vision"
+          ]
+        },
+        "usage": {
+          "prompt_tokens": 10587,
+          "completion_tokens": 491,
+          "total_tokens": 11078
+        },
+        "durationMs": 7722,
+        "generationState": "completed",
+        "branchConversationId": "4d208c28-fdd4-4bef-b91b-533ec946d461",
+        "branchModelId": "auto/gemini-3.8-flash",
+        "branchLabel": "auto/gemini-3.8-flash"
+      }
+    },
+    {
+      "role": "user",
+      "content": {
+        "root": {
+          "children": [
+            {
+              "children": [
+                {
+                  "detail": 1,
+                  "format": 0,
+                  "mode": "token",
+                  "style": "",
+                  "text": "261015利欧面试.md (31 词/字)",
+                  "type": "mention",
+                  "version": 1,
+                  "mentionName": "261015利欧面试.md (31 词/字)",
+                  "mentionable": {
+                    "type": "block",
+                    "file": "记录/261015利欧面试.md",
+                    "startLine": 63,
+                    "endLine": 66,
+                    "source": "selection-sync",
+                    "contentHash": "eedee6ef",
+                    "contentCount": 31,
+                    "contentUnit": "wordsCharacters"
+                  }
+                },
+                {
+                  "detail": 0,
+                  "format": 0,
+                  "mode": "normal",
+                  "style": "",
+                  "text": " 解释",
+                  "type": "text",
+                  "version": 1
+                }
+              ],
+              "direction": "ltr",
+              "format": "",
+              "indent": 0,
+              "type": "paragraph",
+              "version": 1,
+              "textFormat": 0,
+              "textStyle": ""
+            }
+          ],
+          "direction": "ltr",
+          "format": "",
+          "indent": 0,
+          "type": "root",
+          "version": 1
+        }
+      },
+      "promptContent": null,
+      "snapshotRef": {
+        "hash": "ab2cc722"
+      },
+      "id": "611ead50-5961-4b72-812c-bb515bdee53c",
+      "mentionables": [
+        {
+          "type": "block",
+          "content": "## 服务高负载如何排查\n\n1. 通过 top 查询高负载占用的服务，获取对应PID\n2. 通过",
+          "file": "记录/261015利欧面试.md",
+          "startLine": 63,
+          "endLine": 66,
+          "source": "selection-sync",
+          "contentHash": "eedee6ef",
+          "contentCount": 31,
+          "contentUnit": "wordsCharacters"
+        }
+      ],
+      "selectedSkills": [],
+      "selectedModelIds": [],
+      "reasoningLevel": "high",
+      "timeContext": "2026-10-25 22:07 (Sunday)",
+      "injectedContext": [
+        {
+          "type": "text",
+          "text": "# Current Context (auto-attached, content NOT included)\nThe user is currently viewing this file. Use an available file-reading tool if you need its content.\n\nFile: 记录/261015利欧面试.md\nTotal: 66 lines\nVisible: lines 9-66\nCursor: line 63\n\n"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "toolCallRequests": [
+        {
+          "id": "fs_read-1792937284213005603-24307",
+          "name": "yolo_local__fs_read",
+          "arguments": {
+            "kind": "complete",
+            "value": {
+              "paths": [
+                "记录/261015利欧面试.md"
+              ]
+            },
+            "rawText": "{\"paths\": [\"记录/261015利欧面试.md\"]}"
+          }
+        }
+      ],
+      "id": "45d68b38-49ec-4716-91a8-7d8e5fe75bf7",
+      "metadata": {
+        "model": {
+          "providerId": "magpie",
+          "id": "auto/gemini-3.8-flash",
+          "model": "auto/gemini-3.8-flash",
+          "name": "auto/gemini-3.8-flash",
+          "reasoningType": "gemini",
+          "maxContextTokens": 1048576,
+          "modalities": [
+            "text",
+            "vision"
+          ]
+        },
+        "usage": {
+          "prompt_tokens": 11342,
+          "completion_tokens": 198,
+          "total_tokens": 11540
+        },
+        "durationMs": 8387,
+        "generationState": "completed",
+        "branchConversationId": "4d208c28-fdd4-4bef-b91b-533ec946d461",
+        "branchModelId": "auto/gemini-3.8-flash",
+        "branchLabel": "auto/gemini-3.8-flash"
+      }
+    },
+    {
+      "role": "tool",
+      "toolCalls": [
+        {
+          "request": {
+            "id": "fs_read-1792937284213005603-24307",
+            "name": "yolo_local__fs_read",
+            "arguments": {
+              "kind": "complete",
+              "value": {
+                "paths": [
+                  "记录/261015利欧面试.md"
+                ]
+              },
+              "rawText": "{\"paths\": [\"记录/261015利欧面试.md\"]}"
+            }
+          },
+          "response": {
+            "status": "success",
+            "data": {
+              "type": "text",
+              "text": "{\n  \"toolCallId\": \"fs_read-1792937284213005603-24307\",\n  \"requestedOperation\": {\n    \"type\": \"full\"\n  },\n  \"results\": [\n    {\n      \"path\": \"记录/261015利欧面试.md\",\n      \"ok\": true,\n      \"totalLines\": 66,\n      \"hasMoreBelow\": false,\n      \"nextStartLine\": null,\n      \"content\": \"1|---\\n2|title: 利欧面试\\n3|published: 2026-10-15\\n4|tags:\\n5|  - 面试\\n6|  - 司库\\n7|category: 记录\\n8|draft: false\\n9|---\\n10|\\n11|整体下来感觉面试强度挺高的，没有问八股文相关的，都是按照简历上描述的内容细问，但很可惜，被追问下，自己也不知道该如何描述了，其中用到的技术和原理也没法详细得描述。\\n12|\\n13|\\n14|\\n15|电子回单关联方式\\n16|\\n17|关联失败的场景如何处理\\n18|\\n19|## 重复交易避免\\n20|\\n21|制单方面\\n22|\\n23|\\n24|\\n25|提交至银行方面\\n26|\\n27|\\n28|\\n29|## 发送交易如何反悔\\n30|\\n31|这个得依赖于银行提供接口吧？没有理解这个问题\\n32|\\n33|## sass多租户设计（单库、sechema等）\\n34|\\n35|按过往经历，一直都是单库设计，对于面试时这么回答确实挺尴尬的，毫无技术性、扩展性可言\\n36|\\n37|## sass 租户用户权限如何控制\\n38|\\n39|整体感觉无非就是多表权限控制，租户表、角色表、角色菜单表、租户版本表、用户角色表巴拉巴拉的。以上只是表结构设计，这么一想感觉似乎也能回答更好一些，比如：\\n40|- 如何简化用户权限查询方式？通过`@DataScope`注解自动注入权限查询SQL，免去额外的SQL拼接；\\n41|- 前端路由加入菜单权限permission路由地址，后端进入业务菜单Controller层通过`@HasPermission`对租户+用户权限校验是否具有菜单权限。\\n42|\\n43|>特喵的不写不知道，一写感觉失忆又恢复了...\\n44|\\n45|## 达梦数据库如何兼容\\n46|\\n47|## 微服务了解\\n48|\\n49|嗯，没了解\\n50|\\n51|\\n52|# 生产环境\\n53|\\n54|## 如何不停机情况迁移到达梦数据库/其他数据库\\n55|\\n56|## 主从数据库\\n57|\\n58|读写分离：\\n59|- 减缓读写压力\\n60|\\n61|多数据库\\n62|\\n63|## 服务高负载如何排查\\n64|\\n65|1. 通过 top 查询高负载占用的服务，获取对应PID\\n66|2. 通过\"\n    }\n  ]\n}",
+              "metadata": {
+                "fsReadOperation": {
+                  "type": "full",
+                  "isPdf": false
+                }
+              }
+            }
+          }
+        }
+      ],
+      "id": "6fd41e38-a81c-4675-b2cc-2e8735516abf",
+      "metadata": {
+        "branchConversationId": "4d208c28-fdd4-4bef-b91b-533ec946d461",
+        "branchModelId": "auto/gemini-3.8-flash",
+        "branchLabel": "auto/gemini-3.8-flash"
+      }
+    },
+    {
+      "role": "assistant",
+      "content": "在面试中，**“服务高负载如何排查”** 是一道极高频的生产故障排查题。\n\n面试官通常考察两个关键点：\n1. **是否把“CPU 占用高”与“系统负载（Load Average）高”区分开**（Load 高可能是 CPU 繁忙，也可能是 I/O 阻塞）。\n2. **是否具备从“系统层 → 进程层 → 线程层 → 代码堆栈/资源”一套清晰的排查链路（SOP）**。\n\n针对你笔记中写了一半的第 65-66 行，以下是完整的排查逻辑与标准回答思路：\n\n---\n\n### 一、 核心排查思路（以 Linux + Java/后端服务为例）\n\n#### 1. 系统层定位：查指标，区分是 CPU 还是 I/O 瓶颈\n- 执行 `top` 或 `uptime` 观察 **Load Average**（1、5、15 分钟均值）：\n  - **看 `%us`（用户态 CPU 高）**：大概率是业务代码死循环、正则回溯、频繁序列化或频繁 GC。\n  - **看 `%sy`（系统态 CPU 高）**：大量系统调用、线程上下文频繁切换（Context Switch）。\n  - **看 `%wa`（I/O Wait 高）**：说明 CPU 在等待磁盘/网络读写，负载飙高但 CPU 并不忙，需排查磁盘 I/O 或慢 SQL。\n- 记下占用最高的进程 **PID**。\n\n---\n\n#### 2. 线程层下钻：定位耗时最高的线程\n- 执行 `top -Hp <PID>`：展示该进程下所有线程的资源消耗，按 CPU 排序，找出最耗 CPU 的线程 **TID**。\n- 将线程 ID 转为十六进制（JVM 堆栈中的 `nid` 是十六进制）：\n  ```bash\n  printf \"%x\\n\" <TID>\n  # 例如 TID=10875，输出为 2a7b\n  ```\n\n---\n\n#### 3. 栈信息诊断：定位具体代码行或锁争用\n- 通过 `jstack` 抓取线程栈信息，并匹配该十六进制线程号：\n  ```bash\n  jstack <PID> | grep -A 30 \"0x2a7b\"\n  ```\n- **根据线程状态分析原因**：\n  - **`RUNNABLE`** 且指向业务代码：死循环、复杂计算、未限制数据量的批量处理等。\n  - **`BLOCKED` / `WAITING`**：线程池被打满、数据库连接池耗尽、锁竞争或死锁。\n  - **`VM Thread` / `Gang worker`**：若高 CPU 线程是 JVM 的 GC 线程，说明正在发生高频的 Full GC。\n\n---\n\n#### 4. 内存与 GC 诊断（排除内存溢出引起的 CPU 虚高）\n很多时候 CPU 飙到 100% 不是业务代码跑死，而是内存快满了，JVM 在疯狂做垃圾回收：\n- 查看 GC 频率与耗时：\n  ```bash\n  jstat -gcutil <PID> 1000 5\n  ```\n  如果发现 `O`（老年代）长期在 95% 以上，且 `FGC` 次数快速攀升，说明发生了内存泄漏或大对象分配。\n- 查看占用内存最大的前 20 个类：\n  ```bash\n  jmap -histo:live <PID> | head -n 20\n  ```\n- 必要时导出 Dump 分析（注意：生产大堆慎用 live dump）：\n  ```bash\n  jmap -dump:format=b,file=heap.hprof <PID>\n  ```\n  拉回本地用 MAT（Memory Analyzer Tool）或 JProfiler 分析泄露根因。\n\n---\n\n#### 5. 若是 I/O 导致的高负载（`%wa` 偏高）\n- 查看磁盘 I/O 详情：\n  ```bash\n  iostat -xz 1    # 观察 %util 是否接近 100%，await 是否过大\n  iotop -oP       # 直接揪出正在大量读写磁盘的进程\n  ```\n- 常见原因：日志打印级别为 DEBUG 未关闭并刷盘、瞬间生成特大临时文件、慢 SQL 扫全表导致频繁磁盘读取。\n\n---\n\n### 二、 面试回答模板（简明直接版）\n\n> “如果线上出现服务高负载，我会按 **‘系统 → 进程 → 线程 → 堆栈代码’** 四步来排查：\n> 1. 先用 `top` 看指标定性：确认是 **CPU 占用高** 还是 **I/O Wait（%wa）** 导致的 Load 偏高，同时拿到目标服务的 **PID**；\n> 2. 用 `top -Hp <PID>` 定位到该进程下具体占用 CPU 最高的线程 **TID**；\n> 3. 用 `printf \"%x\\n\" <TID>` 转换为十六进制，再通过 `jstack <PID> | grep -A 30 0x<十六进制TID>` 抓取堆栈，直接定位到具体的方法和代码行号；\n> 4. 同时用 `jstat -gcutil <PID> 1000 5` 排除是否为**老年代满导致的频繁 Full GC 占满 CPU**；\n> 5. 生产环境首要目标是**快速止血**（摘流隔离、扩容、重启或限流），保留现场（dump 日志与堆栈）后线下分析修复。”\n\n---\n\n### 三、 建议补全到笔记的内容\n\n你可以将第 65-66 行完善补充为：\n\n```markdown\n## 服务高负载如何排查\n\n1. **定位高负载进程**：通过 `top` 查询高负载占用的服务，获取对应 `PID`；同时观察 `%us`（CPU高）还是 `%wa`（I/O高）。\n2. **定位高消耗线程**：通过 `top -Hp <PID>` 列出该进程下的线程列表，找到 CPU 占用最高的线程 `TID`。\n3. **十六进制转换**：通过 `printf \"%x\\n\" <TID>` 将线程 ID 转为十六进制（如 `0x2a7b`）。\n4. **定位代码堆栈**：通过 `jstack <PID> | grep -A 30 \"0x2a7b\"` 查看线程堆栈，定位具体卡在哪一行代码或锁竞争。\n5. **排查 GC 与内存**：通过 `jstat -gcutil <PID> 1000 5` 确认是否由于内存泄露/大对象导致频繁 Full GC 拖垮 CPU。\n6. **I/O 瓶颈排查**（若 `%wa` 偏高）：通过 `iostat -xz 1` 和 `iotop -oP` 定位磁盘读写瓶颈。\n```",
+      "id": "c48668b6-65da-40b8-aab3-da16f518389c",
+      "metadata": {
+        "model": {
+          "providerId": "magpie",
+          "id": "auto/gemini-3.8-flash",
+          "model": "auto/gemini-3.8-flash",
+          "name": "auto/gemini-3.8-flash",
+          "reasoningType": "gemini",
+          "maxContextTokens": 1048576,
+          "modalities": [
+            "text",
+            "vision"
+          ]
+        },
+        "usage": {
+          "prompt_tokens": 12408,
+          "completion_tokens": 3631,
+          "total_tokens": 16039
+        },
+        "durationMs": 37675,
+        "generationState": "completed",
+        "branchConversationId": "4d208c28-fdd4-4bef-b91b-533ec946d461",
+        "branchModelId": "auto/gemini-3.8-flash",
+        "branchLabel": "auto/gemini-3.8-flash"
+      }
+    },
+    {
+      "role": "user",
+      "content": {
+        "root": {
+          "children": [
+            {
+              "children": [
+                {
+                  "detail": 0,
+                  "format": 0,
+                  "mode": "normal",
+                  "style": "",
+                  "text": "root@DESKTOP-923TGCT:~# top -Hp 1",
+                  "type": "text",
+                  "version": 1
+                },
+                {
+                  "type": "linebreak",
+                  "version": 1
+                },
+                {
+                  "detail": 0,
+                  "format": 0,
+                  "mode": "normal",
+                  "style": "",
+                  "text": "top - 22:14:16 up 3 min,  1 user,  load average: 0.00, 0.00, 0.00",
+                  "type": "text",
+                  "version": 1
+                },
+                {
+                  "type": "linebreak",
+                  "version": 1
+                },
+                {
+                  "detail": 0,
+                  "format": 0,
+                  "mode": "normal",
+                  "style": "",
+                  "text": "Threads:   1 total,   0 running,   1 sleeping,   0 stopped,   0 zombie",
+                  "type": "text",
+                  "version": 1
+                },
+                {
+                  "type": "linebreak",
+                  "version": 1
+                },
+                {
+                  "detail": 0,
+                  "format": 0,
+                  "mode": "normal",
+                  "style": "",
+                  "text": "%Cpu(s):  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st",
+                  "type": "text",
+                  "version": 1
+                },
+                {
+                  "type": "linebreak",
+                  "version": 1
+                },
+                {
+                  "detail": 0,
+                  "format": 0,
+                  "mode": "normal",
+                  "style": "",
+                  "text": "MiB Mem :  15583.7 total,  13702.5 free,    499.7 used,   1381.5 buff/cache",
+                  "type": "text",
+                  "version": 1
+                },
+                {
+                  "type": "linebreak",
+                  "version": 1
+                },
+                {
+                  "detail": 0,
+                  "format": 0,
+                  "mode": "normal",
+                  "style": "",
+                  "text": "MiB Swap:   4096.0 total,   4096.0 free,      0.0 used.  14888.6 avail Mem",
+                  "type": "text",
+                  "version": 1
+                },
+                {
+                  "type": "linebreak",
+                  "version": 1
+                },
+                {
+                  "type": "linebreak",
+                  "version": 1
+                },
+                {
+                  "detail": 0,
+                  "format": 0,
+                  "mode": "normal",
+                  "style": "",
+                  "text": "    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND",
+                  "type": "text",
+                  "version": 1
+                },
+                {
+                  "type": "linebreak",
+                  "version": 1
+                },
+                {
+                  "detail": 0,
+                  "format": 0,
+                  "mode": "normal",
+                  "style": "",
+                  "text": "      1 root      20   0  165728  11300   8564 S   0.0   0.1   0:00.28 systemd",
+                  "type": "text",
+                  "version": 1
+                }
+              ],
+              "direction": "ltr",
+              "format": "",
+              "indent": 0,
+              "type": "paragraph",
+              "version": 1,
+              "textFormat": 0,
+              "textStyle": ""
+            }
+          ],
+          "direction": "ltr",
+          "format": "",
+          "indent": 0,
+          "type": "root",
+          "version": 1
+        }
+      },
+      "promptContent": null,
+      "id": "d7314163-b442-415a-b88d-7d56993d3199",
+      "mentionables": [],
+      "selectedSkills": [],
+      "selectedModelIds": [],
+      "reasoningLevel": "high",
+      "timeContext": "2026-10-25 22:14 (Sunday)",
+      "injectedContext": [
+        {
+          "type": "text",
+          "text": "# Current Context (auto-attached, content NOT included)\nThe user is currently viewing this file. Use an available file-reading tool if you need its content.\n\nFile: 记录/261015利欧面试.md\nTotal: 82 lines\nVisible: lines 56-82\nCursor: line 81\n\n"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "toolCallRequests": [
+        {
+          "id": "fs_read-1792937670115974597-24308",
+          "name": "yolo_local__fs_read",
+          "arguments": {
+            "kind": "complete",
+            "value": {
+              "startLine": 55,
+              "paths": [
+                "记录/261015利欧面试.md"
+              ]
+            },
+            "rawText": "{\"startLine\": 55,\"paths\": [\"记录/261015利欧面试.md\"]}"
+          }
+        }
+      ],
+      "id": "792b2347-a93a-47ce-b9bd-8175734d601b",
+      "metadata": {
+        "model": {
+          "providerId": "magpie",
+          "id": "auto/gemini-3.8-flash",
+          "model": "auto/gemini-3.8-flash",
+          "name": "auto/gemini-3.8-flash",
+          "reasoningType": "gemini",
+          "maxContextTokens": 1048576,
+          "modalities": [
+            "text",
+            "vision"
+          ]
+        },
+        "usage": {
+          "prompt_tokens": 16458,
+          "completion_tokens": 605,
+          "total_tokens": 17063
+        },
+        "durationMs": 10152,
+        "generationState": "completed",
+        "branchConversationId": "4d208c28-fdd4-4bef-b91b-533ec946d461",
+        "branchModelId": "auto/gemini-3.8-flash",
+        "branchLabel": "auto/gemini-3.8-flash"
+      }
+    },
+    {
+      "role": "tool",
+      "toolCalls": [
+        {
+          "request": {
+            "id": "fs_read-1792937670115974597-24308",
+            "name": "yolo_local__fs_read",
+            "arguments": {
+              "kind": "complete",
+              "value": {
+                "startLine": 55,
+                "paths": [
+                  "记录/261015利欧面试.md"
+                ]
+              },
+              "rawText": "{\"startLine\": 55,\"paths\": [\"记录/261015利欧面试.md\"]}"
+            }
+          },
+          "response": {
+            "status": "success",
+            "data": {
+              "type": "text",
+              "text": "{\n  \"toolCallId\": \"fs_read-1792937670115974597-24308\",\n  \"requestedOperation\": {\n    \"type\": \"lines\"\n  },\n  \"results\": [\n    {\n      \"path\": \"记录/261015利欧面试.md\",\n      \"ok\": true,\n      \"totalLines\": 82,\n      \"returnedRange\": {\n        \"startLine\": 55,\n        \"endLine\": 82\n      },\n      \"hasMoreBelow\": false,\n      \"nextStartLine\": null,\n      \"content\": \"55|\\n56|嗯，没了解\\n57|\\n58|\\n59|# 生产环境\\n60|\\n61|## 如何不停机情况迁移到达梦数据库/其他数据库\\n62|\\n63|\\n64|\\n65|\\n66|## 主从数据库\\n67|\\n68|读写分离：\\n69|- 减缓读写压力\\n70|\\n71|多数据库\\n72|\\n73|## 服务高负载如何排查\\n74|\\n75|1. 通过 top 查询高负载占用的服务，获取对应PID\\n76|\\t![](assets/Pasted%20image%2020261025221058.png)\\n77|2. 通过`top -Hp <PID>`获取进程下占用高的线程\\n78|\\t![](assets/Pasted%20image%2020261025221246.png)\\n79|3. 用 `printf \\\"%x\\\\n\\\" <TID>` 转换为十六进制\\n80|4. 通过 `jstack <PID> | grep -A 30 0x<十六进制TID>` 抓取堆栈，直接定位到具体的方法和代码行号\\n81|5. 同时用 `jstat -gcutil <PID> 1000 5` 排除是否为**老年代满导致的频繁 Full GC 占满 CPU**；\\n82|6. 生产环境首要目标是**快速止血**（摘流隔离、扩容、重启或限流），保留现场（dump 日志与堆栈）后线下分析修复。\"\n    }\n  ]\n}",
+              "metadata": {
+                "fsReadOperation": {
+                  "type": "lines",
+                  "startLine": 55,
+                  "endLine": 82,
+                  "isPdf": false
+                }
+              }
+            }
+          }
+        }
+      ],
+      "id": "8fc06f7e-1cf3-4f92-9a98-4b1bbde951a1",
+      "metadata": {
+        "branchConversationId": "4d208c28-fdd4-4bef-b91b-533ec946d461",
+        "branchModelId": "auto/gemini-3.8-flash",
+        "branchLabel": "auto/gemini-3.8-flash"
+      }
+    },
+    {
+      "role": "assistant",
+      "content": "从你执行的命令和输出来看，你已经在本地（WSL/Linux 环境）开始实操验证了！\n\n针对你执行的 `top -Hp 1` 输出，这里有几个关键细节和原理需要了解：\n\n---\n\n### 1. 为什么这里只有 1 个线程（`Threads: 1 total`）？\n- 你传入的 PID 是 `1`，对应的是 Linux 的初始化守护进程 **`systemd`**。\n- `systemd` 本身主要是基于事件循环（Event Loop）运行的**单线程进程**，所以它只有主线程自己，因此显示的线程数只有 1 个。\n\n---\n\n### 2. 为什么列头写的还是 `PID`，而不是 `TID`？\n在 Linux 操作系统底层中：\n- **线程本质上是一个“轻量级进程”（LWP，Light Weight Process）**。\n- 当你加上 `-H`（Threads mode，线程模式）后，`top` 的第一列虽然字面上仍叫 `PID`，但此时**它显示的值实际上就是线程 ID（即 TID）**。\n- 对于单线程进程，其主线程的 TID 与进程的 PID 是相同的（都是 1）。\n\n---\n\n### 3. 如果是真实的后端服务（如 Java / MySQL），会看到什么？\n以一个典型的 Java 进程为例，执行 `top -Hp <Java_PID>` 后，输出会是这样的结构：\n\n```text\nThreads: 156 total,   1 running, 155 sleeping,   0 stopped,   0 zombie\n%Cpu(s): 85.2 us,  3.1 sy,  0.0 ni, 11.2 id,  0.1 wa,  0.0 hi,  0.4 si,  0.0 st\n\n    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND\n  18234 root      20   0 4829104 1.2g  18432 R  98.5   8.2   3:12.45 java\n  18210 root      20   0 4829104 1.2g  18432 S   0.5   8.2   0:01.12 VM Thread\n  18212 root      20   0 4829104 1.2g  18432 S   0.0   8.2   0:00.34 GC Thread#0\n```\n\n- **第一列 `PID`（即 TID）**：每个线程都有一个独立的编号（如 `18234`、`18210`、`18212`）。\n- **`%CPU` 排序**：你可以一眼看到是 `18234` 线程跑到了 `98.5%`。\n- **`TIME+`（累计消耗 CPU 时间）**：如果某个线程不仅当前 CPU 高，累计时间也特别长，通常就是死循环或核心热点线程。\n- **下一步**：拿这个 `18234` 去转十六进制（`printf \"%x\\n\" 18234` -> `473a`），然后去 `jstack` 堆栈里搜 `0x473a`，就能精准抓出到底是哪一行 Java 代码在死循环。\n\n---\n\n### 4. 如何在本地找一个多线程进程测试？\n如果你想在当前机器上看多线程的效果，可以试下：\n1. **直接查看全系统的线程模式**（不需要指定特定 PID）：\n   ```bash\n   top -H\n   ```\n   你会看到所有后台进程的线程被打散列出，按大写的 `P` 键可以按 CPU 占用排序。\n\n2. **找一个多线程进程测试**：\n   运行以下命令看哪些进程线程较多：\n   ```bash\n   ps -e -o pid,nlwp,comm | sort -k 2 -n -r | head -n 10\n   ```\n   （其中 `nlwp` 表示 Number of Lightweight Processes，即线程数量。找一个线程数大于 1 的 PID，再执行 `top -Hp <PID>` 就能看到多行线程了。）",
+      "id": "0e6d25d8-935e-4cbb-934a-7daadc18162d",
+      "metadata": {
+        "model": {
+          "providerId": "magpie",
+          "id": "auto/gemini-3.8-flash",
+          "model": "auto/gemini-3.8-flash",
+          "name": "auto/gemini-3.8-flash",
+          "reasoningType": "gemini",
+          "maxContextTokens": 1048576,
+          "modalities": [
+            "text",
+            "vision"
+          ]
+        },
+        "usage": {
+          "prompt_tokens": 17674,
+          "completion_tokens": 1464,
+          "total_tokens": 19138
+        },
+        "durationMs": 63422,
+        "generationState": "completed",
+        "branchConversationId": "4d208c28-fdd4-4bef-b91b-533ec946d461",
+        "branchModelId": "auto/gemini-3.8-flash",
+        "branchLabel": "auto/gemini-3.8-flash"
+      }
+    },
+    {
+      "role": "user",
+      "content": {
+        "root": {
+          "children": [
+            {
+              "children": [
+                {
+                  "detail": 0,
+                  "format": 0,
+                  "mode": "normal",
+                  "style": "",
+                  "text": "root@DESKTOP-923TGCT:~# jstack 160 | grep -A 30 0xa0",
+                  "type": "text",
+                  "version": 1
+                },
+                {
+                  "type": "linebreak",
+                  "version": 1
+                },
+                {
+                  "detail": 0,
+                  "format": 0,
+                  "mode": "normal",
+                  "style": "",
+                  "text": "-bash: jstack: command not found",
+                  "type": "text",
+                  "version": 1
+                }
+              ],
+              "direction": "ltr",
+              "format": "",
+              "indent": 0,
+              "type": "paragraph",
+              "version": 1,
+              "textFormat": 0,
+              "textStyle": ""
+            }
+          ],
+          "direction": "ltr",
+          "format": "",
+          "indent": 0,
+          "type": "root",
+          "version": 1
+        }
+      },
+      "promptContent": null,
+      "id": "b48bc3b5-6ce6-4330-8a2f-6fce3e5d161b",
+      "mentionables": [],
+      "selectedSkills": [],
+      "selectedModelIds": [],
+      "reasoningLevel": "high",
+      "timeContext": "2026-10-25 22:18 (Sunday)",
+      "injectedContext": [
+        {
+          "type": "text",
+          "text": "# Current Context (auto-attached, content NOT included)\nThe user is currently viewing this file. Use an available file-reading tool if you need its content.\n\nFile: 记录/261015利欧面试.md\nTotal: 82 lines\nVisible: lines 56-82\nCursor: line 80\n\n"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": "出现 `-bash: jstack: command not found`，通常是因为以下 **3 个原因** 之一：\n\n---\n\n### 原因 1：只安装了 JRE，没安装 JDK（最常见）\n- **`java`** 命令属于运行时（JRE），但 **`jstack`、`jstat`、`jmap`** 属于开发/诊断套件（**JDK**）。\n- 很多服务器或 Docker 镜像为了精简体积，默认只安装了 JRE。\n- **排查与解决**：\n  - 先看系统有没有装 Java：\n    ```bash\n    java -version\n    ```\n  - 如果装了 Java 想要补全 `jstack`，在 Ubuntu/Debian（WSL 默认）下安装完整 JDK：\n    ```bash\n    # 例如安装 OpenJDK 17 或 11\n    apt update && apt install -y openjdk-17-jdk\n    ```\n\n---\n\n### 原因 2：安装了 JDK，但环境变量没配 `jstack`\n有时候系统装了 JDK，但只在全局 PATH 里软链接了 `java`，没有软链接 `jstack`。\n- 查找系统中是否存在 `jstack` 文件：\n  ```bash\n  find / -name jstack 2>/dev/null\n  ```\n- 如果找到了（例如 `/usr/lib/jvm/java-17-openjdk-amd64/bin/jstack`），可以直接使用**绝对路径**执行：\n  ```bash\n  /usr/lib/jvm/java-17-openjdk-amd64/bin/jstack 160 | grep -A 30 0xa0\n  ```\n\n---\n\n### 原因 3：当前进程 `160` 可能并不是 Java 进程\n`jstack` 是 **专门针对 Java (JVM) 进程** 的工具。如果 PID 为 160 的进程是 Nginx、Redis、Python 或系统进程，即使装了 `jstack` 也无法打印堆栈（会报错 `Not a valid Java process`）。\n- 确认 160 到底是什么进程：\n  ```bash\n  ps -ef | grep 160\n  ```\n\n---\n\n### 💡 面试加分追问：“线上容器只有 JRE 没有 jstack，你怎么办？”\n\n在实际面试中，面试官经常在你回答完“用 jstack 查看堆栈”后追问这句。此时有 **两个标准杀手锏回答**：\n\n#### 方案 1：使用 `kill -3 <PID>`（系统自带，无需额外工具）\n- 向 Java 进程发送 `SIGQUIT` 信号：\n  ```bash\n  kill -3 <PID>\n  ```\n- **注意**：`kill -3` **不会杀死进程**！JVM 收到该信号后，会自动把当前所有线程的堆栈信息（Thread Dump）完整打印到标准输出（例如 Spring Boot 的控制台日志或 Tomcat 的 `catalina.out`）中。\n\n#### 方案 2：引入线上神器 **Arthas（阿尔萨斯）**\n- 不需要本地预装 JDK 工具，只需运行 jar 包：\n  ```bash\n  curl -O https://arthas.aliyun.com/arthas-boot.jar\n  java -jar arthas-boot.jar\n  ```\n- 进入后直接执行一行命令：\n  ```bash\n  thread -n 3\n  ```\n  Arthas 会**自动找出当前最忙的前 3 个线程**，并直接把它们的 Java 堆栈打印出来，完全不需要你手动查 TID、转十六进制再 grep。",
+      "id": "673132c9-7d95-45d5-8872-8441b213535d",
+      "metadata": {
+        "model": {
+          "providerId": "magpie",
+          "id": "auto/gemini-3.8-flash",
+          "model": "auto/gemini-3.8-flash",
+          "name": "auto/gemini-3.8-flash",
+          "reasoningType": "gemini",
+          "maxContextTokens": 1048576,
+          "modalities": [
+            "text",
+            "vision"
+          ]
+        },
+        "usage": {
+          "prompt_tokens": 19293,
+          "completion_tokens": 1423,
+          "total_tokens": 20716,
+          "cache_read_input_tokens": 15776
+        },
+        "durationMs": 20310,
+        "generationState": "completed",
+        "branchConversationId": "4d208c28-fdd4-4bef-b91b-533ec946d461",
+        "branchModelId": "auto/gemini-3.8-flash",
+        "branchLabel": "auto/gemini-3.8-flash"
+      }
+    },
+    {
+      "role": "user",
+      "content": {
+        "root": {
+          "children": [
+            {
+              "children": [
+                {
+                  "detail": 0,
+                  "format": 0,
+                  "mode": "normal",
+                  "style": "",
+                  "text": "jstack是有jdk环境才有的工具？",
+                  "type": "text",
+                  "version": 1
+                }
+              ],
+              "direction": "ltr",
+              "format": "",
+              "indent": 0,
+              "type": "paragraph",
+              "version": 1,
+              "textFormat": 0,
+              "textStyle": ""
+            }
+          ],
+          "direction": "ltr",
+          "format": "",
+          "indent": 0,
+          "type": "root",
+          "version": 1
+        }
+      },
+      "promptContent": null,
+      "id": "e2d235bc-7f0d-4ec0-af34-77f463feed18",
+      "mentionables": [],
+      "selectedSkills": [],
+      "selectedModelIds": [],
+      "reasoningLevel": "high",
+      "timeContext": "2026-10-25 22:21 (Sunday)",
+      "injectedContext": [
+        {
+          "type": "text",
+          "text": "# Current Context (auto-attached, content NOT included)\nThe user is currently viewing this file. Use an available file-reading tool if you need its content.\n\nFile: 记录/261015利欧面试.md\nTotal: 82 lines\nVisible: lines 25-77\nCursor: line 47\n\n"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": "**是的，完全正确。`jstack` 是只有在 JDK 环境下才自带的工具，纯 JRE 环境是没有的。**\n\n---\n\n### 1. JDK 与 JRE 的工具边界\n\n| 软件环境 | 定位与内容 | 自带的核心命令 |\n| :--- | :--- | :--- |\n| **JRE**<br>(Java Runtime Environment) | **只负责运行代码**。<br>仅包含 JVM 虚拟机和 Java 核心类库。为了体积轻量，去掉了所有开发与排查工具。 | 仅有 `java`、`keytool` 等极少数命令。**（没有 `jstack`、`jmap`、`jstat`）** |\n| **JDK**<br>(Java Development Kit) | **负责开发、编译与故障诊断**。<br>它完整包含了 JRE，并且额外自带了编译工具和整套**底层诊断排查套件**。 | `javac`（编译器）<br>`jstack`（看线程栈）<br>`jmap`（看内存/导出堆Dump）<br>`jstat`（看GC垃圾回收）<br>`jcmd`（综合诊断） |\n\n> `jstack` 的实际物理位置一般在：`$JAVA_HOME/bin/jstack`。\n\n---\n\n### 2. 为什么现在的服务器上经常找不到 `jstack`？\n\n现在的生产环境普遍采用 **Docker / K8s 容器化部署**，为了让容器镜像从几百兆压缩到几十兆、减少安全漏洞面，运维通常会选择精简的基础镜像（如 `alpine` 或 `xxx-jre-headless` 版本）。\n\n这就导致了一个典型的生产痛点：**服务在容器里跑得好好的，一旦 CPU 飙高，进容器一敲 `jstack` 却提示 `command not found`。**\n\n---\n\n### 3. 如果面试被问：“如果线上是纯 JRE / 精简容器，没有 jstack，你如何看线程堆栈？”\n\n这是非常经典的实际经验追问，记住这两个标准方案：\n\n1. **零依赖方案（系统自带）：`kill -3 <PID>`**\n   - Linux 内核向 Java 进程发送 `SIGQUIT` 信号。\n   - **它不会杀掉进程**，而是命令 JVM 自动在标准输出（如 Docker 日志、nohup.out）打印当前所有线程堆栈（Thread Dump）。\n2. **第三方工具方案：阿里开源的 Arthas**\n   - 只需要一个独立的 jar 包即可运行（`java -jar arthas-boot.jar`），不依赖系统预装的 JDK 调试套件。\n   - 运行后敲 `thread -n 3` 即可一键看到 CPU 占用最高的 3 个线程堆栈。\n\n---\n\n### 4. 补充：如果出问题的不是 Java，而是其他语言服务呢？\n- **C/C++ 或 系统原生进程**：使用 Linux 原生命令 **`pstack <PID>`** 或 `gdb`。\n- **Go 语言服务**：使用内置的 **`pprof`**（访问服务的 `/debug/pprof` 接口）。\n- **通用系统底层分析**：使用 Linux 内核自带的性能分析神器 **`perf top`**。",
+      "id": "28df3b7a-8410-4a11-b175-fe6b91ace639",
+      "metadata": {
+        "model": {
+          "providerId": "magpie",
+          "id": "auto/gemini-3.8-flash",
+          "model": "auto/gemini-3.8-flash",
+          "name": "auto/gemini-3.8-flash",
+          "reasoningType": "gemini",
+          "maxContextTokens": 1048576,
+          "modalities": [
+            "text",
+            "vision"
+          ]
+        },
+        "usage": {
+          "prompt_tokens": 20839,
+          "completion_tokens": 1351,
+          "total_tokens": 22190,
+          "cache_read_input_tokens": 16779
+        },
+        "durationMs": 18356,
+        "generationState": "completed",
+        "branchConversationId": "4d208c28-fdd4-4bef-b91b-533ec946d461",
+        "branchModelId": "auto/gemini-3.8-flash",
+        "branchLabel": "auto/gemini-3.8-flash"
+      }
+    }
+  ],
+  "createdAt": 1792936589227,
+  "updatedAt": 1792938110714,
+  "schemaVersion": 1,
+  "compaction": [],
+  "origin": "user",
+  "overrides": {
+    "chatMode": "agent",
+    "agentYoloEnabled": false
+  },
+  "conversationModelId": "auto/gemini-3.8-flash",
+  "messageModelMap": {
+    "e3a6c71b-639d-4e7d-ba96-533c18e4e0be": "auto/gemini-3.8-flash",
+    "611ead50-5961-4b72-812c-bb515bdee53c": "auto/gemini-3.8-flash",
+    "d7314163-b442-415a-b88d-7d56993d3199": "auto/gemini-3.8-flash",
+    "b48bc3b5-6ce6-4330-8a2f-6fce3e5d161b": "auto/gemini-3.8-flash",
+    "e2d235bc-7f0d-4ec0-af34-77f463feed18": "auto/gemini-3.8-flash"
+  },
+  "assistantGroupBoundaryMessageIds": [],
+  "reasoningLevel": "high"
+}

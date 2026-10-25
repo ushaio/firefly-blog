@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "entries": {
+    "4d681114": {
+      "hash": "4d681114",
+      "content": [
+        {
+          "type": "text",
+          "text": "<user_selected_content path=\"丫丫学语/爪哇/SpringBoot/261025SpringBoot的泪.md\" startLine=\"37\" endLine=\"37\">\n```丫丫学语/爪哇/SpringBoot/261025SpringBoot的泪.md\n37| private UserDao userDao = new UserDaoImpl();\n```\n</user_selected_content>\n\n\n261025SpringBoot的泪.md (5 词) 深入解释\n\n"
+        }
+      ],
+      "createdAt": 1792930174561,
+      "updatedAt": 1792930174561
+    }
+  }
+}

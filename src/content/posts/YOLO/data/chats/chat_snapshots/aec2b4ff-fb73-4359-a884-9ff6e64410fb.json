@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "entries": {
+    "bcb264c6": {
+      "hash": "bcb264c6",
+      "content": [
+        {
+          "type": "text",
+          "text": "<user_selected_content path=\"丫丫学语/爪哇/SpringBoot/261025SpringBoot的泪.md\" startLine=\"36\" endLine=\"44\">\n```丫丫学语/爪哇/SpringBoot/261025SpringBoot的泪.md\n36|@Service\n37|public class UserService {\n38|    private final UserDao userDao;\n39|\n40|    // 容器自动把 UserDao 的实现注入进来\n41|    public UserService(UserDao userDao) {\n42|        this.userDao = userDao;\n43|    }\n44|}\n```\n</user_selected_content>\n\n\n261025SpringBoot的泪.md (28 词/字) 提供建议\n\n"
+        }
+      ],
+      "createdAt": 1792930678790,
+      "updatedAt": 1792930678790
+    }
+  }
+}
