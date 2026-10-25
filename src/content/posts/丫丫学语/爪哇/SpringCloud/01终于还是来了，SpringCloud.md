@@ -1,6 +1,6 @@
 ---
 title: 01终于还是来了，SpringCloud
-published: 2026/10/25
+published: 2026-10-25
 tags:
   - java
   - SpringCloud

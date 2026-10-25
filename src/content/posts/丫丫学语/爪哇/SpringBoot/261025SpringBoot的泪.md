@@ -1,6 +1,6 @@
 ---
 title: SpringBoot的泪
-published: 2026/10/25
+published: 2026-10-25
 description: SpringBoot的泪
 tags:
   - java
