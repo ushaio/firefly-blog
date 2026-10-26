@@ -53,7 +53,7 @@ cloudflared access tcp --hostname db.postgres-xxx.example.top --url 127.0.0.1:15
 ```
 
 即可localhost:15433访问数据库
-![image-20260324092640990](./CloudflareTunnel代理访问服务器数据库.assets/image-20260324092640990.png)
+![image-20260324092640990](CloudflareTunnel代理访问服务器数据库.assets/image-20260324092640990.png)
 
 **踩坑：**
 
@@ -61,6 +61,6 @@ cloudflared access tcp --hostname db.postgres-xxx.example.top --url 127.0.0.1:15
 
 2. 罪魁祸首，域名起的太花了=-=
 
-   ![image-20260324092839714](./CloudflareTunnel代理访问服务器数据库.assets/image-20260324092839714.png)
+   ![image-20260324092839714](CloudflareTunnel代理访问服务器数据库.assets/image-20260324092839714.png)
 
 3. 

@@ -9,7 +9,7 @@ tags:
 category: java
 draft: false
 ---
-![[Pasted image 20260617171511.png]]
+![[attach/Pasted image 20260617171511.png]]
 这个提示的意思是：你的 Go 编辑器/插件想调用 gopls，但系统里找不到这个命令。
 
   gopls 是 Go 官方语言服务器，主要给 VS Code、GoLand、Neovim 等编辑器提供代码补全、跳转定义、重命名、格式化、诊断等功能。提示里的

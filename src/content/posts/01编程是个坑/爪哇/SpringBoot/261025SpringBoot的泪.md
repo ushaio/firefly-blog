@@ -18,10 +18,19 @@ DI、AOP、IOC...属于SpringFramework的概念，麻了，乱七八糟的了感
 
 ## 控制反转IOC
 
->把对象的创建和生命周期交给容器管理
+>	把对象的创建和生命周期交给容器管理
 
-
-
+反转的反义词——正转
+```java
+public class UserService {
+    // UserDao 的创建权、生命周期，全捏在 UserService 自己手里
+    private UserDao userDao = new UserDaoImpl();
+}
+```
+该情况就导致了耦合：
+- `UserService` 写死了 `UserDaoImpl`，想换成 `UserDaoMyBatisImpl` 就得改源码；
+- `UserDaoImpl` 内部如果再依赖 `DataSource`、`SqlSessionFactory`，就得一层一层 `new` 下去，new 出地狱；
+- 想给 `UserService` 写单元测试？没法塞 mock 对象，只能连数据库跑真的。
 
 
 ## 依赖注入DI
@@ -32,6 +41,14 @@ DI、AOP、IOC...属于SpringFramework的概念，麻了，乱七八糟的了感
 
 前置基础代码举例：
 ```java
+// 1. 先定义一个接口，只约定能力，不写实现
+public interface UserDao {
+    User findById(int id);
+    void save(User user);
+}
+
+// 2. 再写一个实现类，具体怎么查库、怎么存，全都关在这里面
+public class UserDaoImpl implements UserDao {
     @Override
     public User findById(int id) {
         // 这里写具体的 JDBC / SQL 语句，去 MySQL 查数据返回
