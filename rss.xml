@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Firefly</title><description>生活|摄影|工作</description><link>https://shaio.top/</link><templateTheme>Firefly</templateTheme><templateThemeVersion>6.12.2</templateThemeVersion><templateThemeUrl>https://github.com/CuteLeaf/Firefly</templateThemeUrl><lastBuildDate>2026年10月26日 22:26:22</lastBuildDate><item><title>261025LangChain</title><link>https://shaio.top/posts/02ai%E6%98%AF%E5%A4%A9%E5%9D%91/harness/261025langchain/</link><guid isPermaLink="true">https://shaio.top/posts/02ai%E6%98%AF%E5%A4%A9%E5%9D%91/harness/261025langchain/</guid><description>全面解析 LangChain 的本质定位、核心架构演进（从 LCEL 到 LangGraph）、典型场景与工程落地实践指南。</description><pubDate>Sun, 25 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;section&gt;&lt;h1&gt;LangChain 核心解析与工程实践&lt;a href=&quot;#langchain-核心解析与工程实践&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h1&gt;&lt;p&gt;在 LLM 应用开发与 Agent Harness 构建中，&lt;strong&gt;LangChain&lt;/strong&gt; 是目前生态规模最大、集成面最广的编排框架。然而，由于其版本迭代极其激进、封装层级过深，社区对其评价呈现两极分化。&lt;/p&gt;&lt;p&gt;理解 LangChain 的关键，不在于记忆其眼花缭乱的高阶 API，而在于搞清&lt;strong&gt;它的抽象本质、它试图解决的工程问题，以及在现代 Agent 架构下的正确使用姿势&lt;/strong&gt;。&lt;/p&gt;&lt;hr /&gt;&lt;section&gt;&lt;h2&gt;一、是什么（本质与架构拆解）&lt;a href=&quot;#一是什么本质与架构拆解&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;section&gt;&lt;h3&gt;1. 本质定位&lt;a href=&quot;#1-本质定位&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;LangChain 本质上是一个面向大语言模型（LLM）的&lt;strong&gt;应用编排脚手架（Application Orchestration Framework / Harness）&lt;/strong&gt;。&lt;/p&gt;&lt;ul&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Firefly</title><description>生活|摄影|工作</description><link>https://shaio.top/</link><templateTheme>Firefly</templateTheme><templateThemeVersion>6.12.2</templateThemeVersion><templateThemeUrl>https://github.com/CuteLeaf/Firefly</templateThemeUrl><lastBuildDate>2026年10月27日 08:49:07</lastBuildDate><item><title>261025LangChain</title><link>https://shaio.top/posts/02ai%E6%98%AF%E5%A4%A9%E5%9D%91/harness/261025langchain/</link><guid isPermaLink="true">https://shaio.top/posts/02ai%E6%98%AF%E5%A4%A9%E5%9D%91/harness/261025langchain/</guid><description>全面解析 LangChain 的本质定位、核心架构演进（从 LCEL 到 LangGraph）、典型场景与工程落地实践指南。</description><pubDate>Sun, 25 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;section&gt;&lt;h1&gt;LangChain 核心解析与工程实践&lt;a href=&quot;#langchain-核心解析与工程实践&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h1&gt;&lt;p&gt;在 LLM 应用开发与 Agent Harness 构建中，&lt;strong&gt;LangChain&lt;/strong&gt; 是目前生态规模最大、集成面最广的编排框架。然而，由于其版本迭代极其激进、封装层级过深，社区对其评价呈现两极分化。&lt;/p&gt;&lt;p&gt;理解 LangChain 的关键，不在于记忆其眼花缭乱的高阶 API，而在于搞清&lt;strong&gt;它的抽象本质、它试图解决的工程问题，以及在现代 Agent 架构下的正确使用姿势&lt;/strong&gt;。&lt;/p&gt;&lt;hr /&gt;&lt;section&gt;&lt;h2&gt;一、是什么（本质与架构拆解）&lt;a href=&quot;#一是什么本质与架构拆解&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;section&gt;&lt;h3&gt;1. 本质定位&lt;a href=&quot;#1-本质定位&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;LangChain 本质上是一个面向大语言模型（LLM）的&lt;strong&gt;应用编排脚手架（Application Orchestration Framework / Harness）&lt;/strong&gt;。&lt;/p&gt;&lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;对于单次调用&lt;/strong&gt;：它是一个多厂商接口适配层，屏蔽不同模型（OpenAI, Anthropic, Gemini, 本地 Ollama 等）的入参/出参格式差异。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;对于复合流程&lt;/strong&gt;：它是一个&lt;strong&gt;计算图/管道运行时&lt;/strong&gt;，将 Prompt 渲染、模型推理、输出解析、向量检索与工具调用串联成可复用的执行单元。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;对于自主系统&lt;/strong&gt;：它提供了一套定义状态转移、持久化记忆与人机协同（Human-in-the-loop）的 Agent 基础设施。&lt;/li&gt;
@@ -969,7 +969,468 @@
 &lt;section&gt;&lt;h1&gt;补充&lt;a href=&quot;#补充&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h1&gt;&lt;p&gt;基于宠物细胞部分产品属于医疗类目，可以联合相关医院做进一步推广和内容发布；&lt;/p&gt;&lt;p&gt;同领域自媒体账号合作发布；&lt;/p&gt;&lt;/section&gt;
 &lt;section&gt;&lt;h1&gt;相似需求&lt;a href=&quot;#相似需求&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h1&gt;&lt;p&gt;&lt;img alt=&quot;&quot; loading=&quot;lazy&quot; width=&quot;2305&quot; height=&quot;1598&quot; src=&quot;/_astro/Pasted%20image%2020261020225720.Dmce9iLw_Z1mWEN8.webp&quot; srcset=&quot;/_astro/Pasted%20image%2020261020225720.Dmce9iLw_1it6Cz.webp 640w, /_astro/Pasted%20image%2020261020225720.Dmce9iLw_Zh1jK1.webp 750w, /_astro/Pasted%20image%2020261020225720.Dmce9iLw_gEMar.webp 828w, /_astro/Pasted%20image%2020261020225720.Dmce9iLw_Z1tEEES.webp 1080w, /_astro/Pasted%20image%2020261020225720.Dmce9iLw_Z27iLe3.webp 1280w, /_astro/Pasted%20image%2020261020225720.Dmce9iLw_ZPUwI.webp 1668w, /_astro/Pasted%20image%2020261020225720.Dmce9iLw_2gkaYA.webp 2048w, /_astro/Pasted%20image%2020261020225720.Dmce9iLw_Z1mWEN8.webp 2305w&quot; /&gt;&lt;/p&gt;&lt;/section&gt;
 &lt;section&gt;&lt;h1&gt;FAQ&lt;a href=&quot;#faq&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h1&gt;&lt;section&gt;&lt;h2&gt;如何提炼到有用的内容，提高其内容流量爆款概率？&lt;a href=&quot;#如何提炼到有用的内容提高其内容流量爆款概率&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;具体实现&lt;a href=&quot;#具体实现&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;基于各个独立服务，逐步提炼、整合，从数据提炼、精选、润色、再到通过调用Workbuddy实现内容生成，最后发布&lt;/p&gt;&lt;/section&gt;&lt;/section&gt;
-&lt;section&gt;&lt;h1&gt;方法论&lt;a href=&quot;#方法论&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h1&gt;&lt;p&gt;我的行业、我的产品、我的近期目标&lt;/p&gt;&lt;p&gt;领域合规性，基于官方提供的标准做内容&lt;/p&gt;&lt;/section&gt;</content:encoded></item><item><title>局部重绘：模型不肯吃蒙版，我们就自己裁一块贴回去</title><link>https://shaio.top/posts/03mogallery/desktop/261018%E5%B1%80%E9%83%A8%E9%87%8D%E7%BB%98%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%A1%88/</link><guid isPermaLink="true">https://shaio.top/posts/03mogallery/desktop/261018%E5%B1%80%E9%83%A8%E9%87%8D%E7%BB%98%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%A1%88/</guid><description>Emulsion Desktop 局部重绘的三次改版记录：蒙版尺寸与极性的两处硬坑、百炼与 OpenAI 兼容层的协议分叉，以及最后把「必须支持 mask」这条前提掀掉之后的裁片合成方案。</description><pubDate>Sun, 18 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;section&gt;&lt;h1&gt;局部重绘：模型不肯吃蒙版，我们就自己裁一块贴回去&lt;a href=&quot;#局部重绘模型不肯吃蒙版我们就自己裁一块贴回去&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h1&gt;&lt;p&gt;Emulsion Desktop 的 AI 生图页里有个「局部重绘」档：涂一块，让模型只重画那一块。&lt;/p&gt;&lt;p&gt;局部重绘听起来像个绘制功能，实际做下来是三件互相牵制的事叠在一起。第一版我们老老实实按 provider 的 mask 协议做，结果接连踩坑：蒙版尺寸对不上被打回、涂完又擦掉的蒙版照样发出去白烧配额、百炼那边的极性还是反的。等把「必须让模型支持 mask 协议」这条前提掀掉之后，反而豁然开朗，干脆不把蒙版发出去，客户端自己裁一块、改一块、贴回去。&lt;/p&gt;&lt;p&gt;下面按当时排查和改造的顺序记一遍。&lt;/p&gt;&lt;hr /&gt;&lt;section&gt;&lt;h2&gt;先看症状：四种失败长得很像，根因完全不同&lt;a href=&quot;#先看症状四种失败长得很像根因完全不同&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;这一段是踩坑的原始现场，后面几节都是从这里拆出去的：&lt;/p&gt;&lt;ol&gt;
+&lt;section&gt;&lt;h1&gt;方法论&lt;a href=&quot;#方法论&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h1&gt;&lt;p&gt;我的行业、我的产品、我的近期目标&lt;/p&gt;&lt;p&gt;领域合规性，基于官方提供的标准做内容&lt;/p&gt;&lt;/section&gt;</content:encoded></item><item><title>261020品牌运营c0.1</title><link>https://shaio.top/posts/%E8%BF%90%E8%90%A5/261020%E5%93%81%E7%89%8C%E8%BF%90%E8%90%A5c01/</link><guid isPermaLink="true">https://shaio.top/posts/%E8%BF%90%E8%90%A5/261020%E5%93%81%E7%89%8C%E8%BF%90%E8%90%A5c01/</guid><description>宠物行业 AI 内容运营平台的功能梳理：信息聚合与信息发布。</description><pubDate>Tue, 20 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;&lt;p&gt;全局链路：&lt;strong&gt;信息聚合 → 提炼整合 → 内容生产 → 信息发布 → 数据分析/投流&lt;/strong&gt;。第三至七章按这条链路依次展开。&lt;/p&gt;&lt;/blockquote&gt;
+&lt;section&gt;&lt;h1&gt;一、前提&lt;a href=&quot;#一前提&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h1&gt;&lt;ul&gt;
+&lt;li&gt;方法论：明确我的行业、我的产品、我的近期目标&lt;/li&gt;
+&lt;li&gt;领域合规性：基于官方提供的标准做内容&lt;/li&gt;
+&lt;li&gt;核心理念：宠物干细胞在大众思维里属于异种新兴治疗方案，需要大量临床实验等权威依据来打消宠物主人的顾虑。&lt;/li&gt;
+&lt;/ul&gt;&lt;section&gt;&lt;h2&gt;1.1 目标与衡量指标&lt;a href=&quot;#11-目标与衡量指标&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;blockquote&gt;&lt;p&gt;平台的每个模块都要能对应到下面某个指标，否则不纳入一期。具体数值待定，下表为填写模板。&lt;/p&gt;&lt;/blockquote&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;层级&lt;/th&gt;&lt;th&gt;指标&lt;/th&gt;&lt;th&gt;目标值（待定）&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;北极星&lt;/td&gt;&lt;td&gt;有效线索数（私信咨询、医院合作意向、留资）&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;转化&lt;/td&gt;&lt;td&gt;咨询率 = 咨询数 / 阅读数；线索成本（投流后）&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;内容&lt;/td&gt;&lt;td&gt;收藏率、互动率、完读率、涨粉数&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;效率&lt;/td&gt;&lt;td&gt;每周产出内容数、单条内容人工耗时、审批通过率&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;选品&lt;/td&gt;&lt;td&gt;每月输出的机会清单数、被采纳并验证的方向数&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;p&gt;选择原则：收藏率、咨询率比曝光更能反映”信任是否建立”，对医疗属性产品更重要。&lt;/p&gt;&lt;/section&gt;&lt;/section&gt;
+&lt;section&gt;&lt;h1&gt;二、整体实现路径&lt;a href=&quot;#二整体实现路径&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h1&gt;&lt;p&gt;基于各个独立服务，逐步提炼、整合：&lt;/p&gt;&lt;p&gt;数据采集 → 提炼精选 → 润色 → 通过调用 Workbuddy 实现内容生成 → 人工审批 → 发布 → 数据复盘/投流&lt;/p&gt;&lt;section&gt;&lt;h2&gt;2.1 系统模块&lt;a href=&quot;#21-系统模块&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;flowchart LR
+    A[采集层&amp;lt;br&amp;gt;学术/协会/社区/竞品/展会] --&amp;gt; B[知识库&amp;lt;br&amp;gt;清洗·去重·水军过滤·打标签]
+    B --&amp;gt; C[分析引擎&amp;lt;br&amp;gt;选题打分·选品评估]
+    C --&amp;gt; D[内容生成&amp;lt;br&amp;gt;Workbuddy·Emulsion]
+    D --&amp;gt; E[合规审批&amp;lt;br&amp;gt;敏感词·证据校验·人工审核]
+    E --&amp;gt; F[发布&amp;lt;br&amp;gt;多平台·多账号]
+    F --&amp;gt; G[数据回收&amp;lt;br&amp;gt;表现·线索]
+    G --&amp;gt;|回填权重| C
+    G --&amp;gt; H[投流&amp;lt;br&amp;gt;按表现加热]&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;p&gt;关键是 G → C 这条回流线：内容表现数据要能反过来修正选题和选品的打分，平台才算”自动化运营”，否则只是自动化发布。&lt;/p&gt;&lt;/section&gt;&lt;/section&gt;
+&lt;section&gt;&lt;h1&gt;三、信息聚合&lt;a href=&quot;#三信息聚合&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h1&gt;&lt;blockquote&gt;&lt;p&gt;收集国内 / 海外各平台相关数据，聚合有用信息，用于 AI 做内容分析。&lt;/p&gt;&lt;/blockquote&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;类别&lt;/th&gt;&lt;th&gt;来源&lt;/th&gt;&lt;th&gt;用途&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;权威信息&lt;/td&gt;&lt;td&gt;机构与协会、学术平台&lt;/td&gt;&lt;td&gt;内容的专业依据&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;C 端信息&lt;/td&gt;&lt;td&gt;社区平台&lt;/td&gt;&lt;td&gt;用户痛点、热点话题&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;行业动态&lt;/td&gt;&lt;td&gt;竞争公司、展会&lt;/td&gt;&lt;td&gt;同行与市场动向&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;电商信息&lt;/td&gt;&lt;td&gt;电商平台&lt;/td&gt;&lt;td&gt;暂不纳入&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;p&gt;&lt;strong&gt;采集策略&lt;/strong&gt;：&lt;/p&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;关键词库&lt;/strong&gt;：按三层维护，所有来源共用。
+&lt;ul&gt;
+&lt;li&gt;产品层：干细胞、间充质干细胞（MSC）、细胞治疗、再生医学、外泌体&lt;/li&gt;
+&lt;li&gt;病种层：猫传腹（FIP）、慢性肾病（CKD）、髋关节发育不良、骨关节炎、脊髓损伤、炎症性肠病等&lt;/li&gt;
+&lt;li&gt;用户表达层：口语化说法和错别字，如”猫传腹还有救吗&quot;&quot;肾衰晚期&quot;&quot;瘫了能好吗”，从社区帖子中持续补充&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;采集频率&lt;/strong&gt;：社区平台每日；竞品公众号/官网每周；学术平台、专利库每周增量；协会、展会按月或按会期。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;统一字段&lt;/strong&gt;：来源、链接、发布时间、作者/机构、正文摘要、互动数据（点赞/评论/收藏/引用）、病种标签、采集时间。字段统一后才能进入知识库做去重和打分。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;可信度分层&lt;/strong&gt;：学术/协会 &amp;gt; 竞品官方 &amp;gt; 社区内容。社区内容只作为”需求信号”，不作为内容论据。&lt;/li&gt;
+&lt;/ol&gt;&lt;section&gt;&lt;h2&gt;3.1 机构与协会&lt;a href=&quot;#31-机构与协会&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;国内：
+&lt;ol&gt;
+&lt;li&gt;中国兽医协会（宠物诊疗分会）&lt;/li&gt;
+&lt;li&gt;中国畜牧兽医学会小动物医学分会&lt;/li&gt;
+&lt;li&gt;东西部小动物临床兽医师大会（WESAVC）&lt;/li&gt;
+&lt;li&gt;北京/上海行业协会&lt;/li&gt;
+&lt;li&gt;宠医客等。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;国际：
+&lt;ol&gt;
+&lt;li&gt;WSAVA（世界小动物兽医师协会）&lt;/li&gt;
+&lt;li&gt;AAHA（美国动物医院协会）&lt;/li&gt;
+&lt;li&gt;AVMA（美国兽医协会）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;3.2 学术平台&lt;a href=&quot;#32-学术平台&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;blockquote&gt;&lt;p&gt;通过关键词检索相关学术文章，采集论文信息及浏览量、引用量、检索量等数据。&lt;/p&gt;&lt;/blockquote&gt;&lt;ol&gt;
+&lt;li&gt;PubMed&lt;/li&gt;
+&lt;li&gt;ScienceDirect&lt;/li&gt;
+&lt;li&gt;CNKI 知网&lt;/li&gt;
+&lt;li&gt;Google Scholar&lt;/li&gt;
+&lt;/ol&gt;&lt;p&gt;&lt;img alt=&quot;&quot; loading=&quot;lazy&quot; width=&quot;2454&quot; height=&quot;1567&quot; src=&quot;/_astro/Pasted%20image%2020261020225747.DW-LP9MB_1NxvQb.webp&quot; srcset=&quot;/_astro/Pasted%20image%2020261020225747.DW-LP9MB_ZV03RH.webp 640w, /_astro/Pasted%20image%2020261020225747.DW-LP9MB_1BiYvs.webp 750w, /_astro/Pasted%20image%2020261020225747.DW-LP9MB_Z2axdF0.webp 828w, /_astro/Pasted%20image%2020261020225747.DW-LP9MB_2vqwyy.webp 1080w, /_astro/Pasted%20image%2020261020225747.DW-LP9MB_ZozXLV.webp 1280w, /_astro/Pasted%20image%2020261020225747.DW-LP9MB_6LeCr.webp 1668w, /_astro/Pasted%20image%2020261020225747.DW-LP9MB_6N5PM.webp 2048w, /_astro/Pasted%20image%2020261020225747.DW-LP9MB_1NxvQb.webp 2454w&quot; /&gt;&lt;/p&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;3.3 社区平台&lt;a href=&quot;#33-社区平台&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;blockquote&gt;&lt;p&gt;针对领域搜索相关板块，采集论坛及相关平台数据。&lt;/p&gt;&lt;/blockquote&gt;&lt;ul&gt;
+&lt;li&gt;国内：
+&lt;ol&gt;
+&lt;li&gt;公众号&lt;/li&gt;
+&lt;li&gt;微博&lt;/li&gt;
+&lt;li&gt;豆瓣&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;贴吧：猫传腹吧、猫慢性肾衰吧、犬髋关节发育不良（CHD）吧、骨科/神经疾病讨论区&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;微信社群：老年宠护理群、瘫痪犬猫轮椅康复群&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;海外：
+&lt;ol&gt;
+&lt;li&gt;Reddit&lt;/li&gt;
+&lt;li&gt;X&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;3.4 竞争公司&lt;a href=&quot;#34-竞争公司&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;blockquote&gt;&lt;p&gt;收集同类公司同类产品最新资讯，信息提炼。来源：公众号、官网等。&lt;/p&gt;&lt;/blockquote&gt;&lt;ol&gt;
+&lt;li&gt;专利与科研立项公开库（企查查/专利局监控同行研发动态）&lt;/li&gt;
+&lt;li&gt;企业融资动态&lt;/li&gt;
+&lt;li&gt;招聘信息&lt;/li&gt;
+&lt;/ol&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;3.5 展会&lt;a href=&quot;#35-展会&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;blockquote&gt;&lt;p&gt;关注展会信息、同行、行业动态。&lt;/p&gt;&lt;/blockquote&gt;&lt;ul&gt;
+&lt;li&gt;国内：
+&lt;ol&gt;
+&lt;li&gt;亚洲宠物展（亚宠展）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;国外：
+&lt;ol&gt;
+&lt;li&gt;Global Pet Expo（北美奥兰多全球宠物展）&lt;/li&gt;
+&lt;li&gt;Interzoo（德国纽伦堡展，全球最大）&lt;/li&gt;
+&lt;li&gt;VET Show（伦敦/纽约国际兽医年会）&lt;/li&gt;
+&lt;li&gt;SuperZoo（拉斯维加斯）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;&lt;img alt=&quot;&quot; loading=&quot;lazy&quot; width=&quot;1040&quot; height=&quot;1058&quot; src=&quot;/_astro/Pasted%20image%2020261020194724.DV2PMcYS_Z19UVhz.webp&quot; srcset=&quot;/_astro/Pasted%20image%2020261020194724.DV2PMcYS_1H3JDz.webp 640w, /_astro/Pasted%20image%2020261020194724.DV2PMcYS_17eXMb.webp 750w, /_astro/Pasted%20image%2020261020194724.DV2PMcYS_ZoJQ3q.webp 828w, /_astro/Pasted%20image%2020261020194724.DV2PMcYS_Z19UVhz.webp 1040w&quot; /&gt;&lt;/p&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;3.6 电商平台（暂不纳入）&lt;a href=&quot;#36-电商平台暂不纳入&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;淘宝&lt;/li&gt;
+&lt;li&gt;抖音/TikTok&lt;/li&gt;
+&lt;li&gt;亚马逊&lt;/li&gt;
+&lt;/ul&gt;&lt;blockquote&gt;&lt;p&gt;说明：电商评论、销量、价格带是选品的直接信号（见 4.3），一期暂不采集，计划在二期接入（见第八章）。一期可用人工抽样代替。&lt;/p&gt;&lt;/blockquote&gt;&lt;/section&gt;&lt;/section&gt;
+&lt;section&gt;&lt;h1&gt;四、提炼整合&lt;a href=&quot;#四提炼整合&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h1&gt;&lt;blockquote&gt;&lt;p&gt;类似于 RAG：基于第三章各来源数据，提炼值得注意的内容、选品、加大宣传的方向，并注明信息来源依据。&lt;/p&gt;&lt;/blockquote&gt;&lt;section&gt;&lt;h2&gt;4.1 核心功能&lt;a href=&quot;#41-核心功能&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;水军识别&lt;/strong&gt;：识别社交平台主题（帖子/视频）及其评论、子评论内容的疑似水军概率。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;热点抓取&lt;/strong&gt;：基于实时、高点赞、高浏览的信息做回复量分析，并结合水军识别过滤。&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;&lt;strong&gt;水军识别信号&lt;/strong&gt;（规则初筛 + AI 判断，输出疑似概率）：&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;层面&lt;/th&gt;&lt;th&gt;信号&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;账号&lt;/td&gt;&lt;td&gt;注册时间短、头像/昵称模板化、历史内容集中在单一产品、粉丝少但发帖频繁&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;内容&lt;/td&gt;&lt;td&gt;评论文本高度相似、品牌名/产品名密集出现、缺少具体细节（病程、用药、时间）&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;行为&lt;/td&gt;&lt;td&gt;短时间内集中出现、点赞与评论比例异常、多账号互相回复&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;p&gt;概率高于阈值的内容不计入热度和共鸣度；竞品集中出现的水军也可作为竞品投放动向的信号。&lt;/p&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;4.2 选题方法（初版，待数据验证）&lt;a href=&quot;#42-选题方法初版待数据验证&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;blockquote&gt;&lt;p&gt;回答”如何提炼到有用的内容，提高内容成为流量爆款的概率？“。以下为初始方法，权重需用第七章的数据持续校准。&lt;/p&gt;&lt;/blockquote&gt;&lt;p&gt;&lt;strong&gt;选题公式&lt;/strong&gt;：选题 = 真实痛点 × 权威证据 × 合适人设&lt;/p&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;挖痛点&lt;/strong&gt;：从社区平台抓取高互动帖（过滤水军后），用 AI 抽取用户的原始问题，按病种和问题类型聚类（如”猫传腹还有没有办法&quot;&quot;肾衰能活多久&quot;&quot;手术后瘫痪能恢复吗”）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;配证据&lt;/strong&gt;：每个问题簇到知识库匹配文献/临床依据，按证据等级标注（见 4.3）。没有证据支撑的问题只做情感陪伴类内容，不做疗效类内容。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;定人设&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;疗效/机制类 → 专家/研发人设&lt;/li&gt;
+&lt;li&gt;诊疗方案/病例类 → 临床医生人设&lt;/li&gt;
+&lt;li&gt;康复过程/情感类 → 宠主故事人设&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;做测试&lt;/strong&gt;：同一选题生成 3～5 个标题/封面版本，小流量发布或在矩阵账号间 A/B，表现好的再放量、投流。&lt;/li&gt;
+&lt;/ol&gt;&lt;p&gt;&lt;strong&gt;选题打分（用于排序）&lt;/strong&gt;：&lt;/p&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt;选题分=w1⋅热度+w2⋅共鸣度+w3⋅证据强度+w4⋅竞争空白\text{选题分} = w_1 \cdot \text{热度} + w_2 \cdot \text{共鸣度} + w_3 \cdot \text{证据强度} + w_4 \cdot \text{竞争空白}&lt;/span&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt;选题分&lt;/span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;=&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt;w&lt;/span&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt;1&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span&gt;​&lt;/span&gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;⋅&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt;热度&lt;/span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;+&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt;w&lt;/span&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt;2&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span&gt;​&lt;/span&gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;⋅&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt;共鸣度&lt;/span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;+&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt;w&lt;/span&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt;3&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span&gt;​&lt;/span&gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;⋅&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt;证据强度&lt;/span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;+&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt;w&lt;/span&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt;4&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span&gt;​&lt;/span&gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;⋅&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;span&gt;竞争空白&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;ul&gt;
+&lt;li&gt;热度：讨论量及近 30 天增速&lt;/li&gt;
+&lt;li&gt;共鸣度：收藏/评论比、评论中”求助&quot;&quot;同款”类表达占比&lt;/li&gt;
+&lt;li&gt;证据强度：可引用文献的数量和等级&lt;/li&gt;
+&lt;li&gt;竞争空白：同平台同题材头部内容数量（越少越高）&lt;/li&gt;
+&lt;li&gt;初始权重可设为均等，跑满一个月后按实际表现回归调整&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;&lt;strong&gt;内容配比（建议初值）&lt;/strong&gt;：科普/机制 40%、病例/康复故事 40%、产品相关 20%。产品内容占比过高会削弱矩阵账号的信任感。&lt;/p&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;4.3 选品机会评估&lt;a href=&quot;#43-选品机会评估&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;blockquote&gt;&lt;p&gt;目标：每周/每月输出一份”选品与宣传方向机会清单”，每条附信息来源。&lt;/p&gt;&lt;/blockquote&gt;&lt;p&gt;&lt;strong&gt;评估维度&lt;/strong&gt;：&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;维度&lt;/th&gt;&lt;th&gt;信号来源&lt;/th&gt;&lt;th&gt;说明&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;合规可行性&lt;/td&gt;&lt;td&gt;法务/官方标准&lt;/td&gt;&lt;td&gt;&lt;strong&gt;一票否决&lt;/strong&gt;：不能合法宣传的方向直接剔除&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;需求强度&lt;/td&gt;&lt;td&gt;社区平台、（二期）电商评论&lt;/td&gt;&lt;td&gt;病种讨论量、求助帖数量、增长趋势&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;证据强度&lt;/td&gt;&lt;td&gt;学术平台、协会&lt;/td&gt;&lt;td&gt;见下方证据分级&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;竞争格局&lt;/td&gt;&lt;td&gt;竞争公司、展会、专利&lt;/td&gt;&lt;td&gt;竞品是否已布局、宣传力度&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;商业价值&lt;/td&gt;&lt;td&gt;内部数据、医院合作方&lt;/td&gt;&lt;td&gt;客单价、复购/疗程、医院渠道可达性&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;p&gt;&lt;strong&gt;证据分级&lt;/strong&gt;（决定内容能说到什么程度）：&lt;/p&gt;&lt;ol&gt;
+&lt;li&gt;A 级：系统综述、随机对照试验 → 可作为核心论据&lt;/li&gt;
+&lt;li&gt;B 级：队列研究、多中心病例系列 → 可引用，需注明样本量&lt;/li&gt;
+&lt;li&gt;C 级：个案报道、体外/实验动物研究 → 只能表述为”研究探索中”&lt;/li&gt;
+&lt;li&gt;D 级：无文献，仅经验或用户反馈 → 不作疗效表述&lt;/li&gt;
+&lt;/ol&gt;&lt;p&gt;&lt;strong&gt;产出格式&lt;/strong&gt;（每条机会）：方向名称、目标病种、各维度评分、关键证据链接、竞品情况、建议动作（加大宣传/观察/放弃）。&lt;/p&gt;&lt;/section&gt;&lt;/section&gt;
+&lt;section&gt;&lt;h1&gt;五、内容生产&lt;a href=&quot;#五内容生产&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h1&gt;&lt;section&gt;&lt;h2&gt;5.1 内容类型&lt;a href=&quot;#51-内容类型&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;软文/科普&lt;/strong&gt;：用于知乎、小红书推广。对接企业知识库整理，移除关键敏感内容，生成大众可接受的语义和内容，适当做专业名词科普。发布主体：矩阵账号、官方账号。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;产品推广&lt;/strong&gt;：由主体账号发布。&lt;/li&gt;
+&lt;/ul&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;5.2 内容形式（AI）&lt;a href=&quot;#52-内容形式ai&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;图文文章&lt;/li&gt;
+&lt;li&gt;视频/数字人&lt;/li&gt;
+&lt;/ul&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;5.3 素材管理&lt;a href=&quot;#53-素材管理&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;可基于 Emulsion&lt;/li&gt;
+&lt;li&gt;AI 生图、改图、AI 视频&lt;/li&gt;
+&lt;/ul&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;5.4 合规审核机制&lt;a href=&quot;#54-合规审核机制&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;blockquote&gt;&lt;p&gt;“基于官方标准做内容”需要落到流程里。产品的注册类别（兽药/兽用生物制品/医疗服务等）及对应的广告审查要求需法务确认，以下为流程框架。&lt;/p&gt;&lt;/blockquote&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;禁用表述库&lt;/strong&gt;：维护敏感词与禁用说法清单（如”治愈&quot;&quot;根治&quot;&quot;100%有效&quot;&quot;无副作用”、与竞品贬低性对比等），生成阶段即过滤。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;宣称必须带证据&lt;/strong&gt;：凡涉及疗效、机制的句子，必须挂上知识库中的来源，并符合 4.3 的证据分级；无来源的宣称自动标红退回。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;分级审批&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;科普/故事类：AI 自检 + 运营人工审核&lt;/li&gt;
+&lt;li&gt;疗效/产品类：AI 自检 + 运营审核 + 专业人员（兽医/研发）审核&lt;/li&gt;
+&lt;li&gt;广告投放素材：额外经法务确认&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;病例与隐私&lt;/strong&gt;：宠主案例需取得授权，医院病例需脱敏。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;留痕&lt;/strong&gt;：每条内容保存生成版本、修改记录、审批人和引用来源，便于追溯。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;AI 生成标识&lt;/strong&gt;：按各平台规则标注 AI 生成内容。&lt;/li&gt;
+&lt;/ol&gt;&lt;/section&gt;&lt;/section&gt;
+&lt;section&gt;&lt;h1&gt;六、信息发布&lt;a href=&quot;#六信息发布&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h1&gt;&lt;blockquote&gt;&lt;p&gt;聚焦国内外自媒体发布：基于聚合内容自动发布吸引读者的内容。需对接各发布平台的发布接口。&lt;/p&gt;&lt;/blockquote&gt;&lt;section&gt;&lt;h2&gt;6.1 账号体系&lt;a href=&quot;#61-账号体系&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;blockquote&gt;&lt;p&gt;多平台账户管理，不同账号属性发布不同内容。&lt;/p&gt;&lt;/blockquote&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;矩阵账号&lt;/strong&gt;：发布科普/权威实事，以公众号/小红书为主，并做海外宣传，扩散影响力。账号人设：
+&lt;ul&gt;
+&lt;li&gt;专家/研发人设&lt;/li&gt;
+&lt;li&gt;临床医生/合作医院视角&lt;/li&gt;
+&lt;li&gt;宠主故事/救助视角（成功案例）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;主体账号&lt;/strong&gt;：产品推广&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;&lt;strong&gt;人设运营方法&lt;/strong&gt;：&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;人设&lt;/th&gt;&lt;th&gt;内容重点&lt;/th&gt;&lt;th&gt;建议频率（初值）&lt;/th&gt;&lt;th&gt;信任来源&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;专家/研发&lt;/td&gt;&lt;td&gt;文献解读、机制科普、行业进展、展会见闻&lt;/td&gt;&lt;td&gt;每周 1～2 条&lt;/td&gt;&lt;td&gt;学历/机构背景、引用文献&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;临床医生&lt;/td&gt;&lt;td&gt;病种科普、诊疗方案对比、病例观察、答疑&lt;/td&gt;&lt;td&gt;每周 2～3 条&lt;/td&gt;&lt;td&gt;执业资质、合作医院&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;宠主故事&lt;/td&gt;&lt;td&gt;康复全过程、日常护理、情绪陪伴&lt;/td&gt;&lt;td&gt;每周 2～3 条&lt;/td&gt;&lt;td&gt;连续记录、真实细节&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;主体账号&lt;/td&gt;&lt;td&gt;产品信息、品牌动态、合作医院&lt;/td&gt;&lt;td&gt;每周 1～2 条&lt;/td&gt;&lt;td&gt;官方资质&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;p&gt;原则：&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;人设必须有真实人员或授权案例对应，不虚构医生和宠主身份。&lt;/li&gt;
+&lt;li&gt;矩阵账号之间不直接互推产品，通过话题和评论区自然关联到主体账号。&lt;/li&gt;
+&lt;li&gt;同一选题可在不同人设间做不同角度的改写，提高素材复用率。&lt;/li&gt;
+&lt;/ul&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;6.2 发布平台&lt;a href=&quot;#62-发布平台&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;国内（以公众号、小红书为主要运营平台）：
+&lt;ul&gt;
+&lt;li&gt;公众号/视频号&lt;/li&gt;
+&lt;li&gt;小红书&lt;/li&gt;
+&lt;li&gt;抖音&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;海外：
+&lt;ul&gt;
+&lt;li&gt;X（目前可实现自动化发布）&lt;/li&gt;
+&lt;li&gt;Reddit&lt;/li&gt;
+&lt;li&gt;TikTok&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;&lt;strong&gt;自动化可行性&lt;/strong&gt;（决定一期的发布方式，具体以各平台当前规则为准）：&lt;/p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;平台&lt;/th&gt;&lt;th&gt;方式&lt;/th&gt;&lt;th&gt;说明&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;X&lt;/td&gt;&lt;td&gt;全自动&lt;/td&gt;&lt;td&gt;已有官方 API&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;公众号&lt;/td&gt;&lt;td&gt;半自动&lt;/td&gt;&lt;td&gt;生成草稿 → 人工确认发布&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;小红书 / 抖音&lt;/td&gt;&lt;td&gt;半自动&lt;/td&gt;&lt;td&gt;无开放的个人发布接口，模拟操作有封号风险；生成内容包，人工发布&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Reddit&lt;/td&gt;&lt;td&gt;半自动&lt;/td&gt;&lt;td&gt;社区对营销内容敏感，需人工把控&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;6.3 发布流程&lt;a href=&quot;#63-发布流程&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;AI 托管&lt;/strong&gt; + 流程审批（人工介入）&lt;/p&gt;&lt;p&gt;内容状态流转：&lt;/p&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;flowchart LR
+    A[选题池] --&amp;gt; B[AI 生成草稿]
+    B --&amp;gt; C[合规自检]
+    C --&amp;gt;|不通过| B
+    C --&amp;gt; D[人工审批]
+    D --&amp;gt;|退回| B
+    D --&amp;gt; E[排期]
+    E --&amp;gt; F[发布]
+    F --&amp;gt; G[数据跟踪]&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;排期&lt;/strong&gt;：按平台维护内容日历，初期参考各平台常见活跃时段，之后用 7.1 的数据更新。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;评论区运营&lt;/strong&gt;：发布后 24h 内由 AI 起草回复、人工确认；涉及病情咨询的私信统一引导至专业人员，不由 AI 直接给出诊疗建议。&lt;/li&gt;
+&lt;/ul&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;6.4 外部合作&lt;a href=&quot;#64-外部合作&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;宠物细胞部分产品属于医疗类目，可联合相关医院做进一步推广和内容发布；&lt;/li&gt;
+&lt;li&gt;与同领域自媒体账号合作发布。&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;&lt;strong&gt;医院合作模式&lt;/strong&gt;：&lt;/p&gt;&lt;ol&gt;
+&lt;li&gt;联合病例：医院提供脱敏病例与随访数据，双方共同署名发布。&lt;/li&gt;
+&lt;li&gt;医生专栏：合作医生以个人身份在矩阵账号或自有账号输出科普。&lt;/li&gt;
+&lt;li&gt;线下转化：内容中的咨询线索按地域分配给合作医院，线索去向用于评估合作效果。&lt;/li&gt;
+&lt;/ol&gt;&lt;p&gt;&lt;strong&gt;KOL/KOC 筛选&lt;/strong&gt;：&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;粉丝画像与目标病种匹配（看评论区是否有真实病宠主人，而不是只看粉丝数）&lt;/li&gt;
+&lt;li&gt;过往内容无夸大疗效、无违规记录&lt;/li&gt;
+&lt;li&gt;用 4.1 的水军识别方法检查其评论区数据真实性&lt;/li&gt;
+&lt;li&gt;优先腰部和垂直病种博主，按单条效果（收藏、咨询）结算或复投&lt;/li&gt;
+&lt;/ul&gt;&lt;/section&gt;&lt;/section&gt;
+&lt;section&gt;&lt;h1&gt;七、数据分析与投流&lt;a href=&quot;#七数据分析与投流&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h1&gt;&lt;section&gt;&lt;h2&gt;7.1 数据分析&lt;a href=&quot;#71-数据分析&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;复盘、方案改进。&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;维度：内容审计、发布时间&lt;/li&gt;
+&lt;li&gt;其他数据分析平台（待补充）&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;&lt;strong&gt;数据回流方法&lt;/strong&gt;：&lt;/p&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;内容打标签&lt;/strong&gt;：每条内容发布时记录病种、人设、形式（图文/视频）、标题钩子类型（提问/数字/故事/反常识）、证据等级、发布时间、账号。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;统一采集指标&lt;/strong&gt;：按 1.1 的指标体系，发布后 24h / 72h / 7d 各采集一次。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;按标签归因&lt;/strong&gt;：每周对比各标签组合的收藏率、咨询率，找出表现好的组合。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;回填权重&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;表现好的病种 → 提高选题打分中的热度/共鸣权重，并作为选品清单的需求信号&lt;/li&gt;
+&lt;li&gt;表现好的人设/形式 → 调整内容配比&lt;/li&gt;
+&lt;li&gt;表现好的发布时间 → 更新各平台排期&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;复盘节奏&lt;/strong&gt;：周报看内容表现，月报看选品方向和指标达成。&lt;/li&gt;
+&lt;/ol&gt;&lt;/section&gt;&lt;section&gt;&lt;h2&gt;7.2 内容投流&lt;a href=&quot;#72-内容投流&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;blockquote&gt;&lt;p&gt;根据内容发布后的数据自动投流。&lt;/p&gt;&lt;/blockquote&gt;&lt;p&gt;平台：&lt;/p&gt;&lt;ul&gt;
+&lt;li&gt;小红书：聚光/薯条&lt;/li&gt;
+&lt;li&gt;微信：朋友圈/公众号（广告）/微信小程序&lt;/li&gt;
+&lt;li&gt;抖音：千川/巨量投流&lt;/li&gt;
+&lt;li&gt;海外：Meta Ads/Google Ads&lt;/li&gt;
+&lt;/ul&gt;&lt;p&gt;需考虑：预算控制、交易层面、各投流平台对接&lt;/p&gt;&lt;p&gt;&lt;strong&gt;投流规则（建议）&lt;/strong&gt;：只给已验证的内容加热。例如自然流量下收藏率、咨询率进入账号前 20% 的内容，才进入投流池；设定单条和每日预算上限，线索成本超过阈值自动停投。&lt;/p&gt;&lt;/section&gt;&lt;/section&gt;
+&lt;section&gt;&lt;h1&gt;八、分期规划&lt;a href=&quot;#八分期规划&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h1&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;阶段&lt;/th&gt;&lt;th&gt;时间（待定）&lt;/th&gt;&lt;th&gt;范围&lt;/th&gt;&lt;th&gt;验收标准&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;一期 MVP&lt;/td&gt;&lt;td&gt;第 1～2 月&lt;/td&gt;&lt;td&gt;采集学术平台 + 2～3 个病种贴吧 + 竞品公众号；知识库与选题打分；AI 生成图文 + 合规审批；X 自动发布，公众号/小红书半自动；内容打标签和数据记录&lt;/td&gt;&lt;td&gt;每周稳定输出选题清单和内容；数据能回填&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;二期&lt;/td&gt;&lt;td&gt;第 3～4 月&lt;/td&gt;&lt;td&gt;增加视频/数字人；扩展社区和协会来源；接入投流（小红书、微信）；输出首份选品机会清单&lt;/td&gt;&lt;td&gt;线索成本可计算；选品清单被业务采纳&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;三期&lt;/td&gt;&lt;td&gt;第 5 月起&lt;/td&gt;&lt;td&gt;接入电商数据；选品评估模型化；自动投流与预算控制；海外 Meta/Google Ads&lt;/td&gt;&lt;td&gt;选品方向经市场验证；投流 ROI 达标&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/section&gt;
+&lt;section&gt;&lt;h1&gt;九、风险与待确认&lt;a href=&quot;#九风险与待确认&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h1&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;风险&lt;/th&gt;&lt;th&gt;影响&lt;/th&gt;&lt;th&gt;应对&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;产品注册类别与广告审查要求不明确&lt;/td&gt;&lt;td&gt;内容和投流可能违规&lt;/td&gt;&lt;td&gt;一期前由法务确认，形成书面标准&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;微信社群、贴吧采集涉及平台规则与个人信息&lt;/td&gt;&lt;td&gt;法律与封禁风险&lt;/td&gt;&lt;td&gt;只采集公开内容，去除个人身份信息；社群以人工整理为主&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;国内平台无开放发布接口&lt;/td&gt;&lt;td&gt;自动发布不可行或封号&lt;/td&gt;&lt;td&gt;采用半自动发布（见 6.2）&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;AI 生成内容出现事实错误&lt;/td&gt;&lt;td&gt;损害专业信任&lt;/td&gt;&lt;td&gt;证据挂载 + 专业人员审核&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;矩阵账号被判定为营销号&lt;/td&gt;&lt;td&gt;限流&lt;/td&gt;&lt;td&gt;控制产品内容比例，人设内容需真实可追溯&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/section&gt;
+&lt;section&gt;&lt;h1&gt;附录：相似需求&lt;a href=&quot;#附录相似需求&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h1&gt;&lt;p&gt;&lt;img alt=&quot;&quot; loading=&quot;lazy&quot; width=&quot;2305&quot; height=&quot;1598&quot; src=&quot;/_astro/Pasted%20image%2020261020225720.Dmce9iLw_Z1mWEN8.webp&quot; srcset=&quot;/_astro/Pasted%20image%2020261020225720.Dmce9iLw_1it6Cz.webp 640w, /_astro/Pasted%20image%2020261020225720.Dmce9iLw_Zh1jK1.webp 750w, /_astro/Pasted%20image%2020261020225720.Dmce9iLw_gEMar.webp 828w, /_astro/Pasted%20image%2020261020225720.Dmce9iLw_Z1tEEES.webp 1080w, /_astro/Pasted%20image%2020261020225720.Dmce9iLw_Z27iLe3.webp 1280w, /_astro/Pasted%20image%2020261020225720.Dmce9iLw_ZPUwI.webp 1668w, /_astro/Pasted%20image%2020261020225720.Dmce9iLw_2gkaYA.webp 2048w, /_astro/Pasted%20image%2020261020225720.Dmce9iLw_Z1mWEN8.webp 2305w&quot; /&gt;&lt;/p&gt;&lt;/section&gt;</content:encoded></item><item><title>局部重绘：模型不肯吃蒙版，我们就自己裁一块贴回去</title><link>https://shaio.top/posts/03mogallery/desktop/261018%E5%B1%80%E9%83%A8%E9%87%8D%E7%BB%98%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%A1%88/</link><guid isPermaLink="true">https://shaio.top/posts/03mogallery/desktop/261018%E5%B1%80%E9%83%A8%E9%87%8D%E7%BB%98%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%A1%88/</guid><description>Emulsion Desktop 局部重绘的三次改版记录：蒙版尺寸与极性的两处硬坑、百炼与 OpenAI 兼容层的协议分叉，以及最后把「必须支持 mask」这条前提掀掉之后的裁片合成方案。</description><pubDate>Sun, 18 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;section&gt;&lt;h1&gt;局部重绘：模型不肯吃蒙版，我们就自己裁一块贴回去&lt;a href=&quot;#局部重绘模型不肯吃蒙版我们就自己裁一块贴回去&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h1&gt;&lt;p&gt;Emulsion Desktop 的 AI 生图页里有个「局部重绘」档：涂一块，让模型只重画那一块。&lt;/p&gt;&lt;p&gt;局部重绘听起来像个绘制功能，实际做下来是三件互相牵制的事叠在一起。第一版我们老老实实按 provider 的 mask 协议做，结果接连踩坑：蒙版尺寸对不上被打回、涂完又擦掉的蒙版照样发出去白烧配额、百炼那边的极性还是反的。等把「必须让模型支持 mask 协议」这条前提掀掉之后，反而豁然开朗，干脆不把蒙版发出去，客户端自己裁一块、改一块、贴回去。&lt;/p&gt;&lt;p&gt;下面按当时排查和改造的顺序记一遍。&lt;/p&gt;&lt;hr /&gt;&lt;section&gt;&lt;h2&gt;先看症状：四种失败长得很像，根因完全不同&lt;a href=&quot;#先看症状四种失败长得很像根因完全不同&quot;&gt;&lt;span&gt;#&lt;/span&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;这一段是踩坑的原始现场，后面几节都是从这里拆出去的：&lt;/p&gt;&lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;&lt;code&gt;mask 与 image 尺寸不符&lt;/code&gt;&lt;/strong&gt;。蒙版是按显示画布渲的，底图是原图，两边差了一个缩放系数。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;涂抹完全没反应，配额照扣&lt;/strong&gt;。用户涂了一片又整片擦掉，笔迹还在，但蒙版已经是全不透明，provider 认为「什么都不用改」。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;403 &lt;code&gt;AccessDenied ... does not support asynchronous calls&lt;/code&gt;&lt;/strong&gt;。百炼这个报错长得像「密钥没权限」，实际是选了一个不吃 mask 的模型。&lt;/li&gt;
