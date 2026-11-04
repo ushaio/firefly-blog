@@ -8,6 +8,7 @@ tags:
 category: 编程
 draft: false
 ---
+[261104消息中间件](../261104消息中间件.md)
 
 # RabbitMQ 
 
