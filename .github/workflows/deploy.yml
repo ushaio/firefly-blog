@@ -25,11 +25,12 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 9.14.4
+          # 不再固定版本：从 package.json 的 packageManager 字段读取（pnpm@11.22.0）
+          # 固定为旧版本（9.14.4）会与 packageManager 冲突，导致 Setup pnpm 步骤直接失败
           run_install: false
 
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Build site
         run: pnpm run build
