@@ -60,7 +60,11 @@ type ContentCollection<T> = CollectionConfig<
 >;
 
 const postsCollection: ContentCollection<PostData> = defineCollection({
-	loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/posts" }),
+	// Templates 目录存放带 {{title}} 占位符的笔记模板，不是真正的文章，需排除
+	loader: glob({
+		pattern: ["**/*.{md,mdx}", "!**/Templates/**"],
+		base: "./src/content/posts",
+	}),
 	schema: z.object({
 		title: z.string(),
 		published: z.date(),
