@@ -16,7 +16,7 @@
       <author><name>沙海</name></author>
       <link rel="alternate" href="https://shaio.top/posts/01%E7%BC%96%E7%A8%8B%E6%98%AF%E4%B8%AA%E5%9D%91/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%85%B3%E7%B3%BB%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%88%86%E9%A1%B5%E6%9F%A5%E8%AF%A2/"/>
       <summary type="text">分页查询</summary>
-      <content type="html"><![CDATA[<section><h1>SQL分页<a href="#sql分页"><span>#</span></a></h1><div><figure><figcaption></figcaption><pre><code><div><div><div>1</div></div><div><span>-- ----MySQL or PostgreSQL or SQLite or 达梦----</span></div></div><div><div><div>2</div></div><div><span>SELECT</span><span> id, </span><span>name</span></div></div><div><div><div>3</div></div><div><span>FROM</span><span> users</span></div></div><div><div><div>4</div></div><div><span>ORDER BY</span><span> id</span></div></div><div><div><div>5</div></div><div><span>LIMIT</span><span> </span><span>10</span><span> OFFSET </span><span>20</span><span>; # </span><span>21</span><span>~30条数据</span></div></div><div><div><div>6</div></div><div>
+      <content type="html"><![CDATA[<section><h1>SQL分页<a href="#sql分页"><span>#</span></a></h1><blockquote><p>偏移量分页</p></blockquote><div><figure><figcaption></figcaption><pre><code><div><div><div>1</div></div><div><span>-- ----MySQL or PostgreSQL or SQLite or 达梦----</span></div></div><div><div><div>2</div></div><div><span>SELECT</span><span> id, </span><span>name</span></div></div><div><div><div>3</div></div><div><span>FROM</span><span> users</span></div></div><div><div><div>4</div></div><div><span>ORDER BY</span><span> id</span></div></div><div><div><div>5</div></div><div><span>LIMIT</span><span> </span><span>10</span><span> OFFSET </span><span>20</span><span>; # </span><span>21</span><span>~30条数据</span></div></div><div><div><div>6</div></div><div>
 </div></div><div><div><div>7</div></div><div><span>-- ----MySQL----</span></div></div><div><div><div>8</div></div><div><span>SELECT</span><span> id, </span><span>name</span></div></div><div><div><div>9</div></div><div><span>FROM</span><span> users</span></div></div><div><div><div>10</div></div><div><span>ORDER BY</span><span> id</span></div></div><div><div><div>11</div></div><div><span>LIMIT</span><span> </span><span>20</span><span>, </span><span>10</span><span>;</span></div></div></code></pre><div><div></div><div></div></div></figure></div><ul>
 <li><strong><code>LIMIT 10</code></strong>：最多返回 <strong>10 条记录</strong>。</li>
 <li><strong><code>OFFSET 20</code></strong>：跳过查询结果的前 <strong>20 条记录</strong>。</li>
@@ -45,7 +45,50 @@
 </div></div><div><div><div>10</div></div><div><span>List</span><span>&lt;</span><span>User</span><span><span>&gt;</span><span> users </span></span><span><span>=</span><span> </span></span><span>page</span><span>.</span><span>getRecords</span><span><span>();</span><span> </span></span><span>// 本页数据</span></div></div><div><div><div>11</div></div><div><span>long</span><span> total </span><span><span>=</span><span> </span></span><span>page</span><span>.</span><span>getTotal</span><span><span>();</span><span>         </span></span><span>// 总记录数</span></div></div><div><div><div>12</div></div><div><span>long</span><span> pages </span><span><span>=</span><span> </span></span><span>page</span><span>.</span><span>getPages</span><span><span>();</span><span>         </span></span><span>// 总页数</span></div></div></code></pre><div><div></div><div></div></div></figure></div><p><strong>注意：从 MyBatis-Plus 3.5.9 起，使用该分页插件需要额外引入对应的 <code>mybatis-plus-jsqlparser</code> 依赖。</strong> (<a href="https://baomidou.com/en/plugins/pagination/?utm_source=openai" target="_blank">baomidou.com</a>)</p></section>
 <section><h1>分页插件-MyBatisFlex（AI生成）<a href="#分页插件-mybatisflexai生成"><span>#</span></a></h1><p>MyBatis-Flex 在 <code>BaseMapper</code> 中提供了 <code>paginate()</code> 方法，不需要沿用 PageHelper 的 <code>startPage()</code> 调用方式。(<a href="https://mybatis-flex.com/zh/base/query.html?utm_source=openai" target="_blank">mybatis-flex.com</a>)</p><div><figure><figcaption></figcaption><pre><code><div><div><div>1</div></div><div><span>// 假设UserMapper继承MyBatis-Flex的BaseMapper&lt;User&gt;</span></div></div><div><div><div>2</div></div><div><span>// USER是项目生成的表定义</span></div></div><div><div><div>3</div></div><div><span>QueryWrapper</span><span> query </span><span><span>=</span><span> </span></span><span>QueryWrapper</span><span>.</span><span>create</span><span>()</span></div></div><div><div><div>4</div></div><div><span><span>    </span></span><span>.</span><span>select</span><span>()</span></div></div><div><div><div>5</div></div><div><span><span>    </span></span><span>.</span><span>from</span><span>(USER)</span></div></div><div><div><div>6</div></div><div><span><span>    </span></span><span>.</span><span>orderBy</span><span>(</span><span>USER</span><span>.</span><span>ID</span><span>.</span><span>asc</span><span>());</span></div></div><div><div><div>7</div></div><div>
 </div></div><div><div><div>8</div></div><div><span>// 第3页，每页10条</span></div></div><div><div><div>9</div></div><div><span>Page</span><span>&lt;</span><span>User</span><span><span>&gt;</span><span> page </span></span><span><span>=</span><span> </span></span><span>userMapper</span><span>.</span><span>paginate</span><span>(</span><span>3</span><span>, </span><span>10</span><span>, query);</span></div></div><div><div><div>10</div></div><div>
-</div></div><div><div><div>11</div></div><div><span>List</span><span>&lt;</span><span>User</span><span><span>&gt;</span><span> users </span></span><span><span>=</span><span> </span></span><span>page</span><span>.</span><span>getRecords</span><span><span>();</span><span> </span></span><span>// 本页数据</span></div></div><div><div><div>12</div></div><div><span>long</span><span> total </span><span><span>=</span><span> </span></span><span>page</span><span>.</span><span>getTotalRow</span><span><span>();</span><span>      </span></span><span>// 总记录数</span></div></div></code></pre><div><div></div><div></div></div></figure></div><p>这里的 <code>Page</code>、<code>BaseMapper</code> 等类来自 <strong>MyBatis-Flex</strong>，不要和 MyBatis-Plus 的同名类混用。(<a href="https://mybatis-flex.com/zh/base/query.html?utm_source=openai" target="_blank">mybatis-flex.com</a>)</p></section>]]></content>
+</div></div><div><div><div>11</div></div><div><span>List</span><span>&lt;</span><span>User</span><span><span>&gt;</span><span> users </span></span><span><span>=</span><span> </span></span><span>page</span><span>.</span><span>getRecords</span><span><span>();</span><span> </span></span><span>// 本页数据</span></div></div><div><div><div>12</div></div><div><span>long</span><span> total </span><span><span>=</span><span> </span></span><span>page</span><span>.</span><span>getTotalRow</span><span><span>();</span><span>      </span></span><span>// 总记录数</span></div></div></code></pre><div><div></div><div></div></div></figure></div><p>这里的 <code>Page</code>、<code>BaseMapper</code> 等类来自 <strong>MyBatis-Flex</strong>，不要和 MyBatis-Plus 的同名类混用。(<a href="https://mybatis-flex.com/zh/base/query.html?utm_source=openai" target="_blank">mybatis-flex.com</a>)</p></section>
+<section><h1>游标分页<a href="#游标分页"><span>#</span></a></h1><blockquote><p>上次查到了某个 ID，这次从这个 ID 后面继续取 10 条。</p></blockquote><section><h2>第一批：取前 10 条<a href="#第一批取前-10-条"><span>#</span></a></h2><div><figure><figcaption></figcaption><pre><code><div><div><div>1</div></div><div><span>SELECT</span><span> id, </span><span>name</span></div></div><div><div><div>2</div></div><div><span>FROM</span><span> users</span></div></div><div><div><div>3</div></div><div><span>ORDER BY</span><span> id </span><span>ASC</span></div></div><div><div><div>4</div></div><div><span>LIMIT</span><span> </span><span>10</span><span>;</span></div></div></code></pre><div><div></div><div></div></div></figure></div><p>假设返回的 ID 是：</p><div><figure><figcaption></figcaption><pre><code><div><div><div>1</div></div><div><span>1、2、3、5、6、8、9、12、15、18</span></div></div></code></pre><div><div></div><div></div></div></figure></div><p>那么，下一次查询的<strong>游标值就是 <code>18</code></strong>。</p></section><section><h2>下一批：从 ID 18 后面继续查<a href="#下一批从-id-18-后面继续查"><span>#</span></a></h2><div><figure><figcaption></figcaption><pre><code><div><div><div>1</div></div><div><span>SELECT</span><span> id, </span><span>name</span></div></div><div><div><div>2</div></div><div><span>FROM</span><span> users</span></div></div><div><div><div>3</div></div><div><span>WHERE</span><span><span> id </span><span>&gt;</span><span> </span></span><span>18</span></div></div><div><div><div>4</div></div><div><span>ORDER BY</span><span> id </span><span>ASC</span></div></div><div><div><div>5</div></div><div><span>LIMIT</span><span> </span><span>10</span><span>;</span></div></div></code></pre><div><div></div><div></div></div></figure></div><p>这里：</p><ul>
+<li><code>18</code>：上一次最后一条记录的 ID，<strong>不是页码，也不是跳过条数</strong>。</li>
+<li><code>id &gt; 18</code>：从这个位置后面继续查。</li>
+<li><code>LIMIT 10</code>：最多取 10 条。</li>
+</ul>
+
+<table><thead><tr><th>对比</th><th>偏移量分页</th><th>游标／键集分页</th></tr></thead><tbody><tr><td>请求表达</td><td>第几页、每页几条</td><td>从哪个位置继续、取几条</td></tr><tr><td>查询思路</td><td>跳过前面的记录</td><td>用排序键筛选后续记录</td></tr><tr><td>跳到指定页</td><td>方便</td><td>通常不能直接跳到任意页</td></tr><tr><td>深分页</td><td>大偏移量可能变慢</td><td>有匹配索引时通常更高效</td></tr><tr><td>常见场景</td><td>带页码的列表</td><td>滚动加载、连续向后读取</td></tr><tr><td></td><td></td><td></td></tr></tbody></table></section><section><h2>额外考虑<a href="#额外考虑"><span>#</span></a></h2><p>游标分页本质是根据上一次查询的结果的末尾id继续向后查询，那如果下一次分页跳转的查询条件变更了的话，是否就失效了？</p><p>因此按页查询还是偏移量分页合适点。</p><ul>
+<li>  (@2026-11-04)</li>
+</ul></section></section>
+<section><h1>使用场景<a href="#使用场景"><span>#</span></a></h1><blockquote><p>需要“跳到第几页”，优先考虑偏移量分页；需要“从上次位置继续读”，优先考虑游标分页。</p></blockquote>
+
+<table><thead><tr><th>使用场景</th><th>优先考虑</th><th>原因</th></tr></thead><tbody><tr><td>后台管理列表：用户、订单、商品管理</td><td><strong>偏移量分页</strong></td><td>经常需要页码、跳页</td></tr><tr><td>搜索结果：跳到第 5 页、第 10 页</td><td><strong>偏移量分页</strong></td><td>可以直接根据页码计算偏移量</td></tr><tr><td><strong>手机端信息流、下拉加载更多</strong></td><td><strong>游标分页</strong></td><td><strong>通常只需要继续加载下一批</strong></td></tr><tr><td><strong>消息记录、日志连续浏览</strong></td><td><strong>游标分页</strong></td><td><strong>按时间和唯一 ID 连续读取</strong></td></tr><tr><td><strong>大量数据分批处理、断点续读</strong></td><td><strong>游标分页</strong></td><td><strong>可以保存上次处理的位置</strong></td></tr><tr><td>既要连续翻页，又要任意跳页</td><td><strong>考虑混合方案</strong></td><td>连续翻页用游标，跳页用偏移量</td></tr></tbody></table></section>]]></content>
+    </entry>
+    <entry>
+      <id>https://shaio.top/posts/%E8%AE%B0%E5%BD%95/261104fork-from-onegitmygit/</id>
+      <title type="text">Fork from OneGit——MyGit</title>
+      <published>2026-11-04T00:00:00.000Z</published>
+      <updated>2026-11-04T00:00:00.000Z</updated>
+      <author><name>沙海</name></author>
+      <link rel="alternate" href="https://shaio.top/posts/%E8%AE%B0%E5%BD%95/261104fork-from-onegitmygit/"/>
+      <summary type="text">Fork from OneGit——MyGit</summary>
+      <content type="html"><![CDATA[<p>可喜可贺，之前还苦恼Github仓库太多不好管理了，然后发现一个项目主要就用于Git仓库的管理工具，但其项目收费不开源一直。最近发现开源了又，于是下下来看看效果，其基于MyGo框架开发，但看里面的功能还是挺简陋的。再加上MyGo当前框架的功能受限，调试功能并不算好用，于是还是用wails3重写一版吧。</p>
+<section><h1>MyGit<a href="#mygit"><span>#</span></a></h1><p>MyGit即是基于<a href="https://github.com/oneo-me/onegit" target="_blank">Onegit</a>，使用Wails3框架重写的一个版本，在原onegit项目上bug修复，且对齐功能扩展，未来方向依旧是Git项目管理，并且增加终端功能，便于项目启用打包等快捷操作，其灵感来于
+<a href="https://github.com/dark-hxx/CLI-Manager" target="_blank">CLI-Manager</a>。</p><p>项目仓库：<a href="https://github.com/ushaio/MyGit" target="_blank">https://github.com/ushaio/MyGit</a></p><p><img alt="" loading="lazy" width="1634" height="1042" src="/_astro/Pasted%20image%2020261104215136.Bwc7KAJ0_1MUNcW.webp" /></p></section>]]></content>
+    </entry>
+    <entry>
+      <id>https://shaio.top/posts/%E8%AE%B0%E5%BD%95/261104obsidian-reminder%E6%B1%89%E5%8C%96/</id>
+      <title type="text">261104Obsidian-Reminder汉化</title>
+      <published>2026-11-04T00:00:00.000Z</published>
+      <updated>2026-11-04T00:00:00.000Z</updated>
+      <author><name>沙海</name></author>
+      <link rel="alternate" href="https://shaio.top/posts/%E8%AE%B0%E5%BD%95/261104obsidian-reminder%E6%B1%89%E5%8C%96/"/>
+      <summary type="text">261104Obsidian-Reminder汉化</summary>
+      <content type="html"><![CDATA[<p>最近Obsidian写得有点上瘾，但有的文章属于未完成状态，怕后面忘补充了，于是发现一个Obsidian插件——Reminder，类似于代办提醒的，但没有加入多语言，用着怪不适应的。</p>
+<p>源仓库：
+<a href="https://github.com/uphy/obsidian-reminder" target="_blank">https://github.com/uphy/obsidian-reminder</a></p>
+<p>汉化：
+<a href="https://github.com/ushaio/obsidian-reminder-hans/tree/feat/i18n-language-switcher" target="_blank">https://github.com/ushaio/obsidian-reminder-hans/tree/feat/i18n-language-switcher</a></p>
+<p><img alt="" loading="lazy" width="1130" height="880" src="/_astro/Pasted%20image%2020261104195654.krb4gIve_Z17kkpc.webp" />
+<img alt="" loading="lazy" width="911" height="329" src="/_astro/Pasted%20image%2020261104195645.Bb085l_q_Z12cTXv.webp" /></p>
+<ul>
+<li> 文章补充  (@2026-11-05)</li>
+</ul>]]></content>
     </entry>
     <entry>
       <id>https://shaio.top/posts/%E8%AE%B0%E5%BD%95/261104%E9%9D%A2%E8%AF%95%E8%AE%B0%E5%BD%95/</id>
@@ -60,7 +103,174 @@
 <p>回去转念一想应该直接回过去了，要加RAG和LangChain还不简单，一句话然后迭代的事，问题在于Emulsion本来就用不上，其本来就是根据不同场景有特定的工作流形式的Agent，内部提供了不同场景的MCP、Skill供Agent调用，达到摄影写作的工作流平台。</p>
 <p>而RAG主要用于知识库的问答，大部分场景是严格遵照知识库回答的根本不适于这个产品，无非优化项是加入个人画像、记忆机制，形成更加接近于本人的数字分身，使其文章更加接近于本人风格。</p>
 <p>再就是目前Emulsion的MCP也是对外开放可以应用内通过Claude Agent SDK等外部CLI Agent调用，也是在摸索更加合适的Agent架构。这几点没有提到倒是有点可惜了，再接再厉吧，对于这次面试有点被这老板的话给影响到心态了，该怼就怼才是。</p>
-<p>关于以前提到过对于未来博客的走向，感觉目前在做的本地知识库转Github Pages倒是可以跟进一下了，用RAG还是Firefly改一下？支持知识库RAG检索？</p>]]></content>
+<p>关于以前提到过对于未来博客的走向，感觉目前在做的本地知识库转Github Pages倒是可以跟进一下了，用RAG还是Firefly改一下？支持知识库RAG检索？</p>
+<p><a href="%E6%9C%AA%E6%9D%A5%E5%8D%9A%E5%AE%A2%E7%9A%84%E6%96%B9%E5%90%91%E6%98%AF%E5%95%A5.md">未来博客的方向是啥</a></p>]]></content>
+    </entry>
+    <entry>
+      <id>https://shaio.top/posts/03mogallery/261103%E4%B8%87%E7%BA%A7%E5%9B%BE%E7%89%87%E6%B5%8F%E8%A7%88%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%8F%8A%E7%B4%A2%E5%BC%95/</id>
+      <title type="text">261103万级图片浏览性能优化</title>
+      <published>2026-11-03T00:00:00.000Z</published>
+      <updated>2026-11-03T00:00:00.000Z</updated>
+      <author><name>沙海</name></author>
+      <link rel="alternate" href="https://shaio.top/posts/03mogallery/261103%E4%B8%87%E7%BA%A7%E5%9B%BE%E7%89%87%E6%B5%8F%E8%A7%88%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%8F%8A%E7%B4%A2%E5%BC%95/"/>
+      <summary type="text">261103万级图片浏览性能优化</summary>
+      <content type="html"><![CDATA[<blockquote><p>被问到这个问题，一时间没说上具体怎么优化的，毕竟当时还在这个问题上折腾了好久。但毕竟也都是AI实现的，细节就没过多注意了。</p></blockquote>
+<blockquote><p>设计本地索引 + 两级派生缓存，支持像素比适配、版本失效与分类清退，结合虚拟滚动，支撑万级原片流畅浏览。</p></blockquote>
+<section><h1>索引设计<a href="#索引设计"><span>#</span></a></h1><section><h2>查询索引<a href="#查询索引"><span>#</span></a></h2><p><code>assets</code>
+创建多个索引优化，并保障多个层面的唯一性</p><ol>
+<li><code>idx_assets_cloud_source</code>：<code>cloud_storage_source_id</code></li>
+<li><code>idx_assets_cloud_photo</code>：<code>cloud_photo_id</code></li>
+<li><code>idx_assets_local_id</code>：UNIQUE | <code>local_id</code></li>
+<li><code>idx_assets_rating</code>：<code>availability</code>, <code>rating, id</code></li>
+<li><code>idx_assets_favorite</code>：<code>availability</code>, <code>is_favorite</code>, <code>discovered_at</code></li>
+<li><code>idx_assets_modified</code>：<code>availability</code>, <code>modified_at_ns</code>, <code>id</code></li>
+<li><code>idx_assets_folder_name</code>：<code>folder_id</code>, <code>file_name</code>, <code>id</code></li>
+<li><code>idx_assets_availability_discovered</code>：<code>availability</code>, <code>discovered_at</code>, <code>id</code></li>
+</ol></section><section><h2><a href="/posts/Wiki/FTS5/">FTS5</a> 关键词索引<a href="#fts5-关键词索引"><span>#</span></a></h2><blockquote><p>SQLite 默认的查询是 <code>WHERE file_name LIKE '%keyword%'</code> 这种 <strong>子串扫描</strong>：没有索引，每查一次都要把全部行读一遍，也无法排序。资源库到几万张图时，输入框每敲一个字触发一次这种查询，相当于让 UI 卡住。FTS5（Full-Text Search 5）是 SQLite 内置的<strong>全文检索扩展</strong>：它把文本拆成词（token），建立一张“词 → 行号 + 位置”的<strong>倒排索引</strong>，于是 <code>MATCH '哈苏'</code> 是一次索引查找 + 打分，而不是一次全表扫描，同时顺带提供相关性排序（<code>bm25()</code>）、前缀匹配（<code>hass*</code>）、短语（<code>"a b"</code>）、布尔（<code>AND</code> / <code>OR</code> / <code>NOT</code>）等能力。<code>LIKE</code> 全都给不了。</p></blockquote><p>assets_search表前缀的表</p><p>FTS5 的对外身份是<strong>虚拟表（virtual table）</strong>,<code>CREATE VIRTUAL TABLE asset_search USING fts5(...)</code> 只向 SQLite 注册了一个模块入口，当查询sql如<code>SELECT ... FROM asset_search WHERE asset_search MATCH ?</code> 时，实际运算发生在 fts5 模块里。但模块<strong>必须把状态存到真实磁盘结构上</strong>，于是它按一层命名约定（<code>&lt;表名&gt;_&lt;后缀&gt;</code>）在同一个库里创建若干普通表，也就是<strong>影子表（shadow tables）</strong>，即：asset_search_data / _idx / _content / _docsize / _config</p>
+
+<table><thead><tr><th>表</th><th>解决什么</th><th>为什么不能别的表代劳</th></tr></thead><tbody><tr><td><code>_idx</code></td><td>倒排索引本体：词 → RowID 列表（含列号与位置，用于短语匹配和 bm25 的 <code>phrase</code> 加权）</td><td>这是 FTS5 存在的意义；体积大头也在这，几万条的库通常占索引总量的 70%+</td></tr><tr><td><code>_data</code></td><td>每行各列的<strong>原文副本</strong>，按内部块（block）分页存放</td><td>命中后要回读文本（谁想直接拿到 <code>notes</code> 原文），以及更新单行时需要定位块内位置；块结构才有好的写放大表现</td></tr><tr><td><code>_content</code></td><td>RowID ↔ 内部 docid ↔ 列块 的映射表</td><td>对外 rowid 是你指定的 <code>assets.local_id</code>，内部还要一层 docid 才能找到块；两者解耦，才不用每次写都重排索引</td></tr><tr><td><code>_docsize</code></td><td>每行<strong>每列的 token 数</strong></td><td><code>bm25()</code> 的长文档惩罚要用字段长度归一化，不然 <code>notes</code> 长的图永远排前面</td></tr><tr><td><code>_config</code></td><td>虚拟表的持久化配置：<code>version</code>（磁盘格式版本）、<code>tokenize</code> 等</td><td>tokenizer 是<strong>必须持久化</strong>的，否则同一份索引换个分词器打开就全错；本库这里写的是自定义的 FTS5 tokenizer（见 <a href="/D:/Projects/mo-gallery/emulsion-desktop-v3/local_library/store_search.go:40">store_search.go</a>），中文要靠它切成 n-gram，默认的 <code>unicode61</code> 会把整句中文当一个词</td></tr><tr><td><code>asset_search_dirty</code></td><td><strong>不是</strong> FTS5 的影子表，是本项目自己的队列表</td><td>见上一轮说明；它就是为了不让触发器在事务里逐行改索引</td></tr></tbody></table></section><section><h2>两级派生缓存<a href="#两级派生缓存"><span>#</span></a></h2><blockquote><p>描述得有些高级了。<strong>为同一份原始资源，按显示用途生成两档图片：网格缩略图和大图预览</strong></p></blockquote><p><img alt="" loading="lazy" width="2424" height="356" src="/_astro/Pasted%20image%2020261103213837.BZ4QLN0e_ZiUlb2.webp" /></p><p><code>derivatives.db</code> &gt;&gt; <code>asset_derivatives</code>表
+<code>cache_key</code>：缓存key
+<img alt="" loading="lazy" width="2357" height="766" src="/_astro/Pasted%20image%2020261103210344.DOpKJfl-_Z1d7ra9.webp" /><code>variant(previews)</code> 生成规则 = <code>asset_id</code> + <code>cache_key</code>
+<code>variant(thumbnails)</code> 生成规则 = <code>asset_id</code> + <code>cache_key</code></p><p>按照使用场景：</p>
+
+<table><thead><tr><th>档位</th><th>用途</th><th>当前尺寸策略</th><th>保留策略</th></tr></thead><tbody><tr><td><code>thumbnail</code>：缩略图</td><td>资源库网格、列表等快速浏览</td><td>短边目标 560 px，长边上限 2048 px</td><td>不参与大图预览的容量淘汰</td></tr><tr><td><code>preview</code>：预览图</td><td>详情栏预览、部分看图场景</td><td>长边上限 2048 px</td><td>默认容量预算 2 GiB，按最近访问时间淘汰</td></tr></tbody></table><ul>
+<li>thumbnails：用于文件浏览</li>
+<li>previews：
+<blockquote><p>用于无法直接浏览图片的文件，如raw、video媒体文件</p></blockquote>
+<ol>
+<li>大图查看器：RAW 的唯一显示源，以及解码失败时的回退源</li>
+<li>AI视觉调用</li>
+</ol>
+</li>
+</ul></section></section>
+<section><h1>浏览加载性能优化<a href="#浏览加载性能优化"><span>#</span></a></h1>
+
+<table><thead><tr><th>环节</th><th>已有实现</th><th>优化目的</th></tr></thead><tbody><tr><td>首屏数据</td><td>第一页返回立即展示，再沿游标继续获取剩余页；通过请求编号丢弃过期结果</td><td>不必等整个查询加载完才能看到照片</td></tr><tr><td>回访缓存</td><td>对侧栏范围查询保留最多 12 份首屏数据，回到同一范围时先恢复缓存，再请求更新</td><td>减少来回切换时的等待和空白</td></tr><tr><td>网格渲染</td><td>普通网格按行虚拟化，只挂载可视范围及额外预取的 5 行；卡片使用 <code>memo</code>，结果未变时保留原数组</td><td>减少 DOM 数量和重复渲染</td></tr><tr><td>图片加载</td><td>虚拟窗口中的图片直接请求，刻意不再叠加 <code>loading="lazy"</code></td><td>给图片提前加载的机会，减少快速滚动时露白</td></tr><tr><td>缓存复用</td><td>派生图保存在磁盘；响应同时设置长期、不可变的 HTTP 缓存策略</td><td>WebView 可以复用已有响应，后端也能复用已生成文件</td></tr><tr><td>首次生成</td><td>同一缓存 key 的请求合并；优先处理选中资源和可见资源，后台预热优先级较低</td><td>避免重复生成，让当前浏览内容优先完成</td></tr><tr><td>后台写入</td><td>派生记录使用独立的 <code>derivatives.db</code>，并批量提交</td><td>减少扫描、生成缓存和浏览同时进行时的数据库争用</td></tr></tbody></table></section>]]></content>
+    </entry>
+    <entry>
+      <id>https://shaio.top/posts/02ai%E6%98%AF%E5%A4%A9%E5%9D%91/harness/261027langchain%E5%92%8Clanggraph%E5%92%8Cmastra%E5%92%8Ceino/</id>
+      <title type="text">261027LangChain和LangGraph</title>
+      <published>2026-10-27T00:00:00.000Z</published>
+      <updated>2026-10-27T00:00:00.000Z</updated>
+      <author><name>沙海</name></author>
+      <link rel="alternate" href="https://shaio.top/posts/02ai%E6%98%AF%E5%A4%A9%E5%9D%91/harness/261027langchain%E5%92%8Clanggraph%E5%92%8Cmastra%E5%92%8Ceino/"/>
+      <summary type="text">261027LangChain和LangGraph</summary>
+      <content type="html"><![CDATA[<p>这俩名字挺像的，有啥区别呢？</p>
+<p><img alt="" loading="lazy" width="1498" height="658" src="/_astro/Pasted%20image%2020261027210735.Cwbqqqvq_Z1P4Wnq.webp" /></p>
+<section><h2>一句话区分<a href="#一句话区分"><span>#</span></a></h2><ul>
+<li><strong>LangChain</strong>：把「Prompt <span><span>→\to</span><span><span><span></span><span>→</span></span></span></span> 模型 <span><span>→\to</span><span><span><span></span><span>→</span></span></span></span> 解析器 <span><span>→\to</span><span><span><span></span><span>→</span></span></span></span> 工具」串成<strong>有向无环的流水线</strong>（LCEL 的 <code>|</code>），解决“组件怎么组装、模型怎么换”。</li>
+<li><strong>LangGraph</strong>：把 Agent 建成<strong>有环的状态机</strong>（State / Nodes / Edges），解决“流程怎么循环、状态怎么持久、人怎么插手”。</li>
+<li><strong>Mastra</strong>：TypeScript 生态里的「LangGraph + LangSmith + 脚手架」三合一，解决“在 Node/前端工程里怎么开箱即用地跑起带状态的 Agent”。</li>
+</ul></section>
+<section><h2>LangChain vs LangGraph：不是兄弟，是分层<a href="#langchain-vs-langgraph不是兄弟是分层"><span>#</span></a></h2>
+
+<table><thead><tr><th>维度</th><th>LangChain</th><th>LangGraph</th></tr></thead><tbody><tr><td>抽象</td><td>Chain（链）、Runnable 协议</td><td>Graph（图）、共享 State</td></tr><tr><td>拓扑</td><td>有向<strong>无环</strong>，线性/并行分支</td><td>允许 <strong>环</strong>（ReAct 循环天然表达）</td></tr><tr><td>控制流</td><td>隐式，写死在管道里</td><td>显式，<code>add_conditional_edges</code> 决定下一步</td></tr><tr><td>状态</td><td>靠上下文在组件间传递，无全局状态</td><td>显式 <code>TypedDict</code> 状态，随节点增量更新</td></tr><tr><td>持久化</td><td>基本没有（需自己接）</td><td><strong>Checkpointer</strong>：断点续跑、时间旅行、故障恢复</td></tr><tr><td>人机协同</td><td>难（黑盒 AgentExecutor）</td><td>原生 <code>interrupt</code>，随时暂停/改状态/恢复</td></tr><tr><td>记忆</td><td>靠 Memory 类拼装</td><td>短期 = thread 级 state；长期 = store</td></tr><tr><td>适合</td><td>RAG 管道、ETL 式处理、批量/流式调用</td><td>长任务、多步自主 Agent、需人工审核的生产系统</td></tr></tbody></table><p>关系要点：</p><ol>
+<li>LangGraph 是<strong>同一团队</strong>的产品，但定位是「编排层升级」而非替代 LangChain 的模型/工具抽象——它复用 <code>langchain-core</code> 的 <code>BaseChatModel</code>、消息类型和 <code>@tool</code>，也可以完全脱离 LangChain 单独使用。</li>
+<li>两者是<strong>上下游</strong>：LangChain 管“单步怎么调”，LangGraph 管“多步怎么走、走到哪、能不能回头”。</li>
+<li>老 <code>AgentExecutor</code> 是黑盒，LangGraph 就是把那个黑盒拆开、摊平成你能看见的图——这也是它成为当前生产级 Python Agent 首选的原因。</li>
+</ol></section>
+<section><h2>Mastra 的位置<a href="#mastra-的位置"><span>#</span></a></h2><p>Mastra 是 2024 年底开源（Gatsby 团队）的 <strong>TypeScript-first Agent 框架</strong>，理念上几乎是“把 LangGraph 的有状态编排 + LangSmith 的观测/评测 + Next.js 式的开发体验”打成一个包。</p><ul>
+<li><strong>Agent 是一等公民</strong>：<code>new Agent({ name, instructions, model, tools, memory })</code>，内置多轮记忆与 thread 概念。</li>
+<li><strong>Workflow 用 <code>.step().then().branch().parallel()</code> 串</strong>，比手搓状态图省事；底层也是 DAG/图，但默认帮你把持久化、重试、挂起做了。</li>
+<li><strong>配套齐全</strong>：本地 Studio（可视化调试/对话）、evals、scorers、RAG（chunk/embed/vector store）、MCP 客户端、部署到 Vercel/Cloudflare。</li>
+<li><strong>代价</strong>：生态和 Python 侧集成远不如 LangChain，模型/向量库/工具的“连接器数量”不在一个量级；跨语言团队维护成本高。</li>
+</ul></section>
+<section><h2>选型速记<a href="#选型速记"><span>#</span></a></h2>
+
+<table><thead><tr><th>场景</th><th>选</th></tr></thead><tbody><tr><td>Python 技术栈、复杂有环 Agent、要断点续跑/人工审核</td><td><strong>LangGraph</strong>（+ LangSmith）</td></tr><tr><td>只是线性管道、RAG 组装、想用现成连接器</td><td><strong>LangChain（LCEL）</strong></td></tr><tr><td>Node/TS 服务、全栈 TypeScript、想要开箱即用的 Agent + Studio</td><td><strong>Mastra</strong></td></tr><tr><td>单轮调用、工具循环不复杂</td><td>直接官方 SDK，别上框架</td></tr></tbody></table><blockquote><p>三者共同的演进方向：<strong>从“链”走向“图 + 持久执行”</strong>。区别只在于语言生态和电池是否自带。</p></blockquote></section>
+<section><h1>LangChain和LangGraph和Mastra和Eino<a href="#langchain和langgraph和mastra和eino"><span>#</span></a></h1>
+
+<table><thead><tr><th>层</th><th>负责什么</th><th>LangChain 系</th><th>Mastra</th><th>Eino</th></tr></thead><tbody><tr><td>组件 / 模型层</td><td>统一模型、工具、检索器等接口</td><td>LangChain（<code>langchain-core</code> + 各种 integrations）</td><td>底层借用 Vercel AI SDK</td><td><code>components</code> + <code>eino-ext</code></td></tr><tr><td>编排运行时层</td><td>图、状态、checkpoint、中断恢复</td><td>LangGraph</td><td>Workflow（step / branch / suspend）</td><td><code>compose</code>（Chain / Graph / Workflow）</td></tr><tr><td>Agent 抽象层</td><td>现成的 ReAct、多 Agent</td><td>LangChain 1.0 的 <code>create_agent</code>（跑在 LangGraph 上）</td><td><code>Agent</code> 类</td><td><code>flow</code> / ADK（ReAct、多 Agent）</td></tr><tr><td>观测 / 调试层</td><td>链路追踪、评测、可视化</td><td>LangSmith（单独的产品）</td><td>内置 Studio、evals</td><td>Eino Dev 插件、CozeLoop</td></tr><tr><td></td><td></td><td></td><td></td><td></td></tr></tbody></table></section>]]></content>
+    </entry>
+    <entry>
+      <id>https://shaio.top/posts/wiki/%E5%8C%97%E6%9E%81%E6%98%9F/</id>
+      <title type="text">北极星</title>
+      <published>2026-10-27T00:00:00.000Z</published>
+      <updated>2026-10-27T00:00:00.000Z</updated>
+      <author><name>沙海</name></author>
+      <link rel="alternate" href="https://shaio.top/posts/wiki/%E5%8C%97%E6%9E%81%E6%98%9F/"/>
+      <summary type="text">北极星指标（North Star Metric）的概念、选定逻辑与业务应用</summary>
+      <content type="html"><![CDATA[<section><h1>北极星指标（North Star Metric, NSM）<a href="#北极星指标north-star-metric-nsm"><span>#</span></a></h1><section><h2>一、定义<a href="#一定义"><span>#</span></a></h2><p><strong>北极星指标（North Star Metric，简称 NSM）</strong>，又称“第一关键指标（OMTM, One Metric That Matters）”。它借用航海中“北极星”为船只指引方向的寓意，指：</p><blockquote><p><strong>衡量产品向用户传递核心价值、并驱动业务长期增长的“唯一最关键核心指标”。</strong></p></blockquote><p>团队所有的工作（产品研发、内容生产、渠道投放、活动运营等），最终都必须直接或间接地为了提升该指标服务。</p><hr /></section><section><h2>二、为什么需要北极星指标？<a href="#二为什么需要北极星指标"><span>#</span></a></h2><section><h3>1. 避开“虚荣指标”（Vanity Metrics）<a href="#1-避开虚荣指标vanity-metrics"><span>#</span></a></h3><ul>
+<li><strong>虚荣指标</strong>：如总注册数、纯浏览量/曝光量、点赞数。这类数据看起来繁荣，但无法反映用户是否真正感受到了产品价值，也无法直接带来业务持续生存。</li>
+<li><strong>北极星指标</strong>：紧扣“核心价值交付”。比如小红书一篇 10 万浏览的图文，若无法沉淀任何咨询或转化，对严肃业务而言只是“虚假繁荣”。</li>
+</ul></section><section><h3>2. 统一团队目标，减少协同内耗<a href="#2-统一团队目标减少协同内耗"><span>#</span></a></h3><p>不同部门容易追求局部最优（内容团队看曝光、投放团队看点击成本、销售看单月收款）。北极星指标将所有人拉到同一个方向上，提供判断所有待办事项优先级的基准：<strong>“做这件事，能不能推动北极星指标的增长？”</strong></p><hr /></section></section><section><h2>三、好指标的判定标准<a href="#三好指标的判定标准"><span>#</span></a></h2><p>一个合格的北极星指标，通常需同时满足以下 3 个条件：</p><ol>
+<li><strong>体现用户价值</strong>：指标增长时，代表用户确实从产品中解决了问题或得到了价值。</li>
+<li><strong>驱动商业成功</strong>：指标向好，能够直接或滞后反映到公司的营收、利润或长期壁垒上。</li>
+<li><strong>可量化且具备行动指引</strong>：指标能够被拆解为各层级的过程指标，员工清楚自己的日常动作如何影响它。</li>
+</ol><hr /></section><section><h2>四、常见商业模式示例<a href="#四常见商业模式示例"><span>#</span></a></h2>
+
+<table><thead><tr><th>业务类型</th><th>典型代表</th><th>北极星指标</th><th>为什么选它</th></tr></thead><tbody><tr><td><strong>音乐/流媒体</strong></td><td>Spotify</td><td>听歌总时长</td><td>听得越多，说明音乐推荐越准、粘性越高，续费概率越大</td></tr><tr><td><strong>撮合平台</strong></td><td>Airbnb</td><td>预订总间夜数</td><td>撮合两端成功的最终体现</td></tr><tr><td><strong>快消/订阅电商</strong></td><td>订阅制保健品</td><td>月复购率 / 活跃订阅读者数</td><td>靠长期复购摊薄获客成本，单次购买难以盈利</td></tr><tr><td><strong>高决策门槛/医疗</strong></td><td>严肃诊疗、高端器械</td><td><strong>有效咨询线索数（Leads）</strong></td><td>用户不会冲动下单，产生深度咨询代表已跨越“专业信任”门槛</td></tr></tbody></table><hr /></section><section><h2>五、在宠物细胞与大健康业务中的应用<a href="#五在宠物细胞与大健康业务中的应用"><span>#</span></a></h2><p>针对不同品类与决策链路，北极星指标应分层制定：</p><section><h3>1. 重疾与细胞治疗（高门槛医疗属性）<a href="#1-重疾与细胞治疗高门槛医疗属性"><span>#</span></a></h3><ul>
+<li><strong>链路特点</strong>：决策重、客单高、合规要求严格、依赖线下合作医院或深度私信咨询。</li>
+<li><strong>北极星指标</strong>：<strong>有效线索数（有效咨询/留资/医院合作意向）</strong></li>
+<li><strong>逻辑</strong>：曝光不等于信任。宠主只有在真正看懂临床证据、打消对异种治疗顾虑后，才会主动求助发起咨询。</li>
+</ul></section><section><h3>2. 日常养护与慢病营养（呼吸/皮肤/眼表/关节）<a href="#2-日常养护与慢病营养呼吸皮肤眼表关节"><span>#</span></a></h3><ul>
+<li><strong>链路特点</strong>：决策轻、货架电商直接下单、周期性消耗。</li>
+<li><strong>北极星指标</strong>：<strong>客户终身价值（LTV） / 复购率</strong></li>
+<li><strong>逻辑</strong>：保健与养护产品单次获客成本高，纯做单次转化无法支撑持续投流，产品是否有效最终体现在宠主是否会持续回购。</li>
+</ul><hr /></section></section><section><h2>六、北极星指标的计算与数学拆解（场景决定公式）<a href="#六北极星指标的计算与数学拆解场景决定公式"><span>#</span></a></h2><p>北极星指标<strong>不是放之四海皆准的唯一定值公式</strong>，而是<strong>商业模式与场景的数学映射</strong>。任何选定的北极星指标，都必须能被拆解为一个“乘法增长方程式”，才能指导各岗位日常执行。</p><section><h3>1. 拆解通用逻辑<a href="#1-拆解通用逻辑"><span>#</span></a></h3><span><span><span>北极星指标=触达广度（流量/规模）×转化深度（效率/转化率）×留存韧性（频次/复购）\text{北极星指标} = \text{触达广度（流量/规模）} \times \text{转化深度（效率/转化率）} \times \text{留存韧性（频次/复购）}</span><span><span><span></span><span><span>北极星指标</span></span><span></span><span>=</span><span></span></span><span><span></span><span><span>触达广度（流量</span><span>/</span><span>规模）</span></span><span></span><span>×</span><span></span></span><span><span></span><span><span>转化深度（效率</span><span>/</span><span>转化率）</span></span><span></span><span>×</span><span></span></span><span><span></span><span><span>留存韧性（频次</span><span>/</span><span>复购）</span></span></span></span></span></span></section><section><h3>2. 场景 A：重疾与严肃医疗（决策门槛高、重咨询）<a href="#2-场景-a重疾与严肃医疗决策门槛高重咨询"><span>#</span></a></h3><ul>
+<li><strong>北极星</strong>：有效线索数（Qualified Leads）</li>
+<li><strong>漏斗乘法公式</strong>：</li>
+</ul><span><span><span>有效线索数=∑(曝光量×CTR(点击率)×完读率×咨询意向转化率)×(1−无效/水军率)\text{有效线索数} = \sum \Big( \text{曝光量} \times \text{CTR(点击率)} \times \text{完读率} \times \text{咨询意向转化率} \Big) \times (1 - \text{无效/水军率})</span><span><span><span></span><span><span>有效线索数</span></span><span></span><span>=</span><span></span></span><span><span></span><span>∑</span><span></span><span><span>(</span></span><span><span>曝光量</span></span><span></span><span>×</span><span></span></span><span><span></span><span><span>CTR(</span><span>点击率</span><span>)</span></span><span></span><span>×</span><span></span></span><span><span></span><span><span>完读率</span></span><span></span><span>×</span><span></span></span><span><span></span><span><span>咨询意向转化率</span></span><span><span>)</span></span><span></span><span>×</span><span></span></span><span><span></span><span>(</span><span>1</span><span></span><span>−</span><span></span></span><span><span></span><span><span>无效</span><span>/</span><span>水军率</span></span><span>)</span></span></span></span></span><ul>
+<li><strong>责任分工</strong>：
+<ul>
+<li><code>曝光量 × CTR</code>：选题引擎与封面标题（抓痛点）</li>
+<li><code>完读率</code>：AI 生成质量与临床证据深度（建立专业信任）</li>
+<li><code>咨询转化率</code>：文末行动召唤（CTA，如“私信获取病例评估方案”）</li>
+<li><code>清洗有效率</code>：客服/智能问诊的初筛过滤</li>
+</ul>
+</li>
+</ul></section><section><h3>3. 场景 B：日常养护与慢病营养（决策门槛低、重复购）<a href="#3-场景-b日常养护与慢病营养决策门槛低重复购"><span>#</span></a></h3><ul>
+<li><strong>北极星</strong>：LTV（客户终身价值） 或 累计 GMV</li>
+<li><strong>生命周期方程式</strong>：</li>
+</ul><span><span><span>GMV=新客数×首购客单价⏟拉新（公域流量）+老客数×复购率×复购客单价⏟复购盘（私域/周期消耗）\text{GMV} = \underbrace{\text{新客数} \times \text{首购客单价}}_{\text{拉新（公域流量）}} + \underbrace{\text{老客数} \times \text{复购率} \times \text{复购客单价}}_{\text{复购盘（私域/周期消耗）}}</span><span><span><span></span><span><span>GMV</span></span><span></span><span>=</span><span></span></span><span><span></span><span><span><span><span><span><span></span><span><span><span><span>拉新（公域流量）</span></span></span></span></span><span><span></span><span><span><span><span><span><span></span><span><span></span><span></span><span></span></span></span><span><span></span><span><span><span>新客数</span></span><span></span><span>×</span><span></span><span><span>首购客单价</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span><span></span><span>+</span><span></span></span><span><span></span><span><span><span><span><span><span></span><span><span><span><span>复购盘（私域</span><span>/</span><span>周期消耗）</span></span></span></span></span><span><span></span><span><span><span><span><span><span></span><span><span></span><span></span><span></span></span></span><span><span></span><span><span><span>老客数</span></span><span></span><span>×</span><span></span><span><span>复购率</span></span><span></span><span>×</span><span></span><span><span>复购客单价</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span></span></span></span><span><span><span>LTV=客单价×年购买频次客户流失率\text{LTV} = \frac{\text{客单价} \times \text{年购买频次}}{\text{客户流失率}}</span><span><span><span></span><span><span>LTV</span></span><span></span><span>=</span><span></span></span><span><span></span><span><span></span><span><span><span><span><span><span></span><span><span><span>客户流失率</span></span></span></span><span><span></span><span></span></span><span><span></span><span><span><span>客单价</span></span><span></span><span>×</span><span></span><span><span>年购买频次</span></span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span><span></span></span></span></span></span></span><ul>
+<li><strong>责任分工</strong>：
+<ul>
+<li><code>新客规模</code>：电商搜索 SEO、达人种草、站内广告</li>
+<li><code>复购率/频次</code>：基于病程周期的耗尽提醒（如关节咀嚼片 30 天周期、第 25 天提醒复购）</li>
+<li><code>降低流失率</code>：企微社群日常答疑、随访打卡、效果感知跟踪</li>
+</ul>
+</li>
+</ul><hr /></section></section><section><h2>七、场景总结对比<a href="#七场景总结对比"><span>#</span></a></h2>
+
+<table><thead><tr><th>业务场景</th><th>商业核心</th><th>错误指标（易踩坑）</th><th>正确北极星</th><th>核心考核因子</th></tr></thead><tbody><tr><td><strong>重疾/细胞</strong></td><td>建立信任与合规咨询</td><td>曝光量、点赞数</td><td><strong>有效咨询线索数</strong></td><td>咨询转化率、有效率</td></tr><tr><td><strong>养护/慢病</strong></td><td>长期复购与消耗</td><td>单次爆款销量</td><td><strong>复购率 / LTV</strong></td><td>次月复购率、耗尽召回率</td></tr><tr><td><strong>工具/自动化平台</strong></td><td>提效与规模化</td><td>功能数量</td><td><strong>AI 内容采纳率 / 自动化闭环率</strong></td><td>单条内容耗时、人工修改率</td></tr></tbody></table></section></section>]]></content>
+    </entry>
+    <entry>
+      <id>https://shaio.top/posts/%E8%AE%B0%E5%BD%95/261026saas%E5%A4%9A%E7%A7%9F%E6%88%B7%E8%AE%BE%E8%AE%A1/</id>
+      <title type="text">261026SaaS多租户设计</title>
+      <published>2026-10-26T00:00:00.000Z</published>
+      <updated>2026-10-26T00:00:00.000Z</updated>
+      <author><name>沙海</name></author>
+      <link rel="alternate" href="https://shaio.top/posts/%E8%AE%B0%E5%BD%95/261026saas%E5%A4%9A%E7%A7%9F%E6%88%B7%E8%AE%BE%E8%AE%A1/"/>
+      <summary type="text">261026SaaS多租户设计</summary>
+      <content type="html"><![CDATA[<p>三种隔离方案：</p>
+<ol>
+<li><strong>独立数据库</strong></li>
+<li><strong>独立 Schema</strong></li>
+<li><strong>共享库表 + 租户ID</strong>（普遍使用的）</li>
+</ol>
+<section><h1>独立数据库<a href="#独立数据库"><span>#</span></a></h1><blockquote><p>物理级隔离，一个租户一个数据库。</p></blockquote><p>实现难点：如何根据租户tenantID进入不同数据库操作数据？</p></section>
+<section><h1>独立Schema<a href="#独立schema"><span>#</span></a></h1><blockquote><p>逻辑级隔离，共享一个数据库实例，租户间表空间隔离。</p></blockquote><p>特殊：MySQL</p><blockquote><p>Schema几乎和Database等价，<code>CREATE SCHEMA</code> 就是 <code>CREATE DATABASE</code>，但在账号权限打通的前提下，依然可以共用同一个连接池。</p></blockquote><p>实现方式：</p><section><h2>连接级切换（JDBC <code>Connection.setSchema()</code> / <code>search_path</code>）🌟<a href="#连接级切换jdbcconnectionsetschemasearch_path"><span>#</span></a></h2><blockquote><p>所有租户<strong>共用一个 Hikari 连接池</strong>。当 Spring / MyBatis 拿到数据库连接时，执行切换 Schema 命令，让该连接的后续所有 SQL 都自动在对应 Schema 下执行。</p></blockquote></section></section>
+<section><h1>共享库表 + 租户ID<a href="#共享库表--租户id"><span>#</span></a></h1><blockquote><p>通过tenantId字段控制。</p></blockquote><p>过去往往还是通过AOP方式通过<code>@TenantScope</code>注入请求参数，然后到Mybatis SQL拼接，但似乎有更好的方案？
+如何实现不用业务层手动拼 <code>where tenant_id = ?</code></p><ol>
+<li>租户上下文</li>
+</ol><div><figure><figcaption></figcaption><pre><code><div><div><div>1</div></div><div><span>public</span><span> </span><span>class</span><span><span> </span><span>TenantContext</span><span> </span></span><span>{</span></div></div><div><div><div>2</div></div><div><span>    </span><span>private</span><span> </span><span>static</span><span> </span><span>final</span><span> </span><span>ThreadLocal</span><span>&lt;</span><span>Long</span><span><span>&gt;</span><span> CURRENT </span></span><span><span>=</span><span> </span></span><span>new</span><span> </span><span>ThreadLocal</span><span><span>&lt;&gt;</span><span>()</span><span>;</span></span></div></div><div><div><div>3</div></div><div>
+</div></div><div><div><div>4</div></div><div><span>    </span><span>public</span><span> </span><span>static</span><span> </span><span>void</span><span> </span><span>set</span><span>(</span><span>Long</span><span><span> </span><span>tenantId</span><span>)</span><span> </span><span>{ </span></span><span>CURRENT</span><span>.</span><span>set</span><span>(tenantId); }</span></div></div><div><div><div>5</div></div><div><span>    </span><span>public</span><span> </span><span>static</span><span> </span><span>Long</span><span> </span><span>get</span><span><span>()</span><span> </span><span>{ </span></span><span>return</span><span> </span><span>CURRENT</span><span>.</span><span>get</span><span>(); }</span></div></div><div><div><div>6</div></div><div><span>    </span><span>public</span><span> </span><span>static</span><span> </span><span>void</span><span> </span><span>clear</span><span><span>()</span><span> </span><span>{ </span></span><span>CURRENT</span><span>.</span><span>remove</span><span>(); }</span></div></div><div><div><div>7</div></div><div><span>}</span></div></div></code></pre><div><div></div><div></div></div></figure></div><ol>
+<li>注册拦截器</li>
+</ol><div><div><div><figure><figcaption></figcaption><pre><code><div><div><div>1</div></div><div><span>@</span><span>Configuration</span></div></div><div><div><div>2</div></div><div><span>public</span><span> </span><span>class</span><span><span> </span><span>MybatisPlusConfig</span><span> </span></span><span>{</span></div></div><div><div><div>3</div></div><div>
+</div></div><div><div><div>4</div></div><div><span><span>    </span></span><span>@</span><span>Bean</span></div></div><div><div><div>5</div></div><div><span>    </span><span>public</span><span> </span><span>MybatisPlusInterceptor</span><span> </span><span>mybatisPlusInterceptor</span><span><span>()</span><span> </span><span>{</span></span></div></div><div><div><div>6</div></div><div><span>        </span><span>MybatisPlusInterceptor</span><span><span> </span><span>interceptor</span><span> </span></span><span><span>=</span><span> </span></span><span>new</span><span> </span><span>MybatisPlusInterceptor</span><span>();</span></div></div><div><div><div>7</div></div><div>
+</div></div><div><div><div>8</div></div><div><span>        </span><span>TenantLineInnerInterceptor</span><span><span> </span><span>tenantInterceptor</span><span> </span></span><span><span>=</span><span> </span></span><span>new</span><span> </span><span>TenantLineInnerInterceptor</span><span>();</span></div></div><div><div><div>9</div></div><div>
+</div></div><div><div><div>10</div></div><div><span>        </span><span>// 配置租户处理器</span></div></div><div><div><div>11</div></div><div><span>        </span><span>tenantInterceptor</span><span>.</span><span>setTenantLineHandler</span><span>(</span><span>new</span><span> </span><span>TenantLineHandler</span><span>() {</span></div></div><div><div><div>12</div></div><div><span><span>            </span></span><span>@</span><span>Override</span></div></div><div><div><div>13</div></div><div><span>            </span><span>public</span><span> </span><span>Expression</span><span> </span><span>getTenantId</span><span><span>()</span><span> </span><span>{</span></span></div></div><div><div><div>14</div></div><div><span>                </span><span>return</span><span> </span><span>new</span><span> </span><span>LongValue</span><span>(</span><span>TenantContext</span><span>.</span><span>get</span><span>());</span></div></div><div><div><div>15</div></div><div><span><span>            </span></span><span>}</span></div></div><div><div><div>16</div></div><div>
+</div></div><div><div><div>17</div></div><div><span><span>            </span></span><span>@</span><span>Override</span></div></div><div><div><div>18</div></div><div><span>            </span><span>public</span><span> </span><span>boolean</span><span> </span><span>ignoreTable</span><span>(</span><span>String</span><span><span> </span><span>tableName</span><span>)</span><span> </span><span>{</span></span></div></div><div><div><div>19</div></div><div><span>                </span><span>// 不需要隔离的表</span></div></div><div><div><div>20</div></div><div><span>                </span><span>return</span><span> </span><span>TenantIgnoreTables</span><span>.</span><span>isIgnore</span><span>(tableName);</span></div></div><div><div><div>21</div></div><div><span><span>            </span></span><span>}</span></div></div><div><div><div>22</div></div><div><span><span>        </span></span><span>});</span></div></div><div><div><div>23</div></div><div>
+</div></div><div><div><div>24</div></div><div><span>        </span><span>interceptor</span><span>.</span><span>addInnerInterceptor</span><span>(tenantInterceptor);</span></div></div><div><div><div>25</div></div><div><span>        </span><span>return</span><span> interceptor;</span></div></div><div><div><div>26</div></div><div><span><span>    </span></span><span>}</span></div></div><div><div><div>27</div></div><div><span>}</span></div></div></code></pre><div><div></div><div></div></div></figure><div></div></div><span>展开</span><span>收起</span></div></div><ol>
+<li>忽略表名单</li>
+</ol><div><figure><figcaption></figcaption><pre><code><div><div><div>1</div></div><div><span>public</span><span> </span><span>class</span><span><span> </span><span>TenantIgnoreTables</span><span> </span></span><span>{</span></div></div><div><div><div>2</div></div><div><span>    </span><span>private</span><span> </span><span>static</span><span> </span><span>final</span><span> </span><span>Set</span><span>&lt;</span><span>String</span><span><span>&gt;</span><span> IGNORE </span></span><span><span>=</span><span> </span></span><span>Set</span><span>.</span><span>of</span><span>(</span></div></div><div><div><div>3</div></div><div><span>        </span><span>"sys_tenant"</span><span>,      </span><span>// 租户表自身</span></div></div><div><div><div>4</div></div><div><span>        </span><span>"sys_dict"</span><span>,        </span><span>// 字典</span></div></div><div><div><div>5</div></div><div><span>        </span><span>"sys_config"</span><span>,      </span><span>// 全局配置</span></div></div><div><div><div>6</div></div><div><span>        </span><span>"area_code"</span><span>        </span><span>// 行政区划</span></div></div><div><div><div>7</div></div><div><span><span>    </span></span><span>);</span></div></div><div><div><div>8</div></div><div>
+</div></div><div><div><div>9</div></div><div><span>    </span><span>public</span><span> </span><span>static</span><span> </span><span>boolean</span><span> </span><span>isIgnore</span><span>(</span><span>String</span><span><span> </span><span>tableName</span><span>)</span><span> </span><span>{</span></span></div></div><div><div><div>10</div></div><div><span>        </span><span>return</span><span> </span><span>IGNORE</span><span>.</span><span>contains</span><span>(</span><span>tableName</span><span>.</span><span>toLowerCase</span><span>());</span></div></div><div><div><div>11</div></div><div><span><span>    </span></span><span>}</span></div></div><div><div><div>12</div></div><div><span>}</span></div></div></code></pre><div><div></div><div></div></div></figure></div><ol>
+<li>上游&lt;解析租户塞上下文&gt;</li>
+</ol><p>用 Filter 或拦截器,不要用你原来的 AOP 拼参数(AOP 留着做别的事):</p><div><div><div><figure><figcaption></figcaption><pre><code><div><div><div>1</div></div><div><span>@</span><span>Component</span></div></div><div><div><div>2</div></div><div><span>public</span><span> </span><span>class</span><span><span> </span><span>TenantFilter</span><span> </span></span><span>implements</span><span><span> </span><span>Filter</span><span> </span></span><span>{</span></div></div><div><div><div>3</div></div><div><span><span>    </span></span><span>@</span><span>Override</span></div></div><div><div><div>4</div></div><div><span>    </span><span>public</span><span> </span><span>void</span><span> </span><span>doFilter</span><span>(</span><span>ServletRequest</span><span><span> </span><span>req</span><span>, </span></span><span>ServletResponse</span><span><span> </span><span>res</span><span>, </span></span><span>FilterChain</span><span><span> </span><span>chain</span><span>)</span></span></div></div><div><div><div>5</div></div><div><span>            </span><span>throws</span><span> </span><span>IOException</span><span><span>,</span><span> </span></span><span>ServletException</span><span><span> </span><span>{</span></span></div></div><div><div><div>6</div></div><div><span>        </span><span>try</span><span> {</span></div></div><div><div><div>7</div></div><div><span>            </span><span>HttpServletRequest</span><span><span> </span><span>request</span><span> </span></span><span><span>=</span><span> (HttpServletRequest) req;</span></span></div></div><div><div><div>8</div></div><div><span>            </span><span>String</span><span><span> </span><span>tid</span><span> </span></span><span><span>=</span><span> </span></span><span>request</span><span>.</span><span>getHeader</span><span>(</span><span>"X-Tenant-Id"</span><span>);</span></div></div><div><div><div>9</div></div><div><span>            </span><span>if</span><span> (</span><span>StrUtil</span><span>.</span><span>isNotBlank</span><span>(tid)) {</span></div></div><div><div><div>10</div></div><div><span>                </span><span>TenantContext</span><span>.</span><span>set</span><span>(</span><span>Long</span><span>.</span><span>parseLong</span><span>(tid));</span></div></div><div><div><div>11</div></div><div><span><span>            </span></span><span>}</span></div></div><div><div><div>12</div></div><div><span>            </span><span>chain</span><span>.</span><span>doFilter</span><span>(req, res);</span></div></div><div><div><div>13</div></div><div><span><span>        </span></span><span>} </span><span>finally</span><span> {</span></div></div><div><div><div>14</div></div><div><span>            </span><span>TenantContext</span><span>.</span><span>clear</span><span>();   </span><span>// 必须清理,线程复用会串租户</span></div></div><div><div><div>15</div></div><div><span><span>        </span></span><span>}</span></div></div><div><div><div>16</div></div><div><span><span>    </span></span><span>}</span></div></div><div><div><div>17</div></div><div><span>}</span></div></div></code></pre><div><div></div><div></div></div></figure><div></div></div><span>展开</span><span>收起</span></div></div><blockquote><p>注意 <code>finally</code> 里的 <code>clear()</code>。Tomcat 线程是复用的,不清除就是下一个请求读到上一个租户的数据——这是这类方案最高频的事故来源。</p></blockquote><ol>
+<li>单条方法级忽略(超管跨租户查询)</li>
+</ol><div><figure><figcaption></figcaption><pre><code><div><div><div>1</div></div><div><span>public</span><span><span> </span><span>@</span></span><span>interface</span><span> </span><span>TenantIgnore</span><span> {}</span></div></div><div><div><div>2</div></div><div>
+</div></div><div><div><div>3</div></div><div><span>@</span><span>Service</span></div></div><div><div><div>4</div></div><div><span>public</span><span> </span><span>class</span><span><span> </span><span>OpsOrderService</span><span> </span></span><span>{</span></div></div><div><div><div>5</div></div><div>
+</div></div><div><div><div>6</div></div><div><span><span>    </span></span><span>@</span><span>TenantIgnore</span><span>   </span><span>// 自定义注解 + AOP:进方法前把上下文置空/打标记</span></div></div><div><div><div>7</div></div><div><span>    </span><span>public</span><span> </span><span>List</span><span>&lt;</span><span>Order</span><span><span>&gt;</span><span> </span></span><span>statAllTenant</span><span><span>()</span><span> </span><span>{</span></span></div></div><div><div><div>8</div></div><div><span>        </span><span>return</span><span> </span><span>orderMapper</span><span>.</span><span>selectList</span><span>(</span><span>null</span><span>);</span></div></div><div><div><div>9</div></div><div><span><span>    </span></span><span>}</span></div></div><div><div><div>10</div></div><div><span>}</span></div></div></code></pre><div><div></div><div></div></div></figure></div><div><figure><figcaption></figcaption><pre><code><div><div><div>1</div></div><div><span>@</span><span>Aspect</span></div></div><div><div><div>2</div></div><div><span>@</span><span>Component</span></div></div><div><div><div>3</div></div><div><span>public</span><span> </span><span>class</span><span><span> </span><span>TenantIgnoreAspect</span><span> </span></span><span>{</span></div></div><div><div><div>4</div></div><div><span><span>    </span></span><span>@</span><span>Around</span><span>(</span><span>"@annotation(tenantIgnore)"</span><span>)</span></div></div><div><div><div>5</div></div><div><span>    </span><span>public</span><span> </span><span>Object</span><span> </span><span>around</span><span>(</span><span>ProceedingJoinPoint</span><span><span> </span><span>pjp</span><span>, </span></span><span>TenantIgnore</span><span><span> </span><span>tenantIgnore</span><span>)</span><span> </span></span><span>throws</span><span> </span><span>Throwable</span><span><span> </span><span>{</span></span></div></div><div><div><div>6</div></div><div><span>        </span><span>Long</span><span><span> </span><span>backup</span><span> </span></span><span><span>=</span><span> </span></span><span>TenantContext</span><span>.</span><span>get</span><span>();</span></div></div><div><div><div>7</div></div><div><span>        </span><span>TenantContext</span><span>.</span><span>remove</span><span>();          </span><span>// 置空 → 插件不追加条件</span></div></div><div><div><div>8</div></div><div><span>        </span><span>try</span><span> {</span></div></div><div><div><div>9</div></div><div><span>            </span><span>return</span><span> </span><span>pjp</span><span>.</span><span>proceed</span><span>();</span></div></div><div><div><div>10</div></div><div><span><span>        </span></span><span>} </span><span>finally</span><span> {</span></div></div><div><div><div>11</div></div><div><span>            </span><span>if</span><span><span> (backup </span><span>!=</span><span> </span></span><span>null</span><span>) </span><span>TenantContext</span><span>.</span><span>set</span><span>(backup);</span></div></div><div><div><div>12</div></div><div><span><span>        </span></span><span>}</span></div></div><div><div><div>13</div></div><div><span><span>    </span></span><span>}</span></div></div><div><div><div>14</div></div><div><span>}</span></div></div></code></pre><div><div></div><div></div></div></figure></div><p><strong>别用「插件直接关掉」的方式</strong>,要用<strong>显式注解声明</strong>,让越权查询在代码里可审计、可 grep。</p></section>]]></content>
     </entry>
     <entry>
       <id>https://shaio.top/posts/02ai%E6%98%AF%E5%A4%A9%E5%9D%91/harness/261025langchain/</id>
@@ -314,12 +524,12 @@
 </ol></section><section><h2>一句话记<a href="#一句话记"><span>#</span></a></h2><p>加载顺序上最大的差别是 <code>setup</code> 跑在 <code>beforeCreate</code> 之前，所以内部没有 <code>this</code>；而 <code>initState</code> 的五步顺序被兼容层保留，两版混用时的访问关系一致。响应式从 <code>Object.defineProperty</code> 换成 Proxy，computed 因此脱离组件实例；<code>watch</code> 新增了 <code>flush</code>、<code>stop</code> 句柄和 <code>onCleanup</code>，默认浅监听加 <code>pre</code> 时机这两条最容易写错。</p><p>兼容性上，Options API 由 <code>applyOptions</code> 完整保留，字符串模板还要挑带编译器的构建；被删的 <code>$on</code>、<code>filters</code>、<code>.sync</code>、<code>$set</code> 和整个组件库生态需要换代。<code>v-if</code> 与 <code>v-for</code> 的优先级反转、生命周期改名的静默失效，是升级时最不容易发现的两处。</p></section></section>]]></content>
     </entry>
     <entry>
-      <id>https://shaio.top/posts/02ai%E6%98%AF%E5%A4%A9%E5%9D%91/261022%E5%B9%BB%E8%A7%89%E7%8E%87%E4%BC%98%E5%8C%96/</id>
+      <id>https://shaio.top/posts/02ai%E6%98%AF%E5%A4%A9%E5%9D%91/%E5%B9%BB%E8%A7%89%E7%8E%87%E4%BC%98%E5%8C%96/</id>
       <title type="text">幻觉率怎么测</title>
       <published>2026-10-22T00:00:00.000Z</published>
       <updated>2026-10-22T00:00:00.000Z</updated>
       <author><name>沙海</name></author>
-      <link rel="alternate" href="https://shaio.top/posts/02ai%E6%98%AF%E5%A4%A9%E5%9D%91/261022%E5%B9%BB%E8%A7%89%E7%8E%87%E4%BC%98%E5%8C%96/"/>
+      <link rel="alternate" href="https://shaio.top/posts/02ai%E6%98%AF%E5%A4%A9%E5%9D%91/%E5%B9%BB%E8%A7%89%E7%8E%87%E4%BC%98%E5%8C%96/"/>
       <summary type="text">幻觉率的标注口径：参照系、claim 级判定、回答级三角、归因与门禁</summary>
       <content type="html"><![CDATA[<section><h1>幻觉率怎么测<a href="#幻觉率怎么测"><span>#</span></a></h1><p>幻觉率是标注口径的产物。口径不定死，同一套系统两个人能量出两个数，而说不出差在哪。下面这条链子把它拆成六步：参照系 → 判定单位 → 样本 → 指标 → 归因 → 门禁。顺序不能换，换掉任何一环，后面得到的数都是虚的。</p><section><h2>一、参照系：幻觉是相对谁说的<a href="#一参照系幻觉是相对谁说的"><span>#</span></a></h2><p>幻觉指断言与参照系冲突。参照系不同，测的就不是同一件事：</p><ul>
 <li>RAG 系统：检索到的证据</li>
@@ -1061,7 +1271,13 @@
 </ul></section><section><h2>5.2 内容形式（AI）<a href="#52-内容形式ai"><span>#</span></a></h2><ul>
 <li>图文文章</li>
 <li>视频/数字人</li>
-</ul></section><section><h2>5.3 素材管理<a href="#53-素材管理"><span>#</span></a></h2><ul>
+</ul><p><strong>生成质量调优</strong>：实测发现，同一提示词和文案方向在不同模型上的输出差异明显（见下图），提示词不能一次写定，需要持续迭代，模型选择上不能随意更换：</p><ol>
+<li><strong>提示词模板化</strong>：按内容类型 × 人设 × 平台拆分模板（如”临床医生人设·小红书·病例图文”），模板内固定证据引用格式与 5.4 禁用表述约束，并做版本管理。</li>
+<li><strong>按场景选模型</strong>：用同一批选题对候选模型做横向测试，按内容类型确定默认模型，模型更换后需重新测试。</li>
+<li><strong>人工反馈回写</strong>：审核时记录修改原因（事实错误、语气不符、违规表述、不够口语化等），按原因归类后回写到提示词模板。</li>
+<li><strong>数据校准</strong>：结合 8.1 的内容表现数据，对比不同模板/模型版本的收藏率、咨询率，保留表现好的版本。
+<img alt="" loading="lazy" width="1993" height="876" src="/_astro/Pasted%20image%2020261028173230.CdstwvE7_1McLm9.webp" /></li>
+</ol></section><section><h2>5.3 素材管理<a href="#53-素材管理"><span>#</span></a></h2><ul>
 <li>可基于 Emulsion</li>
 <li>AI 生图、改图、AI 视频</li>
 </ul></section><section><h2>5.4 合规审核机制<a href="#54-合规审核机制"><span>#</span></a></h2><blockquote><p>“基于官方标准做内容”需要落到流程里。产品的注册类别（兽药/兽用生物制品/医疗服务等）及对应的广告审查要求需法务确认，以下为流程框架。</p></blockquote><ol>
@@ -1164,13 +1380,346 @@
 </ul>
 </li>
 <li><strong>复盘节奏</strong>：周报看内容表现，月报看选品方向和指标达成。</li>
-</ol></section><section><h2>8.2 内容投流<a href="#82-内容投流"><span>#</span></a></h2><blockquote><p>根据内容发布后的数据自动投流。</p></blockquote><p>平台：</p><ul>
+</ol></section><section><h2>8.2 投流<a href="#82-投流"><span>#</span></a></h2><blockquote><p>根据内容发布后的数据自动投流。两类投流逻辑不同：内容平台投流是给已验证的内容加热，获取线索；电商站内投流是向有购买意图的人展示商品，直接带成交。</p></blockquote><section><h3>内容平台投流<a href="#内容平台投流"><span>#</span></a></h3><p>平台：</p><ul>
 <li>小红书：聚光/薯条</li>
 <li>微信：朋友圈/公众号（广告）/微信小程序</li>
-<li>抖音：千川/巨量投流</li>
-<li>电商站内：阿里妈妈（万相台）、京东（京准通）、抖音商城（千川商品推广）</li>
-<li>海外：Meta Ads/Google Ads</li>
-</ul><p>需考虑：预算控制、交易层面、各投流平台对接</p><p><strong>投流规则（建议）</strong>：只给已验证的内容加热。例如自然流量下收藏率、咨询率进入账号前 20% 的内容，才进入投流池；设定单条和每日预算上限，线索成本超过阈值自动停投。</p></section></section>
+<li>抖音：千川/巨量投流（内容加热）</li>
+<li>海外（三期）：
+<ol>
+<li>Meta Ads（Facebook/Instagram）</li>
+<li>Google Ads（搜索 + YouTube）</li>
+<li>TikTok Ads</li>
+<li>Reddit Ads（对应 3.3 采集，病种讨论集中，人群精准）</li>
+<li>X Ads、Pinterest Ads（Pinterest 以女性宠主为主，护理/营养类成本较低）</li>
+</ol>
+</li>
+</ul><p>需考虑：预算控制、交易层面、各投流平台对接</p><p><strong>投流规则（建议）</strong>：只给已验证的内容加热。例如自然流量下收藏率、咨询率进入账号前 20% 的内容，才进入投流池；设定单条和每日预算上限，线索成本超过阈值自动停投。</p></section><section><h3>电商平台投流<a href="#电商平台投流"><span>#</span></a></h3><p>平台：</p><ul>
+<li>国内：
+<ol>
+<li>阿里妈妈（万相台）：淘宝/天猫</li>
+<li>京东（京准通）</li>
+<li>抖音商城（千川商品推广）</li>
+<li>小红书店铺（聚光商品推广）</li>
+</ol>
+</li>
+<li>海外（三期）：
+<ol>
+<li>Amazon Ads（SP/SB/SD + DSP，关键词与 ASIN 定向）</li>
+<li>TikTok Shop Ads</li>
+<li>独立站：Google Shopping、Meta 目录广告（DPA）</li>
+<li>Walmart Connect、Chewy 等，视上架情况</li>
+</ol>
+</li>
+</ul><p>需考虑：只对 7.1 中”可直接购买”的商品投放；关键词与竞品 ASIN 词库可复用 3.6 采集结果；海外上架前先确认类目资质与可售性（生物制品/兽药类跨境存在准入限制，见第十章）。</p><p><strong>投流规则（建议）</strong>：按 ROI 而非线索成本控制。新品先小预算测关键词，商品页转化率达到店铺均值后再放量；ACoS/ROI 超过阈值自动降价或停投；退款率偏高的商品暂停投放，先修详情页。</p></section></section></section>
+<section><h1>九、分期规划<a href="#九分期规划"><span>#</span></a></h1>
+
+<table><thead><tr><th>阶段</th><th>时间（待定）</th><th>范围</th><th>验收标准</th></tr></thead><tbody><tr><td>一期 MVP</td><td>第 1～2 月</td><td>采集学术平台 + 2～3 个病种贴吧 + 竞品公众号；知识库与选题打分；AI 生成图文 + 合规审批；X 自动发布，公众号/小红书半自动；内容打标签和数据记录；电商店铺托底承接（商品页与客服以人工为主）</td><td>每周稳定输出选题清单和内容；数据能回填；内容带来的成交可追踪</td></tr><tr><td>二期</td><td>第 3～4 月</td><td>增加视频/数字人；扩展社区和协会来源；接入电商（评论/销量采集 + 商品页转化归因）；接入投流（小红书、微信、电商站内）；输出首份选品机会清单</td><td>线索成本可计算；选品清单被业务采纳</td></tr><tr><td>三期</td><td>第 5 月起</td><td>电商数据与选品模型打通；选品评估模型化；自动投流与预算控制；海外 Meta/Google Ads 与跨境店铺</td><td>选品方向经市场验证；投流 ROI 达标；复购可预测</td></tr></tbody></table></section>
+<section><h1>十、风险与待确认<a href="#十风险与待确认"><span>#</span></a></h1>
+
+<table><thead><tr><th>风险</th><th>影响</th><th>应对</th></tr></thead><tbody><tr><td>产品注册类别与广告审查要求不明确</td><td>内容和投流可能违规</td><td>一期前由法务确认，形成书面标准</td></tr><tr><td>微信社群、贴吧采集涉及平台规则与个人信息</td><td>法律与封禁风险</td><td>只采集公开内容，去除个人身份信息；社群以人工整理为主</td></tr><tr><td>国内平台无开放发布接口</td><td>自动发布不可行或封号</td><td>采用半自动发布（见 6.2）</td></tr><tr><td>电商类目与资质限制、详情页审查</td><td>商品无法上架或被下架，详情页违规</td><td>上架前核对平台类目与注册资质；不能公开售卖的改走咨询或医院渠道（见 7.1）</td></tr><tr><td>AI 生成内容出现事实错误</td><td>损害专业信任</td><td>证据挂载 + 专业人员审核</td></tr><tr><td>矩阵账号被判定为营销号</td><td>限流</td><td>控制产品内容比例，人设内容需真实可追溯</td></tr></tbody></table></section>
+<section><h1>附录：相似需求<a href="#附录相似需求"><span>#</span></a></h1><p><img alt="" loading="lazy" width="2305" height="1598" src="/_astro/Pasted%20image%2020261020225720.Dmce9iLw_Z1mWEN8.webp" /></p></section>]]></content>
+    </entry>
+    <entry>
+      <id>https://shaio.top/posts/%E8%BF%90%E8%90%A5/261029%E5%93%81%E7%89%8C%E8%BF%90%E8%90%A5c03/</id>
+      <title type="text">261020品牌运营c0.2</title>
+      <published>2026-10-20T00:00:00.000Z</published>
+      <updated>2026-10-20T00:00:00.000Z</updated>
+      <author><name>沙海</name></author>
+      <link rel="alternate" href="https://shaio.top/posts/%E8%BF%90%E8%90%A5/261029%E5%93%81%E7%89%8C%E8%BF%90%E8%90%A5c03/"/>
+      <summary type="text">宠物行业 AI 内容运营平台的功能梳理：信息聚合与信息发布。</summary>
+      <content type="html"><![CDATA[<blockquote><p>全局链路：<strong>信息聚合 → 提炼整合 → 内容生产 → 信息发布 → 电商承接 → 数据分析/投流</strong>。第三至八章按这条链路依次展开。</p></blockquote>
+<section><h1>一、前提<a href="#一前提"><span>#</span></a></h1><ul>
+<li>方法论：明确我的行业、我的产品、我的近期目标</li>
+<li>领域合规性：基于官方提供的标准做内容</li>
+<li>核心理念：宠物干细胞在大众思维里属于异种新兴治疗方案，需要大量临床实验等权威依据来打消宠物主人的顾虑。</li>
+</ul><section><h2>1.1 目标与衡量指标<a href="#11-目标与衡量指标"><span>#</span></a></h2><blockquote><p>平台的每个模块都要能对应到下面某个指标，否则不纳入一期。具体数值待定，下表为填写模板。</p></blockquote>
+
+<table><thead><tr><th>层级</th><th>指标</th><th>目标值（待定）</th></tr></thead><tbody><tr><td><a href="../Wiki/%E5%8C%97%E6%9E%81%E6%98%9F.md">北极星</a></td><td>有效线索数（私信咨询、医院合作意向、留资）</td><td></td></tr><tr><td>转化</td><td>咨询率 = 咨询数 / 阅读数；线索成本（投流后）</td><td></td></tr><tr><td>交易</td><td>成交转化率 = 下单数 / 商品页访问；客单价、复购率</td><td></td></tr><tr><td>内容</td><td>收藏率、互动率、完读率、涨粉数</td><td></td></tr><tr><td>效率</td><td>每周产出内容数、单条内容人工耗时、审批通过率</td><td></td></tr><tr><td>选品</td><td>每月输出的机会清单数、被采纳并验证的方向数</td><td></td></tr></tbody></table><p>选择原则：收藏率、咨询率比曝光更能反映”信任是否建立”，对医疗属性产品更重要。</p></section></section>
+<section><h1>二、整体实现路径<a href="#二整体实现路径"><span>#</span></a></h1><p>基于各个独立服务，逐步提炼、整合：</p><p>数据采集 → 提炼精选 → 润色 → 通过调用 Workbuddy 实现内容生成 → 人工审批 → 发布 → 数据复盘/投流</p><section><h2>2.1 系统模块<a href="#21-系统模块"><span>#</span></a></h2><div><div><div><div><span></span></div><div><span></span></div><div><span></span></div><div><span></span></div><div><span></span></div><div><span></span></div><div><span></span></div><div><span></span></div><div><span><p>回填权重</p></span></div><div><span></span></div><div><span><p>采集层<br /><br />学术/协会/社区/竞品/展会</p></span></div><div><span><p>知识库<br /><br />清洗·去重·水军过滤·打标签</p></span></div><div><span><p>分析引擎<br /><br />选题打分·选品评估</p></span></div><div><span><p>内容生成<br /><br />Workbuddy·Emulsion</p></span></div><div><span><p>合规审批<br /><br />敏感词·证据校验·人工审核</p></span></div><div><span><p>发布<br /><br />多平台·多账号</p></span></div><div><span><p>数据回收<br /><br />表现·线索</p></span></div><div><span><p>电商承接<br /><br />商品页·客服·下单</p></span></div><div><span><p>投流<br /><br />按表现加热</p></span></div>
+</div><div><div><span></span></div><div><span></span></div><div><span></span></div><div><span></span></div><div><span></span></div><div><span></span></div><div><span></span></div><div><span></span></div><div><span><p>回填权重</p></span></div><div><span></span></div><div><span><p>采集层<br /><br />学术/协会/社区/竞品/展会</p></span></div><div><span><p>知识库<br /><br />清洗·去重·水军过滤·打标签</p></span></div><div><span><p>分析引擎<br /><br />选题打分·选品评估</p></span></div><div><span><p>内容生成<br /><br />Workbuddy·Emulsion</p></span></div><div><span><p>合规审批<br /><br />敏感词·证据校验·人工审核</p></span></div><div><span><p>发布<br /><br />多平台·多账号</p></span></div><div><span><p>数据回收<br /><br />表现·线索</p></span></div><div><span><p>电商承接<br /><br />商品页·客服·下单</p></span></div><div><span><p>投流<br /><br />按表现加热</p></span></div>
+</div></div></div><p>关键是 G → C 这条回流线：内容表现数据要能反过来修正选题和选品的打分，平台才算”自动化运营”，否则只是自动化发布。</p></section></section>
+<section><h1>三、信息聚合<a href="#三信息聚合"><span>#</span></a></h1><blockquote><p>收集国内 / 海外各平台相关数据，聚合有用信息，用于 AI 做内容分析。</p></blockquote>
+
+<table><thead><tr><th>类别</th><th>来源</th><th>用途</th></tr></thead><tbody><tr><td>权威信息</td><td>机构与协会、学术平台</td><td>内容的专业依据</td></tr><tr><td>C 端信息</td><td>社区平台</td><td>用户痛点、热点话题</td></tr><tr><td>行业动态</td><td>竞争公司、展会</td><td>同行与市场动向</td></tr><tr><td>电商信息</td><td>电商平台</td><td>选品信号、竞品价格与详情页参考</td></tr></tbody></table><p><strong>采集策略</strong>：</p><ol>
+<li><strong>基于产品的 AI 动态拓词引擎（核心采集输入）</strong>：
+<ul>
+<li><strong>输入参数</strong>：产品基础信息（品名、核心成分如外泌体/软骨素/乳铁蛋白）、目标功效/适应场景（呼吸、皮肤、眼表、关节、老年退行性、干细胞/重疾等）、适用宠种、目标市场（国内中文 / 海外英文）。</li>
+<li><strong>AI 四层拓扑拓词网</strong>：
+<ul>
+<li><em>学术/机制层</em>（向上探底）：核心成分、生物学名词、英文缩写（如 MSC-Exosomes、上皮修复、抗纤维化），用于检索 PubMed、知网与专利库。</li>
+<li><em>临床病症层</em>（横向关联）：规范医学诊断、并发症（如角膜溃疡、猫疱疹病毒眼病 FHV-1、特应性皮炎 CAD、退行性关节炎），用于专业论坛与病例库。</li>
+<li><em>宠主口语痛点层</em>（向下翻译）：<strong>宠主第一视角症状描述与疑问</strong>（如“猫睁不开眼/流脓眼泪”、“走路上楼腿发软”、“频繁抓痒起红疹”、“猫喘气急肚子起伏”），用于小红书、贴吧、Reddit、Facebook 痛点求助帖抓取。</li>
+<li><em>竞品与替代场景层</em>（向外延伸）：市面竞品品牌词、常用药物、避坑词（如“某眼药水耐药”、“关节咀嚼片踩坑”），用于电商评论与踩坑舆情分析。</li>
+</ul>
+</li>
+<li><strong>动态闭环学习与自进化</strong>：从采集回的高赞帖子与高频评论中，AI 自动抽取高频新俚语、新竞品词与常见错别字，经确认后动态回填扩充该产品的关键词库。</li>
+</ul>
+</li>
+<li><strong>采集频率</strong>：社区平台每日；竞品公众号/官网每周；学术平台、专利库每周增量；电商平台（评论、销量、价格带、竞品详情页）每周；协会、展会按月或按会期。</li>
+<li><strong>统一字段</strong>：来源、链接、发布时间、作者/机构、正文摘要、互动数据（点赞/评论/收藏/引用）、病种标签、采集时间。字段统一后才能进入知识库做去重和打分。</li>
+<li><strong>可信度分层</strong>：学术/协会 &gt; 竞品官方 &gt; 社区内容。社区内容只作为”需求信号”，不作为内容论据。</li>
+</ol><section><h2>3.1 机构与协会<a href="#31-机构与协会"><span>#</span></a></h2><ul>
+<li>国内：
+<ol>
+<li>中国兽医协会（宠物诊疗分会）</li>
+<li>中国畜牧兽医学会小动物医学分会</li>
+<li>东西部小动物临床兽医师大会（WESAVC）</li>
+<li>北京/上海行业协会</li>
+<li>宠医客等。</li>
+</ol>
+</li>
+<li>国际：
+<ol>
+<li>WSAVA（世界小动物兽医师协会）</li>
+<li>AAHA（美国动物医院协会）</li>
+<li>AVMA（美国兽医协会）</li>
+</ol>
+</li>
+</ul></section><section><h2>3.2 学术平台<a href="#32-学术平台"><span>#</span></a></h2><blockquote><p>通过关键词检索相关学术文章，采集论文信息及浏览量、引用量、检索量等数据。</p></blockquote><ol>
+<li>PubMed</li>
+<li>ScienceDirect</li>
+<li>CNKI 知网</li>
+<li>Google Scholar</li>
+</ol><p><img alt="" loading="lazy" width="2454" height="1567" src="/_astro/Pasted%20image%2020261020225747.DW-LP9MB_1NxvQb.webp" /></p></section><section><h2>3.3 社区/社群平台<a href="#33-社区社群平台"><span>#</span></a></h2><blockquote><p>针对领域搜索相关板块，采集论坛及相关平台数据，收集潜在用户对于宠物情况的需求。</p></blockquote><ul>
+<li>国内：
+<ol>
+<li>小红书</li>
+<li>知乎</li>
+<li>公众号</li>
+<li>微博</li>
+<li>豆瓣</li>
+<li><strong>贴吧：猫传腹吧、猫慢性肾衰吧、犬髋关节发育不良（CHD）吧、骨科/神经疾病讨论区</strong></li>
+<li><strong>微信社群：老年宠护理群、瘫痪犬猫轮椅康复群</strong></li>
+</ol>
+</li>
+<li>海外：
+<ol>
+<li>Reddit</li>
+<li>X</li>
+<li>Facebook</li>
+</ol>
+</li>
+<li>专业论坛：
+<ol>
+<li>TheCatSite Forum</li>
+<li>Golden Retriever Forum</li>
+</ol>
+</li>
+</ul></section><section><h2>3.4 竞争公司<a href="#34-竞争公司"><span>#</span></a></h2><blockquote><p>收集同类公司同类产品最新资讯，信息提炼。来源：公众号、官网等。</p></blockquote><ol>
+<li>专利与科研立项公开库（企查查/专利局监控同行研发动态）</li>
+<li>企业融资动态</li>
+<li>招聘信息</li>
+</ol></section><section><h2>3.5 展会<a href="#35-展会"><span>#</span></a></h2><blockquote><p>关注展会信息、同行、行业动态。</p></blockquote><ul>
+<li>国内：
+<ol>
+<li>亚洲宠物展（亚宠展）</li>
+</ol>
+</li>
+<li>国外：
+<ol>
+<li>Global Pet Expo（北美奥兰多全球宠物展）</li>
+<li>Interzoo（德国纽伦堡展，全球最大）</li>
+<li>VET Show（伦敦/纽约国际兽医年会）</li>
+<li>SuperZoo（拉斯维加斯）</li>
+</ol>
+</li>
+</ul><p><img alt="" loading="lazy" width="1040" height="1058" src="/_astro/Pasted%20image%2020261020194724.DV2PMcYS_Z19UVhz.webp" /></p></section><section><h2>3.6 电商平台<a href="#36-电商平台"><span>#</span></a></h2><blockquote><p>部分产品支持客户直接购买，电商既是信息源，也是本平台的转化通路（运营侧见第七章）。</p></blockquote><ul>
+<li>国内：
+<ol>
+<li>淘宝/天猫</li>
+<li>京东</li>
+<li>抖音商城 / 小红书店铺</li>
+<li>拼多多</li>
+</ol>
+</li>
+<li>海外：
+<ol>
+<li>亚马逊</li>
+<li>TikTok Shop</li>
+<li>独立站（Shopify）</li>
+</ol>
+</li>
+</ul><p><strong>采集内容</strong>：</p><ol>
+<li>同类产品评论（真实反馈与差评点，是需求强度和”不敢买”原因的直读信号）</li>
+<li>销量/评价量、价格带与促销节奏</li>
+<li>竞品详情页结构与宣称方式（对照 5.4 判断哪些表述不能跟）</li>
+</ol><blockquote><p>说明：电商评论、销量、价格带是选品的直接信号（见 4.3）。一期可用人工抽样 + 少量脚本采集，二期接入系统化采集，并与自有店铺数据共用字段口径（见 7.5）。</p></blockquote></section></section>
+<section><h1>四、提炼整合<a href="#四提炼整合"><span>#</span></a></h1><blockquote><p>类似于 RAG：基于第三章各来源数据，提炼值得注意的内容、选品、加大宣传的方向，并注明信息来源依据。</p></blockquote><section><h2>4.1 核心功能<a href="#41-核心功能"><span>#</span></a></h2><ul>
+<li><strong>水军识别</strong>：识别社交平台主题（帖子/视频）及其评论、子评论内容的疑似水军概率。</li>
+<li><strong>热点抓取</strong>：基于实时、高点赞、高浏览的信息做回复量分析，并结合水军识别过滤。</li>
+</ul><p><strong>水军识别信号</strong>（规则初筛 + AI 判断，输出疑似概率）：</p>
+
+<table><thead><tr><th>层面</th><th>信号</th></tr></thead><tbody><tr><td>账号</td><td>注册时间短、头像/昵称模板化、历史内容集中在单一产品、粉丝少但发帖频繁</td></tr><tr><td>内容</td><td>评论文本高度相似、品牌名/产品名密集出现、缺少具体细节（病程、用药、时间）</td></tr><tr><td>行为</td><td>短时间内集中出现、点赞与评论比例异常、多账号互相回复</td></tr></tbody></table><p>概率高于阈值的内容不计入热度和共鸣度；竞品集中出现的水军也可作为竞品投放动向的信号。</p></section><section><h2>4.2 选题方法（初版，待数据验证）<a href="#42-选题方法初版待数据验证"><span>#</span></a></h2><blockquote><p>回答”如何提炼到有用的内容，提高内容成为流量爆款的概率？“。以下为初始方法，权重需用第七章的数据持续校准。</p></blockquote><p><strong>选题公式</strong>：选题 = 真实痛点 × 权威证据 × 合适人设</p><ol>
+<li><strong>挖痛点</strong>：从社区平台抓取高互动帖（过滤水军后），用 AI 抽取用户的原始问题，按病种和问题类型聚类（如”猫传腹还有没有办法""肾衰能活多久""手术后瘫痪能恢复吗”）。</li>
+<li><strong>配证据</strong>：每个问题簇到知识库匹配文献/临床依据，按证据等级标注（见 4.3）。没有证据支撑的问题只做情感陪伴类内容，不做疗效类内容。</li>
+<li><strong>定人设</strong>：
+<ul>
+<li>疗效/机制类 → 专家/研发人设</li>
+<li>诊疗方案/病例类 → 临床医生人设</li>
+<li>康复过程/情感类 → 宠主故事人设</li>
+</ul>
+</li>
+<li><strong>做测试</strong>：同一选题生成 3～5 个标题/封面版本，小流量发布或在矩阵账号间 A/B，表现好的再放量、投流。</li>
+</ol><p><strong>选题打分（用于排序）</strong>：</p><span><span><span>选题分=w1⋅热度+w2⋅共鸣度+w3⋅证据强度+w4⋅竞争空白\text{选题分} = w_1 \cdot \text{热度} + w_2 \cdot \text{共鸣度} + w_3 \cdot \text{证据强度} + w_4 \cdot \text{竞争空白}</span><span><span><span></span><span><span>选题分</span></span><span></span><span>=</span><span></span></span><span><span></span><span><span>w</span><span><span><span><span><span><span></span><span><span>1</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>⋅</span><span></span></span><span><span></span><span><span>热度</span></span><span></span><span>+</span><span></span></span><span><span></span><span><span>w</span><span><span><span><span><span><span></span><span><span>2</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>⋅</span><span></span></span><span><span></span><span><span>共鸣度</span></span><span></span><span>+</span><span></span></span><span><span></span><span><span>w</span><span><span><span><span><span><span></span><span><span>3</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>⋅</span><span></span></span><span><span></span><span><span>证据强度</span></span><span></span><span>+</span><span></span></span><span><span></span><span><span>w</span><span><span><span><span><span><span></span><span><span>4</span></span></span></span><span>​</span></span><span><span><span></span></span></span></span></span></span><span></span><span>⋅</span><span></span></span><span><span></span><span><span>竞争空白</span></span></span></span></span></span><ul>
+<li>热度：讨论量及近 30 天增速</li>
+<li>共鸣度：收藏/评论比、评论中”求助""同款”类表达占比</li>
+<li>证据强度：可引用文献的数量和等级</li>
+<li>竞争空白：同平台同题材头部内容数量（越少越高）</li>
+<li>初始权重可设为均等，跑满一个月后按实际表现回归调整</li>
+</ul><p><strong>内容配比（建议初值）</strong>：科普/机制 40%、病例/康复故事 40%、产品相关 20%。产品内容占比过高会削弱矩阵账号的信任感。</p></section><section><h2>4.3 选品机会评估<a href="#43-选品机会评估"><span>#</span></a></h2><blockquote><p>目标：每周/每月输出一份”选品与宣传方向机会清单”，每条附信息来源。</p></blockquote><p><strong>评估维度</strong>：</p>
+
+<table><thead><tr><th>维度</th><th>信号来源</th><th>说明</th></tr></thead><tbody><tr><td>合规可行性</td><td>法务/官方标准</td><td><strong>一票否决</strong>：不能合法宣传的方向直接剔除</td></tr><tr><td>需求强度</td><td>社区平台、（二期）电商评论</td><td>病种讨论量、求助帖数量、增长趋势</td></tr><tr><td>证据强度</td><td>学术平台、协会</td><td>见下方证据分级</td></tr><tr><td>竞争格局</td><td>竞争公司、展会、专利</td><td>竞品是否已布局、宣传力度</td></tr><tr><td>商业价值</td><td>内部数据、医院合作方</td><td>客单价、复购/疗程、医院渠道可达性</td></tr></tbody></table><p><strong>证据分级</strong>（决定内容能说到什么程度）：</p><ol>
+<li>A 级：系统综述、随机对照试验 → 可作为核心论据</li>
+<li>B 级：队列研究、多中心病例系列 → 可引用，需注明样本量</li>
+<li>C 级：个案报道、体外/实验动物研究 → 只能表述为”研究探索中”</li>
+<li>D 级：无文献，仅经验或用户反馈 → 不作疗效表述</li>
+</ol><p><strong>产出格式</strong>（每条机会）：方向名称、目标病种、各维度评分、关键证据链接、竞品情况、建议动作（加大宣传/观察/放弃）。</p></section></section>
+<section><h1>五、内容生产<a href="#五内容生产"><span>#</span></a></h1><section><h2>5.1 内容类型<a href="#51-内容类型"><span>#</span></a></h2><ul>
+<li><strong>软文/科普</strong>：用于知乎、小红书推广。对接企业知识库整理，移除关键敏感内容，生成大众可接受的语义和内容，适当做专业名词科普。发布主体：矩阵账号、官方账号。</li>
+<li><strong>产品推广</strong>：由主体账号发布。</li>
+</ul></section><section><h2>5.2 内容形式（AI）<a href="#52-内容形式ai"><span>#</span></a></h2><ul>
+<li>图文文章</li>
+<li>视频/数字人</li>
+</ul><p><strong>生成质量调优</strong>：实测发现，同一提示词和文案方向在不同模型上的输出差异明显（见下图），提示词不能一次写定，需要持续迭代，模型选择上不能随意更换：</p><ol>
+<li><strong>提示词模板化</strong>：按内容类型 × 人设 × 平台拆分模板（如”临床医生人设·小红书·病例图文”），模板内固定证据引用格式与 5.4 禁用表述约束，并做版本管理。</li>
+<li><strong>按场景选模型</strong>：用同一批选题对候选模型做横向测试，按内容类型确定默认模型，模型更换后需重新测试。</li>
+<li><strong>人工反馈回写</strong>：审核时记录修改原因（事实错误、语气不符、违规表述、不够口语化等），按原因归类后回写到提示词模板。</li>
+<li><strong>数据校准</strong>：结合 8.1 的内容表现数据，对比不同模板/模型版本的收藏率、咨询率，保留表现好的版本。
+<img alt="" loading="lazy" width="1993" height="876" src="/_astro/Pasted%20image%2020261028173230.CdstwvE7_1McLm9.webp" /></li>
+</ol></section><section><h2>5.3 素材管理<a href="#53-素材管理"><span>#</span></a></h2><ul>
+<li>可基于 Emulsion</li>
+<li>AI 生图、改图、AI 视频</li>
+</ul></section><section><h2>5.4 合规审核机制<a href="#54-合规审核机制"><span>#</span></a></h2><blockquote><p>“基于官方标准做内容”需要落到流程里。产品的注册类别（兽药/兽用生物制品/医疗服务等）及对应的广告审查要求需法务确认，以下为流程框架。</p></blockquote><ol>
+<li><strong>禁用表述库</strong>：维护敏感词与禁用说法清单（如”治愈""根治""100%有效""无副作用”、与竞品贬低性对比等），生成阶段即过滤。</li>
+<li><strong>宣称必须带证据</strong>：凡涉及疗效、机制的句子，必须挂上知识库中的来源，并符合 4.3 的证据分级；无来源的宣称自动标红退回。</li>
+<li><strong>分级审批</strong>：
+<ul>
+<li>科普/故事类：AI 自检 + 运营人工审核</li>
+<li>疗效/产品类：AI 自检 + 运营审核 + 专业人员（兽医/研发）审核</li>
+<li>广告投放素材：额外经法务确认</li>
+</ul>
+</li>
+<li><strong>病例与隐私</strong>：宠主案例需取得授权，医院病例需脱敏。</li>
+<li><strong>留痕</strong>：每条内容保存生成版本、修改记录、审批人和引用来源，便于追溯。</li>
+<li><strong>AI 生成标识</strong>：按各平台规则标注 AI 生成内容。</li>
+</ol></section></section>
+<section><h1>六、信息发布<a href="#六信息发布"><span>#</span></a></h1><blockquote><p>聚焦国内外自媒体发布：基于聚合内容自动发布吸引读者的内容。需对接各发布平台的发布接口。</p></blockquote><section><h2>6.1 账号体系<a href="#61-账号体系"><span>#</span></a></h2><blockquote><p>多平台账户管理，不同账号属性发布不同内容。</p></blockquote><ul>
+<li><strong>矩阵账号</strong>：发布科普/权威实事，以公众号/小红书为主，并做海外宣传，扩散影响力。账号人设：
+<ul>
+<li>专家/研发人设</li>
+<li>临床医生/合作医院视角</li>
+<li>宠主故事/救助视角（成功案例）</li>
+</ul>
+</li>
+<li><strong>主体账号</strong>：产品推广</li>
+</ul><p><strong>人设运营方法</strong>：</p>
+
+<table><thead><tr><th>人设</th><th>内容重点</th><th>建议频率（初值）</th><th>信任来源</th></tr></thead><tbody><tr><td>专家/研发</td><td>文献解读、机制科普、行业进展、展会见闻</td><td>每周 1～2 条</td><td>学历/机构背景、引用文献</td></tr><tr><td>临床医生</td><td>病种科普、诊疗方案对比、病例观察、答疑</td><td>每周 2～3 条</td><td>执业资质、合作医院</td></tr><tr><td>宠主故事</td><td>康复全过程、日常护理、情绪陪伴</td><td>每周 2～3 条</td><td>连续记录、真实细节</td></tr><tr><td>主体账号</td><td>产品信息、品牌动态、合作医院</td><td>每周 1～2 条</td><td>官方资质</td></tr></tbody></table><p>原则：</p><ul>
+<li>人设必须有真实人员或授权案例对应，不虚构医生和宠主身份。</li>
+<li>矩阵账号之间不直接互推产品，通过话题和评论区自然关联到主体账号。</li>
+<li>同一选题可在不同人设间做不同角度的改写，提高素材复用率。</li>
+</ul></section><section><h2>6.2 发布平台<a href="#62-发布平台"><span>#</span></a></h2><ul>
+<li>国内（以公众号、小红书为主要运营平台）：
+<ul>
+<li>公众号/视频号</li>
+<li>小红书</li>
+<li>抖音</li>
+</ul>
+</li>
+<li>海外：
+<ul>
+<li>X（目前可实现自动化发布）</li>
+<li>Reddit</li>
+<li>TikTok</li>
+</ul>
+</li>
+</ul><p><strong>自动化可行性</strong>（决定一期的发布方式，具体以各平台当前规则为准）：</p>
+
+<table><thead><tr><th>平台</th><th>方式</th><th>说明</th></tr></thead><tbody><tr><td>X</td><td>全自动</td><td>已有官方 API</td></tr><tr><td>公众号</td><td>半自动</td><td>生成草稿 → 人工确认发布</td></tr><tr><td>小红书 / 抖音</td><td>半自动</td><td>无开放的个人发布接口，模拟操作有封号风险；生成内容包，人工发布</td></tr><tr><td>Reddit</td><td>半自动</td><td>社区对营销内容敏感，需人工把控</td></tr></tbody></table></section><section><h2>6.3 发布流程<a href="#63-发布流程"><span>#</span></a></h2><p><strong>AI 托管</strong> + 流程审批（人工介入）</p><p>内容状态流转：</p><div><div><div><div><span></span></div><div><span></span></div><div><span><p>不通过</p></span></div><div><span></span></div><div><span><p>退回</p></span></div><div><span></span></div><div><span></span></div><div><span></span></div><div><span><p>选题池</p></span></div><div><span><p>AI 生成草稿</p></span></div><div><span><p>合规自检</p></span></div><div><span><p>人工审批</p></span></div><div><span><p>排期</p></span></div><div><span><p>发布</p></span></div><div><span><p>数据跟踪</p></span></div>
+</div><div><div><span></span></div><div><span></span></div><div><span><p>不通过</p></span></div><div><span></span></div><div><span><p>退回</p></span></div><div><span></span></div><div><span></span></div><div><span></span></div><div><span><p>选题池</p></span></div><div><span><p>AI 生成草稿</p></span></div><div><span><p>合规自检</p></span></div><div><span><p>人工审批</p></span></div><div><span><p>排期</p></span></div><div><span><p>发布</p></span></div><div><span><p>数据跟踪</p></span></div>
+</div></div></div><ul>
+<li><strong>排期</strong>：按平台维护内容日历，初期参考各平台常见活跃时段，之后用 7.1 的数据更新。</li>
+<li><strong>评论区运营</strong>：发布后 24h 内由 AI 起草回复、人工确认；涉及病情咨询的私信统一引导至专业人员，不由 AI 直接给出诊疗建议。</li>
+</ul></section><section><h2>6.4 外部合作<a href="#64-外部合作"><span>#</span></a></h2><ul>
+<li>宠物细胞部分产品属于医疗类目，可联合相关医院做进一步推广和内容发布；</li>
+<li>与同领域自媒体账号合作发布。</li>
+</ul><p><strong>医院合作模式</strong>：</p><ol>
+<li>联合病例：医院提供脱敏病例与随访数据，双方共同署名发布。</li>
+<li>医生专栏：合作医生以个人身份在矩阵账号或自有账号输出科普。</li>
+<li>线下转化：内容中的咨询线索按地域分配给合作医院，线索去向用于评估合作效果。</li>
+</ol><p><strong>KOL/KOC 筛选</strong>：</p><ul>
+<li>粉丝画像与目标病种匹配（看评论区是否有真实病宠主人，而不是只看粉丝数）</li>
+<li>过往内容无夸大疗效、无违规记录</li>
+<li>用 4.1 的水军识别方法检查其评论区数据真实性</li>
+<li>优先腰部和垂直病种博主，按单条效果（收藏、咨询）结算或复投</li>
+</ul></section></section>
+<section><h1>七、电商平台运营<a href="#七电商平台运营"><span>#</span></a></h1><blockquote><p>部分产品支持客户直接购买，电商是一条独立的转化通路，同时承接第六章内容带来的流量。本章管交易侧（商品分层、商品页、客服、评价与复购），内容生产仍走第五章。</p></blockquote><section><h2>7.1 商品分层与渠道<a href="#71-商品分层与渠道"><span>#</span></a></h2><p>不同商品的可宣传程度和决策成本不同，先分层再定渠道，避免在公域对需诊疗决策的产品做疗效宣称。</p>
+
+<table><thead><tr><th>商品类型</th><th>决策方式</th><th>主渠道</th><th>内容口径</th></tr></thead><tbody><tr><td>可直接购买（护理/营养/日常保健等）</td><td>看详情页即可下单</td><td>天猫/京东/抖音商城/小红书店铺</td><td>按非医疗类目表述，可用 4.3 的 A/B 级证据做机制科普</td></tr><tr><td>需咨询后购买（疗程/治疗相关）</td><td>先咨询再下单</td><td>矩阵账号私信 → 专业咨询 → 定向链接</td><td>不做公开疗效承诺，页面按注册类别表述</td></tr><tr><td>医院渠道产品</td><td>由合作医院开单</td><td>不走 C 端店铺</td><td>见 6.4</td></tr></tbody></table><p>原则：<strong>能合法上架的在店铺卖，不能公开售卖的走咨询或医院渠道</strong>；同一产品不在两套口径下同时出现。</p></section><section><h2>7.2 店铺与商品页<a href="#72-店铺与商品页"><span>#</span></a></h2><ul>
+<li><strong>商品结构</strong>：引流款（低客单试用）+ 主推款 + 复购款（疗程装/组合装）。价格带先对齐竞品（见 3.6 采集），再测溢价空间。</li>
+<li><strong>详情页要素</strong>：成分与作用机制（按证据分级表述）、适用对象与禁忌、使用方法与周期、资质与批号、售后与咨询入口。</li>
+<li><strong>合规</strong>：详情页与主图文案走 5.4 同一套审核，并需再过平台类目审核（通常比内容平台更严）；禁用表述库在商品侧同样生效。</li>
+<li><strong>素材复用</strong>：详情页图片/短视频取自 5.3 素材库，一条科普素材可拆成详情页模块与社媒内容两版。</li>
+</ul></section><section><h2>7.3 咨询与客服承接<a href="#73-咨询与客服承接"><span>#</span></a></h2><p>链路：内容/商品页 → 咨询（私信/客服/企微）→ 判断是否适用 → 下单 → 售后与复购</p><ul>
+<li>客服话术由 AI 起草、人工确认；涉及病情、用药、剂量的一律转专业咨询（同 6.3）。</li>
+<li>咨询记录保留来源标记（哪篇内容、哪个平台、是否投流），用于第八章的线索归因。</li>
+<li>不做”先承诺效果再下单”的话术：退款与效果争议是医疗类目店铺的主要投诉来源。</li>
+</ul></section><section><h2>7.4 评价与复购<a href="#74-评价与复购"><span>#</span></a></h2><ul>
+<li><strong>评价运营</strong>：差评与”问大家”中的高频问题，反哺详情页 FAQ 和选题池——真实顾虑往往就是最好的选题。</li>
+<li><strong>复购</strong>：按疗程/使用周期设复购提醒；复购率作为商业价值信号回填 4.3。</li>
+<li><strong>私域承接</strong>：高意向客户引导至企微/社群，用于长期随访与案例素材（需授权，见 5.4）。</li>
+</ul></section><section><h2>7.5 电商数据与归因<a href="#75-电商数据与归因"><span>#</span></a></h2><ul>
+<li>指标：商品页访问、加购率、下单转化率、客单价、退款率、复购率、评价分。</li>
+<li>归因：内容与投流统一带渠道参数，回收”哪类内容/人设/病种最终带来成交”，回填 4.2 选题权重与 4.3 选品评分。</li>
+<li>与 3.6 共用一套字段口径，采集到的竞品销量/价格带可直接与本店数据对比。</li>
+<li>库存、发货、售后在一期由现有电商团队承接，平台只做数据与素材对接（见第九章）。</li>
+</ul></section></section>
+<section><h1>八、数据分析与投流<a href="#八数据分析与投流"><span>#</span></a></h1><section><h2>8.1 数据分析<a href="#81-数据分析"><span>#</span></a></h2><p>复盘、方案改进。</p><ul>
+<li>维度：内容审计、发布时间；电商侧看商品页转化、退款与复购</li>
+<li>其他数据分析平台（待补充）</li>
+</ul><p><strong>数据回流方法</strong>：</p><ol>
+<li><strong>内容打标签</strong>：每条内容发布时记录病种、人设、形式（图文/视频）、标题钩子类型（提问/数字/故事/反常识）、证据等级、发布时间、账号。</li>
+<li><strong>统一采集指标</strong>：按 1.1 的指标体系，发布后 24h / 72h / 7d 各采集一次。</li>
+<li><strong>按标签归因</strong>：每周对比各标签组合的收藏率、咨询率，找出表现好的组合。</li>
+<li><strong>回填权重</strong>：
+<ul>
+<li>表现好的病种 → 提高选题打分中的热度/共鸣权重，并作为选品清单的需求信号</li>
+<li>表现好的人设/形式 → 调整内容配比</li>
+<li>表现好的发布时间 → 更新各平台排期</li>
+</ul>
+</li>
+<li><strong>复盘节奏</strong>：周报看内容表现，月报看选品方向和指标达成。</li>
+</ol></section><section><h2>8.2 投流<a href="#82-投流"><span>#</span></a></h2><blockquote><p>根据内容发布后的数据自动投流。两类投流逻辑不同：内容平台投流是给已验证的内容加热，获取线索；电商站内投流是向有购买意图的人展示商品，直接带成交。</p></blockquote><section><h3>内容平台投流<a href="#内容平台投流"><span>#</span></a></h3><p>平台：</p><ul>
+<li>小红书：聚光/薯条</li>
+<li>微信：朋友圈/公众号（广告）/微信小程序</li>
+<li>抖音：千川/巨量投流（内容加热）</li>
+<li>海外（三期）：
+<ol>
+<li>Meta Ads（Facebook/Instagram）</li>
+<li>Google Ads（搜索 + YouTube）</li>
+<li>TikTok Ads</li>
+<li>Reddit Ads（对应 3.3 采集，病种讨论集中，人群精准）</li>
+<li>X Ads、Pinterest Ads（Pinterest 以女性宠主为主，护理/营养类成本较低）</li>
+</ol>
+</li>
+</ul><p>需考虑：预算控制、交易层面、各投流平台对接</p><p><strong>投流规则（建议）</strong>：只给已验证的内容加热。例如自然流量下收藏率、咨询率进入账号前 20% 的内容，才进入投流池；设定单条和每日预算上限，线索成本超过阈值自动停投。</p></section><section><h3>电商平台投流<a href="#电商平台投流"><span>#</span></a></h3><p>平台：</p><ul>
+<li>国内：
+<ol>
+<li>阿里妈妈（万相台）：淘宝/天猫</li>
+<li>京东（京准通）</li>
+<li>抖音商城（千川商品推广）</li>
+<li>小红书店铺（聚光商品推广）</li>
+</ol>
+</li>
+<li>海外（三期）：
+<ol>
+<li>Amazon Ads（SP/SB/SD + DSP，关键词与 ASIN 定向）</li>
+<li>TikTok Shop Ads</li>
+<li>独立站：Google Shopping、Meta 目录广告（DPA）</li>
+<li>Walmart Connect、Chewy 等，视上架情况</li>
+</ol>
+</li>
+</ul><p>需考虑：只对 7.1 中”可直接购买”的商品投放；关键词与竞品 ASIN 词库可复用 3.6 采集结果；海外上架前先确认类目资质与可售性（生物制品/兽药类跨境存在准入限制，见第十章）。</p><p><strong>投流规则（建议）</strong>：按 ROI 而非线索成本控制。新品先小预算测关键词，商品页转化率达到店铺均值后再放量；ACoS/ROI 超过阈值自动降价或停投；退款率偏高的商品暂停投放，先修详情页。</p></section></section></section>
 <section><h1>九、分期规划<a href="#九分期规划"><span>#</span></a></h1>
 
 <table><thead><tr><th>阶段</th><th>时间（待定）</th><th>范围</th><th>验收标准</th></tr></thead><tbody><tr><td>一期 MVP</td><td>第 1～2 月</td><td>采集学术平台 + 2～3 个病种贴吧 + 竞品公众号；知识库与选题打分；AI 生成图文 + 合规审批；X 自动发布，公众号/小红书半自动；内容打标签和数据记录；电商店铺托底承接（商品页与客服以人工为主）</td><td>每周稳定输出选题清单和内容；数据能回填；内容带来的成交可追踪</td></tr><tr><td>二期</td><td>第 3～4 月</td><td>增加视频/数字人；扩展社区和协会来源；接入电商（评论/销量采集 + 商品页转化归因）；接入投流（小红书、微信、电商站内）；输出首份选品机会清单</td><td>线索成本可计算；选品清单被业务采纳</td></tr><tr><td>三期</td><td>第 5 月起</td><td>电商数据与选品模型打通；选品评估模型化；自动投流与预算控制；海外 Meta/Google Ads 与跨境店铺</td><td>选品方向经市场验证；投流 ROI 达标；复购可预测</td></tr></tbody></table></section>
@@ -2069,22 +2618,22 @@ Both docs matter for exactly what we’ve been fighting. Let me record the actio
 <section><h2>插件<a href="#插件"><span>#</span></a></h2><div><figure><figcaption></figcaption><pre><code><div><div><div>1</div></div><div><span>npm install -g dsh-bash-terminal</span></div></div></code></pre><div><div></div><div></div></div></figure></div><p> </p><p> </p></section>]]></content>
     </entry>
     <entry>
-      <id>https://shaio.top/posts/02ai%E6%98%AF%E5%A4%A9%E5%9D%91/rag/rag01/</id>
-      <title type="text">rag01</title>
+      <id>https://shaio.top/posts/02ai%E6%98%AF%E5%A4%A9%E5%9D%91/rag/rag/</id>
+      <title type="text">RAG</title>
       <published>2026-09-02T00:00:00.000Z</published>
       <updated>2026-09-02T00:00:00.000Z</updated>
       <author><name>沙海</name></author>
-      <link rel="alternate" href="https://shaio.top/posts/02ai%E6%98%AF%E5%A4%A9%E5%9D%91/rag/rag01/"/>
+      <link rel="alternate" href="https://shaio.top/posts/02ai%E6%98%AF%E5%A4%A9%E5%9D%91/rag/rag/"/>
       <summary type="text">rag01</summary>
-      <content type="html"><![CDATA[<section><h1>RAG01<a href="#rag01"><span>#</span></a></h1><p>Retrieval-Augmented-Generation（检索增强生成）</p><hr /><p><strong>先从资料库里检索相关内容</strong></p><p><strong>再基于这些内容来生成答案</strong></p><hr /><section><h2>实现原理<a href="#实现原理"><span>#</span></a></h2><p>分片 → 索引 → 召回 → 重排 → 生成</p><p> </p><hr /><p>提问前链路</p><p>分片 → 索引</p><hr /><p>提问后链路</p><p>召回 → 重排 → 生成</p><p> </p></section><section><h2>分片<a href="#分片"><span>#</span></a></h2><p>把文档切割成多个片段，可以使用多种切分方式，如按页码、段落</p><p> </p></section><section><h2>索引<a href="#索引"><span>#</span></a></h2><ol>
+      <content type="html"><![CDATA[<section><h1>RAG01<a href="#rag01"><span>#</span></a></h1><p>Retrieval-Augmented-Generation（检索增强生成）</p><hr /><p><strong>先从资料库里检索相关内容</strong></p><p><strong>再基于这些内容来生成答案</strong></p><hr /><section><h2>实现原理<a href="#实现原理"><span>#</span></a></h2><p>分片 → 索引 → 召回 → 重排 → 生成</p><hr /><p>提问前链路</p><p>分片 → 索引</p><hr /><p>提问后链路</p><p>召回 → 重排 → 生成</p></section><section><h2>分片<a href="#分片"><span>#</span></a></h2><p>把文档切割成多个片段，可以使用多种切分方式，如按页码、段落</p></section><section><h2>索引<a href="#索引"><span>#</span></a></h2><ol>
 <li>通过<strong>Embedding</strong>将片段文本转换为<strong>向量</strong></li>
 <li>将片段文本和片段向量存入<strong>向量数据库</strong>中</li>
-</ol><p> </p><section><h3>向量<a href="#向量"><span>#</span></a></h3><img src="../../assets/cf63513a-1a85-48f1-bdb8-5fc555629bb6.png" alt="image.png" width="517" height="70" /><img src="../../assets/a339868a-35d2-42a9-a3ac-a7c1d75c1e45.png" alt="image.png" width="405" height="212" /><img src="../../assets/e521dcde-59c5-4ef8-b4ff-841e8408eaf7.png" alt="image.png" width="365" height="215" /><p> </p></section><section><h3>Embedding<a href="#embedding"><span>#</span></a></h3><img src="../../assets/5f55f973-4245-40eb-945e-f2cb4b0604d3.png" alt="image.png" width="465" height="316" /><p><a href="https://huggingface.co/spaces/mteb/" target="_blank">https://huggingface.co/spaces/mteb/</a></p><p> </p></section><section><h3>向量数据库<a href="#向量数据库"><span>#</span></a></h3><p>用于存储和查询<strong>向量</strong>的数据库</p><p></p><figure><img alt="image.png" loading="lazy" width="1067" height="295" src="/_astro/32e01820-7268-40cc-b100-1b50b70f2d38.DgQRH83__Z1L8e7P.webp" /><figcaption>image.png</figcaption></figure><p></p><p></p><figure><img alt="image.png" loading="lazy" width="1056" height="428" src="/_astro/4bf195e9-bf6a-49f1-b2a5-0879802141a2.CBL-3hO__2qGu43.webp" /><figcaption>image.png</figcaption></figure><p></p><p> </p></section></section><section><h2>召回<a href="#召回"><span>#</span></a></h2><p>搜索与用户问题相关的片段</p><p></p><figure><img alt="image.png" loading="lazy" width="1088" height="505" src="/_astro/010de908-163a-405e-b8fa-6266f274b817.BT6MOAhh_22uHaz.webp" /><figcaption>image.png</figcaption></figure><p></p><p>计算向量相似度</p><ul>
+</ol><section><h3>向量<a href="#向量"><span>#</span></a></h3><img src="../../assets/cf63513a-1a85-48f1-bdb8-5fc555629bb6.png" alt="image.png" width="517" height="70" /><img src="../../assets/a339868a-35d2-42a9-a3ac-a7c1d75c1e45.png" alt="image.png" width="405" height="212" /><img src="../../assets/e521dcde-59c5-4ef8-b4ff-841e8408eaf7.png" alt="image.png" width="365" height="215" /></section><section><h3>Embedding<a href="#embedding"><span>#</span></a></h3><img src="../../assets/5f55f973-4245-40eb-945e-f2cb4b0604d3.png" alt="image.png" width="465" height="316" /><p><a href="https://huggingface.co/spaces/mteb/" target="_blank">https://huggingface.co/spaces/mteb/</a></p></section><section><h3>向量数据库<a href="#向量数据库"><span>#</span></a></h3><p>用于存储和查询<strong>向量</strong>的数据库</p><p></p><figure><img alt="image.png" loading="lazy" width="1067" height="295" src="/_astro/32e01820-7268-40cc-b100-1b50b70f2d38.DgQRH83__Z1L8e7P.webp" /><figcaption>image.png</figcaption></figure><p></p><p></p><figure><img alt="image.png" loading="lazy" width="1056" height="428" src="/_astro/4bf195e9-bf6a-49f1-b2a5-0879802141a2.CBL-3hO__2qGu43.webp" /><figcaption>image.png</figcaption></figure><p></p></section></section><section><h2>召回<a href="#召回"><span>#</span></a></h2><p>搜索与用户问题相关的片段</p><p></p><figure><img alt="image.png" loading="lazy" width="1088" height="505" src="/_astro/010de908-163a-405e-b8fa-6266f274b817.BT6MOAhh_22uHaz.webp" /><figcaption>image.png</figcaption></figure><p></p><p>计算向量相似度</p><ul>
 <li>余弦相似度</li>
 <li>欧氏距离</li>
 <li>点积</li>
 <li>…</li>
-</ul><p> </p></section><section><h2>重排<a href="#重排"><span>#</span></a></h2><p>根据召回结果进行重拍，得到重排结果</p><p> </p><p> </p></section><section><h2>生成过程<a href="#生成过程"><span>#</span></a></h2><img src="../../assets/c334ee95-9aed-4aca-b041-62fc3399de65.png" alt="image.png" width="655" height="213" /><p> </p></section><section><h2>整体流程<a href="#整体流程"><span>#</span></a></h2><p>准备部分（提问前）</p><img src="../../assets/6a186df0-d299-4696-96b7-c951056499bc.png" alt="image.png" width="812" height="147" /><p>回答部分（提问后）</p><img src="../../assets/3216f677-d9f3-4447-bf46-5e9ac9d6317e.png" alt="image.png" width="669" height="278" /><p> </p><p> </p></section></section>]]></content>
+</ul></section><section><h2>重排<a href="#重排"><span>#</span></a></h2><p>根据召回结果进行重拍，得到重排结果</p></section><section><h2>生成过程<a href="#生成过程"><span>#</span></a></h2><img src="../../assets/c334ee95-9aed-4aca-b041-62fc3399de65.png" alt="image.png" width="655" height="213" /></section><section><h2>整体流程<a href="#整体流程"><span>#</span></a></h2><p>准备部分（提问前）</p><img src="../../assets/6a186df0-d299-4696-96b7-c951056499bc.png" alt="image.png" width="812" height="147" /><p>回答部分（提问后）</p><img src="../../assets/3216f677-d9f3-4447-bf46-5e9ac9d6317e.png" alt="image.png" width="669" height="278" /></section></section>]]></content>
     </entry>
     <entry>
       <id>https://shaio.top/posts/03mogallery/sqlite-%E8%BF%9E%E6%8E%A5%E6%B1%A0%E6%AD%BB%E9%94%81%E6%8A%80%E6%9C%AF%E5%8F%82%E8%80%83%E4%B8%8E%E6%8E%92%E6%9F%A5%E8%AE%B0%E5%BD%95/</id>
@@ -2461,7 +3010,7 @@ commitInstalledPackage 直接换目录，Windows 上可能因文件占用失败�
       <summary type="text">未来博客的方向是啥</summary>
       <content type="html"><![CDATA[<p>很久没有更新博客了，不是没写，而是写得很乱，没有头尾，就更不想上传。一直感觉写博客如果想写好是很麻烦的一件事，因此也没有一直去死扣字眼，干脆就让AI润色生成完事了。</p>
 <p>但通篇下来，去看的次数也是少的可能，可能也只是单纯记录下来，那么如何让博客更加有用？</p>
-<p>博客其实感觉像个人只是库的网络体现</p>]]></content>
+<p>博客其实感觉像个人知识库的网络体现</p>]]></content>
     </entry>
     <entry>
       <id>https://shaio.top/posts/03mogallery/mogallery-github-actions%E8%B7%A8%E5%B9%B3%E5%8F%B0%E6%89%93%E5%8C%85/</id>
@@ -2655,7 +3204,7 @@ commitInstalledPackage 直接换目录，Windows 上可能因文件占用失败�
       <author><name>沙海</name></author>
       <link rel="alternate" href="https://shaio.top/posts/01%E7%BC%96%E7%A8%8B%E6%98%AF%E4%B8%AA%E5%9D%91/golang/golang/"/>
       <summary type="text">Golang</summary>
-      <content type="html"><![CDATA[<section><h1>Golang<a href="#golang"><span>#</span></a></h1><p></p><figure><img alt="image.png" loading="lazy" width="781" height="168" src="/_astro/image.hpENf-7D_DTcS3.webp" /><figcaption>image.png</figcaption></figure><p></p><p>这个提示的意思是：你的 Go 编辑器/插件想调用 gopls，但系统里找不到这个命令。</p><p>gopls 是 Go 官方语言服务器，主要给 VS Code、GoLand、Neovim 等编辑器提供代码补全、跳转定义、重命名、格式化、诊断等功能。</p><p>命令：</p><div><figure><figcaption></figcaption><pre><code><div><div><div>1</div></div><div><span>go install -v golang.org/x/tools/gopls@latest</span></div></div></code></pre><div><div></div><div></div></div></figure></div><p>就是安装最新版 gopls。</p><p>然后，添加至环境变量：</p><div><figure><figcaption></figcaption><pre><code><div><div><div>1</div></div><div><span>C:\Users\Administrator\go\bin</span></div></div></code></pre><div><div></div><div></div></div></figure></div><p></p><figure><img alt="image.png" loading="lazy" width="1432" height="791" src="/_astro/image%201.CmFw3-ui_1SCKVs.webp" /><figcaption>image.png</figcaption></figure><p></p><p></p><figure><img alt="image.png" loading="lazy" width="1328" height="612" src="/_astro/image%202.Bvmz1hXA_ZEhtIV.webp" /><figcaption>image.png</figcaption></figure><p></p><p></p><figure><img alt="image.png" loading="lazy" width="1211" height="610" src="/_astro/image%203.n44VRHBJ_Dmmfb.webp" /><figcaption>image.png</figcaption></figure><p></p><div><figure><figcaption></figcaption><pre><code><div><div><div>1</div></div><div><span>package</span><span> </span><span>main</span><span> </span><span>// 程序的包名</span></div></div></code></pre><div><div></div><div></div></div></figure></div><p><a href="1%E5%8F%98%E9%87%8F%E5%92%8C%E5%B8%B8%E9%87%8F.md">1.变量和常量</a></p><p><a href="2%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA.md">2.输入输出</a></p><p><a href="3%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B.md">3.基本数据类型</a></p><p><a href="4%E6%95%B0%E7%BB%84%E3%80%81%E5%88%87%E7%89%87%E5%92%8CMap.md">4.数组、切片和Map</a></p><p><a href="5%E5%88%A4%E6%96%AD.md">5.判断</a></p><p><a href="%E5%87%BD%E6%95%B0%E5%A4%9A%E5%80%BC%E8%BF%94%E5%9B%9E.md">函数多值返回</a></p><p><a href="import%E5%AF%BC%E5%85%A5%E5%92%8Cinit%E6%96%B9%E6%B3%95.md">import导入和init方法</a></p><p><a href="%E6%8C%87%E9%92%88.md">指针</a></p><p><a href="defer.md">defer</a></p><p><a href="OOP.md">OOP</a></p><p><a href="%E5%8F%8D%E5%B0%84.md">反射</a></p><p><a href="goroutine.md">goroutine</a></p><p><a href="channel.md">channel</a></p><p><a href="GoModules.md">GoModules</a></p></section>
+      <content type="html"><![CDATA[<section><h1>Golang<a href="#golang"><span>#</span></a></h1><p></p><figure><img alt="image.png" loading="lazy" width="781" height="168" src="/_astro/image.hpENf-7D_DTcS3.webp" /><figcaption>image.png</figcaption></figure><p></p><p>这个提示的意思是：你的 Go 编辑器/插件想调用 gopls，但系统里找不到这个命令。</p><p>gopls 是 Go 官方语言服务器，主要给 VS Code、GoLand、Neovim 等编辑器提供代码补全、跳转定义、重命名、格式化、诊断等功能。</p><p>命令：</p><div><figure><figcaption></figcaption><pre><code><div><div><div>1</div></div><div><span>go install -v golang.org/x/tools/gopls@latest</span></div></div></code></pre><div><div></div><div></div></div></figure></div><p>就是安装最新版 gopls。</p><p>然后，添加至环境变量：</p><div><figure><figcaption></figcaption><pre><code><div><div><div>1</div></div><div><span>C:\Users\Administrator\go\bin</span></div></div></code></pre><div><div></div><div></div></div></figure></div><p></p><figure><img alt="image.png" loading="lazy" width="1432" height="791" src="/_astro/image%201.CmFw3-ui_1SCKVs.webp" /><figcaption>image.png</figcaption></figure><p></p><p></p><figure><img alt="image.png" loading="lazy" width="1328" height="612" src="/_astro/image%202.Bvmz1hXA_ZEhtIV.webp" /><figcaption>image.png</figcaption></figure><p></p><p></p><figure><img alt="image.png" loading="lazy" width="1211" height="610" src="/_astro/image%203.n44VRHBJ_Dmmfb.webp" /><figcaption>image.png</figcaption></figure><p></p><div><figure><figcaption></figcaption><pre><code><div><div><div>1</div></div><div><span>package</span><span> </span><span>main</span><span> </span><span>// 程序的包名</span></div></div></code></pre><div><div></div><div></div></div></figure></div><p><a href="1%E5%8F%98%E9%87%8F%E5%92%8C%E5%B8%B8%E9%87%8F.md">1.变量和常量</a></p><p><a href="2%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA.md">2.输入输出</a></p><p><a href="3%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B.md">3.基本数据类型</a></p><p><a href="4%E6%95%B0%E7%BB%84%E5%88%87%E7%89%87%E5%92%8CMap.md">4.数组、切片和Map</a></p><p><a href="5%E5%88%A4%E6%96%AD.md">5.判断</a></p><p><a href="%E5%87%BD%E6%95%B0%E5%A4%9A%E5%80%BC%E8%BF%94%E5%9B%9E.md">函数多值返回</a></p><p><a href="import%E5%AF%BC%E5%85%A5%E5%92%8Cinit%E6%96%B9%E6%B3%95.md">import导入和init方法</a></p><p><a href="%E6%8C%87%E9%92%88.md">指针</a></p><p><a href="defer.md">defer</a></p><p><a href="OOP.md">OOP</a></p><p><a href="%E5%8F%8D%E5%B0%84.md">反射</a></p><p><a href="goroutine.md">goroutine</a></p><p><a href="channel.md">channel</a></p><p><a href="GoModules.md">GoModules</a></p></section>
 <section><h1>Wails<a href="#wails"><span>#</span></a></h1><div><figure><figcaption></figcaption><pre><code><div><div><div>1</div></div><div><span>├── build/                 # 构建和打包相关资源</span></div></div><div><div><div>2</div></div><div><span>│   ├── </span><span>appicon</span><span>.</span><span>png</span><span>        # 应用程序图标</span></div></div><div><div><div>3</div></div><div><span>│   ├── darwin/            # macOS 平台特定文件 (如 </span><span>Info</span><span>.</span><span>plist</span><span>)</span></div></div><div><div><div>4</div></div><div><span>│   └── </span><span>windows</span><span>/           # </span><span>Windows</span><span> 平台特定文件 (如 .manifest)</span></div></div><div><div><div>5</div></div><div><span>├── frontend/              # 前端项目文件 (由 Vite 等构建)</span></div></div><div><div><div>6</div></div><div><span>│   ├── src/               # 前端源代码</span></div></div><div><div><div>7</div></div><div><span>│   ├── </span><span>package</span><span>.</span><span>json</span><span>       # 前端依赖管理</span></div></div><div><div><div>8</div></div><div><span>│   └── ...</span></div></div><div><div><div>9</div></div><div><span>├── </span><span>go</span><span>.</span><span>mod</span><span>                 # </span><span>Go</span><span> 模块依赖管理</span></div></div><div><div><div>10</div></div><div><span>├── </span><span>go</span><span>.</span><span>sum</span><span>                 # </span><span>Go</span><span> 模块依赖校验文件</span></div></div><div><div><div>11</div></div><div><span>├── </span><span>main</span><span>.</span><span>go</span><span>                # 应用入口文件</span></div></div><div><div><div>12</div></div><div><span>└── </span><span>wails</span><span>.</span><span>json</span><span>             # Wails 项目配置文件</span></div></div></code></pre><div><div></div><div></div></div></figure></div><p>；</p></section>]]></content>
     </entry>
     <entry>
@@ -3143,12 +3692,12 @@ commitInstalledPackage 直接换目录，Windows 上可能因文件占用失败�
 </ul><p> </p></section></section></section>]]></content>
     </entry>
     <entry>
-      <id>https://shaio.top/posts/%E8%AE%B0%E5%BD%95/%E8%AE%B0%E5%BD%95%E8%B7%B3%E6%A7%BD%E7%AC%AC%E4%B8%80%E6%AC%A1%E9%9D%A2%E8%AF%95/</id>
+      <id>https://shaio.top/posts/%E8%AE%B0%E5%BD%95/260417%E8%AE%B0%E5%BD%95%E8%B7%B3%E6%A7%BD%E7%AC%AC%E4%B8%80%E6%AC%A1%E9%9D%A2%E8%AF%95/</id>
       <title type="text">记录跳槽第一次面试</title>
       <published>2026-04-17T00:00:00.000Z</published>
       <updated>2026-04-17T00:00:00.000Z</updated>
       <author><name>沙海</name></author>
-      <link rel="alternate" href="https://shaio.top/posts/%E8%AE%B0%E5%BD%95/%E8%AE%B0%E5%BD%95%E8%B7%B3%E6%A7%BD%E7%AC%AC%E4%B8%80%E6%AC%A1%E9%9D%A2%E8%AF%95/"/>
+      <link rel="alternate" href="https://shaio.top/posts/%E8%AE%B0%E5%BD%95/260417%E8%AE%B0%E5%BD%95%E8%B7%B3%E6%A7%BD%E7%AC%AC%E4%B8%80%E6%AC%A1%E9%9D%A2%E8%AF%95/"/>
       <summary type="text">记录跳槽第一次面试</summary>
       <content type="html"><![CDATA[<blockquote><p>整体上感觉挺糟糕的，因为大部分问题都没有回答到点上。。。</p></blockquote>
 <p>最近实在被公司一些制度给e到了，于是时不时网上投简历，大多是石沉大海了，简历过于简陋我也是心知肚明了=-=、</p>
@@ -3323,12 +3872,12 @@ commitInstalledPackage 直接换目录，Windows 上可能因文件占用失败�
 </ol>]]></content>
     </entry>
     <entry>
-      <id>https://shaio.top/posts/02ai%E6%98%AF%E5%A4%A9%E5%9D%91/260323codex%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81/</id>
+      <id>https://shaio.top/posts/02ai%E6%98%AF%E5%A4%A9%E5%9D%91/codex%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81/</id>
       <title type="text">codex中文乱码</title>
       <published>2026-03-23T10:57:51.000Z</published>
       <updated>2026-03-23T10:57:51.000Z</updated>
       <author><name>沙海</name></author>
-      <link rel="alternate" href="https://shaio.top/posts/02ai%E6%98%AF%E5%A4%A9%E5%9D%91/260323codex%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81/"/>
+      <link rel="alternate" href="https://shaio.top/posts/02ai%E6%98%AF%E5%A4%A9%E5%9D%91/codex%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81/"/>
       <summary type="text"></summary>
       <content type="html"><![CDATA[<p></p><figure><img alt="image-20260324155741249" loading="lazy" width="787" height="467" src="/_astro/image-20260324155741249.AyV__N1f_290oW2.webp" /><figcaption>image-20260324155741249</figcaption></figure><p></p>
 <p></p><figure><img alt="image-20260324155750565" loading="lazy" width="1841" height="208" src="/_astro/image-20260324155750565.izWe14To_ZvqSfy.webp" /><figcaption>image-20260324155750565</figcaption></figure><p></p>
