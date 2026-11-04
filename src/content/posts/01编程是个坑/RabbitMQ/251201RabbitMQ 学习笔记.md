@@ -123,16 +123,16 @@ rabbitmqctl list_users
 ##### 生产者
 
 - `queueDeclare`：队列声明
-  1. 队列名称
-  2. 是否持久化
-  3. 是否只供一个消费者消费
-  4. 是否自动删除
+	  1. 队列名称
+	  2. 是否持久化
+	  3. 是否只供一个消费者消费
+	  4. 是否自动删除
 - `basicPublish`：消息发送
-  1. 发送到的交换机
-  2. 路由 key——队列的名称
-  3. 其他参数信息
-     - `MessageProperties.OERSISTENT_TEXT_PLAIN`：消息持久化
-  4. 发送的消息体
+	  1. 发送到的交换机
+	  2. 路由 key——队列的名称
+	  3. 其他参数信息
+	     - `MessageProperties.OERSISTENT_TEXT_PLAIN`：消息持久化
+	  4. 发送的消息体
 - `confirmSelect`：发布确认
 - `addConfirmListener`：消息监听器，异步发布确认
 
@@ -154,13 +154,13 @@ ConfirmCallback nackCallback = (deliveryTag, multiple) -> {
 ##### 消费者
 
 - `basicConsume`：接收消息
-  1. 队列名称
-  2. 消费成功后是否自动应答
-  3. 消费成功消费的回调：`DeliverCallback`
-  4. 消费者取消消费的回调：`CancelCallback`
+	  1. 队列名称
+	  2. 消费成功后是否自动应答
+	  3. 消费成功消费的回调：`DeliverCallback`
+	  4. 消费者取消消费的回调：`CancelCallback`
 - `basicAck`：手动应答
-  1. 消息的标记
-  2. 是否批量应答：建议 `false`
+	  1. 消息的标记
+	  2. 是否批量应答：建议 `false`
 - `basicQos`：策略
   - `1`：不公平分发
   - `2`：预取值是 2（非 1 情况）
