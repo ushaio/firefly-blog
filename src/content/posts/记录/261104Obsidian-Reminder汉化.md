@@ -16,4 +16,4 @@ https://github.com/ushaio/obsidian-reminder-hans/tree/feat/i18n-language-switche
 
 ![](assets/Pasted%20image%2020261104195654.png)
 ![](assets/Pasted%20image%2020261104195645.png)
-- [ ] 文章补充  (@2026-11-05)
+- [x] 文章补充  (@2026-11-05)
