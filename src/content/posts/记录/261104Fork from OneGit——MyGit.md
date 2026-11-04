@@ -5,8 +5,8 @@ description: Fork from OneGit——MyGit
 tags:
   - github
   - 开源
-category:
-draft: true
+category: 记录
+draft: false
 ---
 
 可喜可贺，之前还苦恼Github仓库太多不好管理了，然后发现一个项目主要就用于Git仓库的管理工具，但其项目收费不开源一直。最近发现开源了又，于是下下来看看效果，其基于MyGo框架开发，但看里面的功能还是挺简陋的。再加上MyGo当前框架的功能受限，调试功能并不算好用，于是还是用wails3重写一版吧。
