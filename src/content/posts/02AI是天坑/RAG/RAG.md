@@ -1,9 +1,11 @@
 ---
-title: rag01
+title: RAG
 published: 2026-09-02
 description: rag01
-image: "api"
-tags: [AI, RAG]
+image: api
+tags:
+  - AI
+  - RAG
 category: AI
 draft: false
 ---
@@ -23,7 +25,6 @@ Retrieval-Augmented-Generation（检索增强生成）
 
 分片 → 索引 → 召回 → 重排 → 生成
 
-&nbsp;
 
 ---
 
@@ -37,20 +38,17 @@ Retrieval-Augmented-Generation（检索增强生成）
 
 召回 → 重排 → 生成
 
-&nbsp;
 
 ## 分片
 
 把文档切割成多个片段，可以使用多种切分方式，如按页码、段落
 
-&nbsp;
 
 ## 索引
 
 1. 通过**Embedding**将片段文本转换为**向量**
 2. 将片段文本和片段向量存入**向量数据库**中
 
-&nbsp;
 
 ### 向量
 
@@ -60,7 +58,6 @@ Retrieval-Augmented-Generation（检索增强生成）
 
 <img src="../../assets/e521dcde-59c5-4ef8-b4ff-841e8408eaf7.png" alt="image.png" width="365" height="215">
 
-&nbsp;
 
 ### Embedding
 
@@ -68,7 +65,6 @@ Retrieval-Augmented-Generation（检索增强生成）
 
 [https://huggingface.co/spaces/mteb/](https://huggingface.co/spaces/mteb/)
 
-&nbsp;
 
 ### 向量数据库
 
@@ -78,7 +74,6 @@ Retrieval-Augmented-Generation（检索增强生成）
 
 ![image.png](../../assets/4bf195e9-bf6a-49f1-b2a5-0879802141a2.png)
 
-&nbsp;
 
 ## 召回
 
@@ -93,21 +88,17 @@ Retrieval-Augmented-Generation（检索增强生成）
 - 点积
 - …
 
-&nbsp;
 
 ## 重排
 
 根据召回结果进行重拍，得到重排结果
 
-&nbsp;
 
-&nbsp;
 
 ## 生成过程
 
 <img src="../../assets/c334ee95-9aed-4aca-b041-62fc3399de65.png" alt="image.png" width="655" height="213">
 
-&nbsp;
 
 ## 整体流程
 
@@ -119,6 +110,4 @@ Retrieval-Augmented-Generation（检索增强生成）
 
 <img src="../../assets/3216f677-d9f3-4447-bf46-5e9ac9d6317e.png" alt="image.png" width="669" height="278">
 
-&nbsp;
 
-&nbsp;

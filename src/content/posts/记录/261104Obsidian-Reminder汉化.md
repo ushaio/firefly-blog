@@ -2,9 +2,11 @@
 title: 261104Obsidian-Reminder汉化
 published: 2026-11-04
 description: 261104Obsidian-Reminder汉化
-tags: []
-category: 
-draft: true
+tags:
+  - github
+  - 开源
+category: 记录
+draft: false
 ---
 最近Obsidian写得有点上瘾，但有的文章属于未完成状态，怕后面忘补充了，于是发现一个Obsidian插件——Reminder，类似于代办提醒的，但没有加入多语言，用着怪不适应的。
 
