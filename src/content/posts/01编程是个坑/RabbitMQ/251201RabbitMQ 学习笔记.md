@@ -1,6 +1,6 @@
 ---
 title: RabbitMQ 学习笔记
-published: 2026-11-04
+published: 2025-12-01
 description: RabbitMQ 学习笔记
 tags:
   - rabbitmq
