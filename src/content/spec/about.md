@@ -16,6 +16,8 @@
 
 **SanyueQi图床 [https://img.yunbiu.top/](https://img.yunbiu.top/)**
 
+**📝Firefly使用文档： [https://docs-firefly.cuteleaf.cn](https://docs-firefly.cuteleaf.cn/)**
+
 ### 开源项目
 
 **⭐Mo-Gallery开源地址：[https://github.com/ushaio/mo-gallery-web](https://github.com/ushaio/mo-gallery-web)**
