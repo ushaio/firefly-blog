@@ -5,7 +5,7 @@ description: 261105Offical-doc扩展RAG
 tags:
   - RAG
 category: MO Gallery
-draft: true
+draft: false
 ---
 RAG一般用于基于文档的知识库问答场景，并非所有情况都适用，文档量很小时通常没有必要；但考虑到后续文档会持续增加，提前引入更稳妥。
 
