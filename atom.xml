@@ -3,11 +3,26 @@
   <id>https://shaio.top/</id>
   <title type="text">Firefly</title>
   <subtitle type="text">生活|摄影|工作</subtitle>
-  <updated>2026-11-05T00:00:00.000Z</updated>
+  <updated>2026-11-07T00:00:00.000Z</updated>
   <author><name>沙海</name></author>
   <link rel="alternate" href="https://shaio.top/"/>
   <link rel="self" href="https://shaio.top/atom.xml"/>
   <generator uri="https://github.com/CuteLeaf/Firefly">Firefly v6.16.9</generator>
+    <entry>
+      <id>https://shaio.top/posts/%E8%AE%B0%E5%BD%95/261107wails3%E7%A1%AE%E8%AE%A4%E9%80%80%E5%87%BA%E5%BC%B9%E7%AA%97%E5%8D%A1%E6%AD%BB%E8%A7%A3%E5%86%B3/</id>
+      <title type="text">Wails3确认退出弹窗卡死解决</title>
+      <published>2026-11-07T00:00:00.000Z</published>
+      <updated>2026-11-07T00:00:00.000Z</updated>
+      <author><name>沙海</name></author>
+      <link rel="alternate" href="https://shaio.top/posts/%E8%AE%B0%E5%BD%95/261107wails3%E7%A1%AE%E8%AE%A4%E9%80%80%E5%87%BA%E5%BC%B9%E7%AA%97%E5%8D%A1%E6%AD%BB%E8%A7%A3%E5%86%B3/"/>
+      <summary type="text">MyGit 有一个退出确认弹窗。点击窗口关闭按钮后，弹窗正常出现；选择“退出程序”，窗口却不再响应。</summary>
+      <content type="html"><![CDATA[<section><h1>Wails 3 确认退出弹窗卡死：排查与修复<a href="#wails-3-确认退出弹窗卡死排查与修复"><span>#</span></a></h1><p>MyGit 有一个退出确认弹窗。点击窗口关闭按钮后，弹窗正常出现；选择“退出程序”，窗口却不再响应。这个现象一开始很像是退出时机的问题，但把 <code>App.Quit()</code> 延迟 100 毫秒仍然卡住。后来对照“记住选择、下次直接退出”的路径，才发现两种退出走的并不是同一条链路。</p><section><h2>两条退出路径<a href="#两条退出路径"><span>#</span></a></h2><p>不再显示确认弹窗时，Wails 收到原生窗口关闭事件，进入 <code>WindowClosing</code> 钩子。应用检查到用户已经确认过，就放行这次关闭，窗口按正常流程销毁。</p><p>确认弹窗则是前端自己显示的。原来的实现是在前端调用 Go 服务 <code>ResolveClose</code>，后端设置允许退出的标记，然后调用 <code>App.Quit()</code>。这发生在一次尚未返回的前端 RPC 中：Wails 需要同步切回主线程销毁窗口，而窗口销毁又会触发服务清理。前端调用和窗口销毁因此交错在同一条退出链路里。</p><p>Wails 的生命周期实现里，退出时会同步执行服务的关闭钩子；如果其中某项清理阻塞，窗口也会一直等着。延迟 100 毫秒只能碰运气让 RPC 先返回，不能保证退出顺序正确，所以实测没有解决问题。</p></section><section><h2>排查终端清理<a href="#排查终端清理"><span>#</span></a></h2><p>应用退出时也会关闭集成终端。Windows 版终端运行在 ConPTY 里，原先的清理逻辑只结束 shell 进程，随后同步关闭伪终端。如果 shell 启动的子进程仍附着在 ConPTY 上，关闭伪终端可能等待子进程退出。这条路径有机会阻塞同步的服务关闭，因此也值得处理。</p><p>现在 Windows 终端关闭会用 <code>taskkill.exe /PID &lt;pid&gt; /T /F</code> 结束 shell 及其子进程，并限制等待时间。如果结束进程树失败，则回退为结束 shell；此时不在窗口关闭线程上同步关闭 PTY，而是让进程等待协程在 shell 退出后收尾。</p><p>这部分有针对性测试：启动 PowerShell 和持续运行的 <code>ping -t 127.0.0.1</code>，再关闭终端，检查清理能否在限定时间内完成。测试能覆盖子进程仍附着时的清理场景，但它不能单独证明这就是确认退出卡死的根因。</p></section><section><h2>让确认退出复用原生关闭流程<a href="#让确认退出复用原生关闭流程"><span>#</span></a></h2><p>修复重点是让确认弹窗和直接关闭最终走同一条 Wails 窗口关闭路径：</p><ol>
+<li>前端选择“退出程序”后，先调用 <code>ResolveClose</code>。</li>
+<li>后端记录本次退出已获确认，然后正常返回，不在 RPC 内调用 <code>App.Quit()</code>。</li>
+<li>前端确认 RPC 成功后调用 Wails 的 <code>Window.Close()</code>。</li>
+<li>原生 <code>WindowClosing</code> 钩子再次检查退出标记，看到已经确认便放行窗口关闭。</li>
+</ol><p>如果 RPC 失败，前端不会继续关闭窗口。这样既保留了确认弹窗，也复用了直接关闭时已经验证过的生命周期入口，不再依赖 100 毫秒定时器。</p><p>另外，用户测试直接关闭时还观察到一个终端窗口闪现后消失。结合退出时新增的 <code>taskkill.exe</code> 调用，它很可能是子进程启动时短暂显示的控制台。调用前给该子进程应用现有的 <code>hideConsole</code> 配置，同时设置 <code>HideWindow</code> 和 <code>CREATE_NO_WINDOW</code>，避免显示控制台窗口。这个解释与现象吻合，但是否就是闪窗的唯一来源，还需要在目标环境复测。</p></section><section><h2>验证情况<a href="#验证情况"><span>#</span></a></h2><p>修改后，前端 <code>npm run check</code> 通过，<code>npm test</code> 通过（3 个测试文件、39 个测试）；Go 服务测试通过，Windows 定向测试也通过。定向测试覆盖了 taskkill 子进程树清理，以及隐藏控制台所需的进程标志。使用 Wails 3.1.0 执行 <code>go tool wails3 build</code> 成功，生成了新的 Windows 构建 <code>bin/MyGit.exe</code>。</p><p>这些结果说明代码检查、测试和打包都通过了；它们还不能代替桌面环境里的实际退出验证。接下来需要用新构建确认两件事：从弹窗选择“退出程序”后窗口正常关闭；直接关闭时不再出现控制台闪窗。</p></section></section>]]></content>
+    </entry>
     <entry>
       <id>https://shaio.top/posts/03mogallery/offical/261105offical-doc%E6%89%A9%E5%B1%95rag/</id>
       <title type="text">261105Offical-doc扩展RAG</title>

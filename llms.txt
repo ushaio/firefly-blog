@@ -14,6 +14,7 @@
 - [番组计划](https://shaio.top/bangumi/): 记录我的二次元之旅
 
 ## Recent Posts
+- [Wails3确认退出弹窗卡死解决](https://shaio.top/posts/%E8%AE%B0%E5%BD%95/261107wails3%E7%A1%AE%E8%AE%A4%E9%80%80%E5%87%BA%E5%BC%B9%E7%AA%97%E5%8D%A1%E6%AD%BB%E8%A7%A3%E5%86%B3/): MyGit 有一个退出确认弹窗。点击窗口关闭按钮后，弹窗正常出现；选择“退出程序”，窗口却不再响应。
 - [261105Offical-doc扩展RAG](https://shaio.top/posts/03mogallery/offical/261105offical-doc%E6%89%A9%E5%B1%95rag/): 261105Offical-doc扩展RAG
 - [分页查询](https://shaio.top/posts/01%E7%BC%96%E7%A8%8B%E6%98%AF%E4%B8%AA%E5%9D%91/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%85%B3%E7%B3%BB%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%88%86%E9%A1%B5%E6%9F%A5%E8%AF%A2/): 分页查询
 - [Fork from OneGit——MyGit](https://shaio.top/posts/%E8%AE%B0%E5%BD%95/261104fork-from-onegitmygit/): Fork from OneGit——MyGit
@@ -33,4 +34,3 @@
 - [本地资源库索引优化方案：从库文件分层到 FTS5 定向维护](https://shaio.top/posts/03mogallery/desktop/261022%E6%9C%AC%E5%9C%B0%E8%B5%84%E6%BA%90%E5%BA%93%E7%B4%A2%E5%BC%95%E4%BC%98%E5%8C%96/): Emulsion Desktop 本地资源库的索引设计：库文件拆成元数据与缓存两库、扫描走整库内存 diff 而非逐文件增删、FTS5 索引从 O(N²) 改成 rowid 定向维护、查询与分页、批量写入与 SQLite 调优、缩略图记账与增量监听。
 - [Docker 笔记：基本概念、容器网络与私有仓库部署](https://shaio.top/posts/%E8%BF%90%E7%BB%B4/261022docker/): Docker 实操笔记。从分层存储和生命周期讲起，到 Dockerfile 与 compose 写法、两个容器怎么互通、私有仓库推送后如何在服务器上升级和回滚。
 - [261020品牌运营](https://shaio.top/posts/%E8%BF%90%E8%90%A5/261020%E5%93%81%E7%89%8C%E8%BF%90%E8%90%A5/): 宠物行业 AI 内容运营平台的功能梳理：信息聚合与信息发布。
-- [261020品牌运营c0.1](https://shaio.top/posts/%E8%BF%90%E8%90%A5/261020%E5%93%81%E7%89%8C%E8%BF%90%E8%90%A5c01/): 宠物行业 AI 内容运营平台的功能梳理：信息聚合与信息发布。
