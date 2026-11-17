@@ -6,7 +6,7 @@ tags:
   - RAG
   - embedding
 category: AI
-draft: true
+draft: false
 ---
 随着文档变多变杂，RAG会出现幻觉、答非所问的问题，单一的方案变更并不能解决所以问题，因此需要各个方案结合针对不同场景持续优化。
 
