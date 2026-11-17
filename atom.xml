@@ -3,11 +3,70 @@
   <id>https://shaio.top/</id>
   <title type="text">Firefly</title>
   <subtitle type="text">生活|摄影|工作</subtitle>
-  <updated>2026-11-07T00:00:00.000Z</updated>
+  <updated>2026-11-16T00:00:00.000Z</updated>
   <author><name>沙海</name></author>
   <link rel="alternate" href="https://shaio.top/"/>
   <link rel="self" href="https://shaio.top/atom.xml"/>
   <generator uri="https://github.com/CuteLeaf/Firefly">Firefly v6.16.9</generator>
+    <entry>
+      <id>https://shaio.top/posts/02ai%E6%98%AF%E5%A4%A9%E5%9D%91/rag/rag%E6%96%B9%E6%A1%88/</id>
+      <title type="text">RAG方案</title>
+      <published>2026-11-16T00:00:00.000Z</published>
+      <updated>2026-11-16T00:00:00.000Z</updated>
+      <author><name>沙海</name></author>
+      <link rel="alternate" href="https://shaio.top/posts/02ai%E6%98%AF%E5%A4%A9%E5%9D%91/rag/rag%E6%96%B9%E6%A1%88/"/>
+      <summary type="text">随着文档变多变杂，RAG会出现幻觉、答非所问的问题，单一的方案变更并不能解决所以问题，因此需要各个方案结合针对不同场景持续优化</summary>
+      <content type="html"><![CDATA[<p>随着文档变多变杂，RAG会出现幻觉、答非所问的问题，单一的方案变更并不能解决所以问题，因此需要各个方案结合针对不同场景持续优化。</p>
+<p>常规流程：</p>
+<ol>
+<li>文档切块</li>
+<li>问题和文本块做30度匹配</li>
+<li>找到最相关的几个文本块</li>
+<li>交给大模型回答</li>
+</ol>
+<section><h2>方案1：Simple RAG 固定字数硬切<a href="#方案1simple-rag-固定字数硬切"><span>#</span></a></h2><blockquote><p><strong>例</strong>：把一份《差旅报销制度》按每 200 字硬切，不管句子、表格的边界：</p><ul>
+<li>块 A：「……员工出差住宿标准：一线城市每晚不超过 600 元，二线城市每晚不超过 400 元。超出部分需」</li>
+<li>块 B：「提前向部门负责人书面申请，否则差额由个人承担……」</li>
+</ul><p>用户问「出差住宿超标了怎么处理？」——关键词“住宿”“超标”都落在块 A，检索命中的就是块 A，模型只看到「超出部分需」四个字后面戛然而止，只好自己编一个处理办法 → 这就是上下文被切断导致的幻觉。</p></blockquote><p>模型因上下文丢失而导致幻觉。</p></section>
+<section><h2>方案2：语义切分<a href="#方案2语义切分"><span>#</span></a></h2><p>根据句子语义差异，检测转折词或话题发生跃迁时，触发边界切分。</p><p>缺点：</p><ul>
+<li>切块太小，对于跨段落信息依然会丢失</li>
+</ul></section>
+<section><h2>方案3：Small-to-Big Retrieval 大小块协同<a href="#方案3small-to-big-retrieval-大小块协同"><span>#</span></a></h2><blockquote><p>小块找，大块答</p></blockquote><p>将一整章(Parent Chunk)拆分为数十个子块(Child Chunk)。检索时比对高灵敏度的子块，而最终喂给LLM的则是完整的父块。</p></section>
+<section><h2>方案4：Context Enriched 上下文增强<a href="#方案4context-enriched-上下文增强"><span>#</span></a></h2><p>定位到目标文本块后，检索机制从目标文本块向外辐射，将邻居文本块一并打包，提供充沛的上下文。</p></section>
+<section><h2>方案5：Chunk Header 块级加标<a href="#方案5chunk-header-块级加标"><span>#</span></a></h2><p>向量化存储前，使用小模型<strong>为每个块自动提炼摘要并附带所属章节路径</strong>。</p></section>
+<section><h2>方案6：Document Augmentation 文档增强<a href="#方案6document-augmentation-文档增强"><span>#</span></a></h2><p>利用“问题匹配问题”，不直接单存文档，先对文本块反向生成多条高频潜在问题，将 衍生出来的问题和原文本块 绑定进行向量。用户输入问题后时，可以根据这部分衍生问题精准对接。</p></section>
+<section><h2>方案7：Query Transformation 查询改写机制<a href="#方案7query-transformation-查询改写机制"><span>#</span></a></h2><ul>
+<li>查询重新：将模糊的问题精细化描述</li>
+<li>回退提问：退一步上升到大概念背景，防止提问过窄</li>
+<li>子问题拆解：复杂大长句拆解成多路并行检索，最后汇总</li>
+</ul></section>
+<section><h2>方案8：Rerank 重排序<a href="#方案8rerank-重排序"><span>#</span></a></h2><p>向量检索：只管问题和文本块相似度
+重排序：将多个候选块放一起打分排序</p></section>
+<section><h2>方案9：Sentence Window Retrieval 连续片段检索<a href="#方案9sentence-window-retrieval-连续片段检索"><span>#</span></a></h2><p>专为法律文书、学术论文和长篇技术报告打造，命中具体核心句后，触发向前向后延伸扩展的滑窗机制，确保交互给模型的知识片段承载严密推理的前因后果。</p></section>
+<section><h2>方案10：Context Compression 上下文压缩<a href="#方案10context-compression-上下文压缩"><span>#</span></a></h2><p>解决上下文过载引发Token浪费与模型注意力分散的问题，检索回长篇段落后，利用轻量模型对文本进行过滤和提炼，萃取真正核心的重点喂给主模型，兼顾经济性和准确性。</p></section>
+<section><h2>方案11：Feedback Loop 反馈闭环<a href="#方案11feedback-loop-反馈闭环"><span>#</span></a></h2><p>引入类似搜索引擎的学习进化能力，如点赞回答、采用率提高权重等显隐性行为反馈，在线动态校准并提升高频正确文档的检索权重。让静态知识库变身成长型资产。</p></section>
+<section><h2>方案12：Self-RAG 内省反思机制<a href="#方案12self-rag-内省反思机制"><span>#</span></a></h2><p>赋予模型三大能力：</p><ol>
+<li>自问：自身是否具该问题的知识，不盲目查库</li>
+<li>评估：检索回来的资料是否能回答用户的问题</li>
+<li>过滤：剔除废料，使用高质量知识生成回答</li>
+</ol></section>
+<section><h2>方案13：Knowledge Graph RAG 知识图谱RAG<a href="#方案13knowledge-graph-rag-知识图谱rag"><span>#</span></a></h2><p>将文本知识转换为确定性的实体与关系网，针对于长链跨文档推理。</p><p>针对于纵横交错的的追问，Graph RAG通过对实体建立节点和关系，将模糊搜索直接转换为高精度的拓扑图导航。</p></section>
+<section><h2>方案14：Hierarchical index 层次化索引<a href="#方案14hierarchical-index-层次化索引"><span>#</span></a></h2><p>面对百万级海量文档，不盲目开展全库扫描，先构建 Summary index+Chunk index双层框架。</p><ol>
+<li>先对比大纲/目录层级索引，锁定小局部范围</li>
+<li>深入具体精细切块展开微观检索，大幅节省算力与响应时延</li>
+</ol></section>
+<section><h2>方案15：HyDE 假设性文档生成<a href="#方案15hyde-假设性文档生成"><span>#</span></a></h2><p>先猜答案，再凭证据按图索骥。</p><p>当用户提问的问题极简，或者说两端词汇差异极大的时候，先让LLM凭空生成一个虚构的答案，利用这个语义丰满的答案匹配向量库中的真证据，以此攻克两端表达不一致的问题。</p></section>
+<section><h2>方案16：Hybrid Search 混合检索<a href="#方案16hybrid-search-混合检索"><span>#</span></a></h2><ol>
+<li>传统BM25关键词搜索，抓死特定型号、代码、专有名称</li>
+<li>稠密向量检索，理解意图与相近语义</li>
+<li>RRF融合，补齐各自短板漏洞</li>
+</ol></section>
+<section><h2>方案17：CRAG 纠错自愈RAG<a href="#方案17crag-纠错自愈rag"><span>#</span></a></h2><p>设置前置 “质量检察员”，对检索回来的文档矩阵自动划分为三条演进路线：</p><ul>
+<li>高相关：放行，进行传统LLM生成</li>
+<li>中相关：引入外部网络搜索，强力补充细枝末节</li>
+<li>低相关：彻底废弃垃圾检索物，由权利互联网检索全权托管</li>
+</ul></section>]]></content>
+    </entry>
     <entry>
       <id>https://shaio.top/posts/%E8%AE%B0%E5%BD%95/261107wails3%E7%A1%AE%E8%AE%A4%E9%80%80%E5%87%BA%E5%BC%B9%E7%AA%97%E5%8D%A1%E6%AD%BB%E8%A7%A3%E5%86%B3/</id>
       <title type="text">Wails3确认退出弹窗卡死解决</title>
