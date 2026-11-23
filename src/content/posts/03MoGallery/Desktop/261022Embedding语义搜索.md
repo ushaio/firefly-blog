@@ -8,13 +8,16 @@ tags:
   - 架构设计
   - embedding
 category: MO Gallery
-comment: true
+comment: false
 ---
-mlx-community/embeddinggemma-2-bf16
 
-mlx-community/embeddinggemma-2-8bit
+EmbeddingGemma 2 的不同部署版本：
 
-onnx-community/embeddinggemma-2-ONNX
+| 仓库                                     | 后缀是什么意思                             | 用在哪                           |
+| -------------------------------------- | ----------------------------------- | ----------------------------- |
+| `mlx-community/embeddinggemma-2-bf16`  | `bf16` 是 16 位浮点格式，用来存储模型权重          | 在 Apple 芯片的 Mac 上用 MLX 运行     |
+| `mlx-community/embeddinggemma-2-8bit`  | `8bit` 表示模型权重做了 8 位量化，通常更省磁盘空间和运行内存 | 同样用 MLX，适合内存比较紧张的 Mac         |
+| `onnx-community/embeddinggemma-2-ONNX` | `ONNX` 是模型导出格式，一个仓库里可以提供多种精度的权重     | 用 ONNX Runtime 在桌面端运行，方便跨平台部署 |
 
 >本内容由AI生成。
 
@@ -84,4 +87,22 @@ onnx-community/embeddinggemma-2-ONNX
 ---
 
 **说明**：以上结论来自阅读源码与设计文档，我没有运行 `go test ./local_library` 或前端构建（该包有 `embedding_search_test.go`、`embedding_index_test.go`、`embedding_e2e_test.go` 覆盖上述路径，需要可真跑一遍验证）。如果你问的是某个具体仓库（比如官网的模板/创意广场检索），那边目前是关键词实现，没有向量检索。
+
+----
+
+
+如何让图片转成能用自然语言匹配到的？
+
+> 打个比方，一张蓝天白云的图片，自然语言描述是“蓝天”“白云”“蓝色”“天空”“云朵”这类词匹配到该图片。
+
+>图片怎么转成类似于自然语言那种向量，就是这种完全就感觉不是一种维度的东西，一个是文本，一个是图片，那这两个之间是怎么进行匹配的呢？
+
+图片：输入的是像素
+文本：输入的是词元
+
+**而模型在此之前学会了将两种输入编码成一个语义空间里的坐标。**
+
+在模型训练的时候，就给模型大量的训练数据，包含有“图片+对应描述”的内容，模型将每张图片和每段文字编码成向量，算一遍两两相似度，再根据结果调整参数，让图片和文本描述更相似。
+
+
 
