@@ -3,11 +3,33 @@
   <id>https://shaio.top/</id>
   <title type="text">Firefly</title>
   <subtitle type="text">生活|摄影|工作</subtitle>
-  <updated>2026-11-16T00:00:00.000Z</updated>
+  <updated>2026-11-20T00:00:00.000Z</updated>
   <author><name>沙海</name></author>
   <link rel="alternate" href="https://shaio.top/"/>
   <link rel="self" href="https://shaio.top/atom.xml"/>
   <generator uri="https://github.com/CuteLeaf/Firefly">Firefly v6.16.9</generator>
+    <entry>
+      <id>https://shaio.top/posts/01%E7%BC%96%E7%A8%8B%E6%98%AF%E4%B8%AA%E5%9D%91/%E5%85%AB%E8%82%A1%E6%96%87%E5%AD%A6/redis%E5%92%8C%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%80%E8%87%B4%E6%80%A7/</id>
+      <title type="text">Redis和数据库一致性</title>
+      <published>2026-11-20T00:00:00.000Z</published>
+      <updated>2026-11-20T00:00:00.000Z</updated>
+      <author><name>沙海</name></author>
+      <link rel="alternate" href="https://shaio.top/posts/01%E7%BC%96%E7%A8%8B%E6%98%AF%E4%B8%AA%E5%9D%91/%E5%85%AB%E8%82%A1%E6%96%87%E5%AD%A6/redis%E5%92%8C%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%80%E8%87%B4%E6%80%A7/"/>
+      <summary type="text">Redis和数据库一致性</summary>
+      <content type="html"><![CDATA[<p>什么情况会出现数据不一致？</p>
+<ul>
+<li>读写并发
+<strong>对数据库和Redis数据的写删的先后顺序</strong></li>
+</ul>
+<section><h2>先操作缓存<a href="#先操作缓存"><span>#</span></a></h2><p><strong>先删除缓存，然后写数据库</strong></p><p><img alt="" loading="lazy" width="890" height="228" src="/_astro/Pasted%20image%2020261120221138.CyNsmRlB_1hEsUe.webp" /></p><p><strong>数据不一致出现情况</strong>
+Redis缓存删除后，更新数据库期间有较大延迟时，导致其他线程请求Redis发现数据不存在，进入到数据库查询数据从而导致查询的是旧的数据。</p><section><h3>最终一致性<a href="#最终一致性"><span>#</span></a></h3><p>其他线程可能会查询到旧的值（来自于线程1更新数据库时延期间），但最终线程1更新数据库后，还是会将新值推到Redis中（先删后加，但需要延迟删除），保障两者数据一致性。</p><p><strong>延迟双删：</strong></p><ul>
+<li>如果不延迟，线程1更新完数据库就立马删除Redis数据，从而可能导致线程2将旧值写回Redis，出现数据不一致。</li>
+</ul><p><img alt="" loading="lazy" width="953" height="404" src="/_astro/Pasted%20image%2020261120221459.DHcOuyKv_Z9vhSk.webp" /></p></section><section><h3>思考方案（强一致性）<a href="#思考方案强一致性"><span>#</span></a></h3><p>按照“击穿”场景的处理方式，在读数据库这个步骤添加锁，当前仅删除缓存的那个线程才能将数据库的对应数据写回Redis，只允许单线程进来，实现的是<strong>强一致性</strong>，但丢失了性能。</p></section></section>
+<section><h2>先操作数据库<a href="#先操作数据库"><span>#</span></a></h2><p><img alt="" loading="lazy" width="1227" height="330" src="/_astro/Pasted%20image%2020261120225654.DIZK1F6h_Z15IKYm.webp" /></p><p>数据不一致情况：
+删缓存失败，导致Redis的数据还是旧值</p><p><img alt="" loading="lazy" width="1714" height="725" src="/_astro/Pasted%20image%2020261120225737.BJo2ygym_el45o.webp" /></p><section><h3>删除重试<a href="#删除重试"><span>#</span></a></h3><p>引入消息队列，由对应服务处理，但导致代码复杂度提高，耦合度变高
+<img alt="" loading="lazy" width="1839" height="583" src="/_astro/Pasted%20image%2020261120230030.DHqnCAUc_ZjhrJI.webp" /></p><p>解耦：<strong>cannal</strong>（阿里开源框架）</p><blockquote><p>读取binlog异步删除</p></blockquote><p>当MySQL的数据发生变动，canal通知canal
+<img alt="" loading="lazy" width="1928" height="553" src="/_astro/Pasted%20image%2020261120230459.CcVL6GXe_1sFH2X.webp" /></p><hr /><blockquote><p>来源：<a href="https://www.bilibili.com/video/BV11F411C77V?spm_id_from=333.788.videopod.sections&amp;vd_source=d4cf9a1e1c6dd336272779f2e79469bf" target="_blank">https://www.bilibili.com/video/BV11F411C77V?spm_id_from=333.788.videopod.sections&amp;vd_source=d4cf9a1e1c6dd336272779f2e79469bf</a></p></blockquote></section></section>]]></content>
+    </entry>
     <entry>
       <id>https://shaio.top/posts/02ai%E6%98%AF%E5%A4%A9%E5%9D%91/rag/rag%E6%96%B9%E6%A1%88/</id>
       <title type="text">RAG方案</title>
